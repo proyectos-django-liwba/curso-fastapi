@@ -43,11 +43,15 @@ def update_task(index: int, task: Task):
 @task_router.delete("/")
 def delete_task(index: int):
 
+  try:
     if len(tasks_list) <= index:
         raise CustomError(404, "Tarea no encontrada")
       
     del tasks_list[index]
     return {"task": tasks_list}
+  
+  except Exception as e:
+    raise CustomError(500, f"Error al eliminar la tarea: {e}")
 
 
 #manejo de errores
