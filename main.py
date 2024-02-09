@@ -1,8 +1,12 @@
 # Importaciones
 import os
 # Dependencias
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
+from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
+
+#errores
+from domain.error import CustomError
 
 # Importar rutas
 from router.home_router import home_router
@@ -16,6 +20,14 @@ app = FastAPI(
   description="Esta es una breve introducción a FastAPI, un framework para construir APIs con Python.",
   version="1.0.0",
 )
+
+# Manejadores de errores
+@app.exception_handler(CustomError)
+async def unicorn_exception_handler(request: Request, exc: CustomError):
+    return JSONResponse(
+        status_code=exc.code,
+        content={"error": {"code": exc.code, "message": exc.message}},
+    )
 
 # Configurar archivos estáticos
 assets_path = os.path.join(os.path.dirname(__file__), "assets/")
