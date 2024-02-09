@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fast Api</title>
+
+    <link rel="stylesheet" href={{ url_for('assets', path='Bootstrap/bootstrap.min.css') }} />
+    <script src="assets/Bootstrap/bootstrap.bundle.min.js"></script>
+
+  </head>
+  <body>
+    <div class="bg-dark min-vh-100">
+        <div class="container bg-light min-vh-100">
+            <!-- title -->
+            <h1 class="text-center p-2 text-danger">{{ title }}</h1>
+
+
+            <!-- urls -->
+            <div class="row justify-content-center mt-5">
+                <div class="col-12 col-md-8 col-lg-6 col-xl-4 mt-5">
+                    <h2 class="text-center">Rutas</h2>
+
+                    <div class="list-group">
+                        <a class="list-group-item list-group-item-action" href="http://localhost:8000/admin">Panel Administrador</a>
+                        <a class="list-group-item list-group-item-action" href="http://localhost:8000/docs">Docs</a>
+                        <a class="list-group-item list-group-item-action" href="http://localhost:8000/redoc">Redoc</a>
+                    </div>
+                </div>
+        </div>
+    </div>
+
+
+  </body>
+</html>
