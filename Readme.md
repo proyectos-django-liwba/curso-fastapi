@@ -34,9 +34,7 @@
 * descripción: `SQLAlchemy es un kit de herramientas SQL para Python.`
 * [Documentación oficial](https://www.sqlalchemy.org/)
 
-## 1.6 - Instalar dependencia autopep8
-* Instalar dependencia: `pip install autopep8`
-* descripción: `autopep8 automáticamente formatea el código de Python a los estándares PEP 8.`
+
 * [Documentación oficial](https://pypi.org/project/autopep8/)
 
 ## 1.7 - Instalar dependencia pydantic
@@ -46,7 +44,10 @@
 * [Documentación Tipos de datos](https://docs.pydantic.dev/1.10/usage/types/#pydantic-types)
 * Instalar validacion de email: `pip install pydantic[email]`
 
-
+## 1.8 - Instalar dependencia python-dotenv
+* Instalar dependencia: `pip install python-dotenv`
+* descripción: `python-dotenv lee variables de entorno desde archivos .env.`
+* [Documentación oficial](https://pypi.org/project/python-dotenv/)
 
 ### Lista de errores HTTP
 ![alt text](image.png)

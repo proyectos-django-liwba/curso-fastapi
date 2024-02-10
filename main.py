@@ -4,21 +4,33 @@ import os
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
-
+from fastapi.middleware.cors import CORSMiddleware
+from dotenv import load_dotenv
 #errores
 from domain.error import CustomError
-
 # Importar rutas
 from router.home_router import home_router
 from router.user_router import user_router
 from router.task_router import task_router
 from router.contact_router import contact_router
 
+# Orígenes permitidos
+origins = os.getenv("ALLOWED_ORIGINS", "").split(",")
+
 # Configurar la aplicación
 app = FastAPI(
   title="Introducción a FastAPI",
   description="Esta es una breve introducción a FastAPI, un framework para construir APIs con Python.",
   version="1.0.0",
+)
+
+# Configurar CORS
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 # Manejadores de errores
