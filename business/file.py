@@ -6,6 +6,7 @@ class FileManager:
     def convert_base64_to_image(data):
 
         try:
+            #remueve el prefijo data:image/png;base64,
             match = re.match(r'data:image/\w+;base64,(.*)', data)
           
             if not match:

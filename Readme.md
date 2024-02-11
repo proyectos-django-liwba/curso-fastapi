@@ -55,6 +55,11 @@
 * [Documentación oficial](https://pypi.org/project/python-multipart/)
 * [Documentación Uploadfile](https://fastapi.tiangolo.com/reference/uploadfile/)
 
+## 1.10 - Instalar dependencia fastapi-mail
+* Instalar dependencia: ```pip install fastapi-mail```
+* descripción: es una librería para el envió de correos
+* [Documentación](https://sabuhish.github.io/fastapi-mail/example/)
+
 ### Lista de errores HTTP
 ![alt text](image.png)
 
