@@ -49,6 +49,12 @@
 * descripción: `python-dotenv lee variables de entorno desde archivos .env.`
 * [Documentación oficial](https://pypi.org/project/python-dotenv/)
 
+## 1.9 - Instalar dependencia python-multipart
+* Instalar dependencia: `pip install python-multipart`
+* descripción: `python-multipart es una librería para manejar datos multipart en Python.`
+* [Documentación oficial](https://pypi.org/project/python-multipart/)
+* [Documentación Uploadfile](https://fastapi.tiangolo.com/reference/uploadfile/)
+
 ### Lista de errores HTTP
 ![alt text](image.png)
 

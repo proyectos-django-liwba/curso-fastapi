@@ -49,9 +49,11 @@ def delete_task(index: int):
 
         del tasks_list[index]
         return {"task": tasks_list}
+    
+    except CustomError as e:
+        raise e
 
     except Exception as e:
-        print(e)
         raise CustomError(500, f"Error al eliminar la tarea: {e}")
 
 
