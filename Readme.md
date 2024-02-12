@@ -86,7 +86,7 @@
 * [Documentación](https://alembic.sqlalchemy.org/en/latest/)
 
 #### Configuracion
-* [!note] La base de datos debe estar limpia, sin tablas
+* !!!note La base de datos debe estar limpia, sin tablas
 * Iniciar Alembic en el proyecto: ```alembic init alembic```
 * Ubicación de migraciones generadas: alembic/versions/
 * Configurar archivo env.py 
