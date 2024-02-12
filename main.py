@@ -16,6 +16,8 @@ from router.contact_router import contact_router
 from router.upload_router import upload_router
 from router.email_router import email_router
 
+from data.conection import ConexionBD
+
 # Orígenes permitidos
 origins = os.getenv("ALLOWED_ORIGINS", "").split(",")
 
@@ -49,6 +51,11 @@ uploads_path = os.path.join(os.path.dirname(__file__), "uploads/")
 app.mount("/assets", StaticFiles(directory=assets_path), name="assets")
 app.mount("/uploads", StaticFiles(directory=uploads_path), name="uploads")
 
+# Base de datos
+conexion = ConexionBD()
+conexion.verificar_conexion()
+conexion.create_tables()
+
 # Rutas de la aplicación
 app.include_router(home_router)
 app.include_router(user_router, prefix="/api/users", tags=["Users"])
@@ -56,3 +63,5 @@ app.include_router(task_router, prefix="/api/tasks", tags=["Tasks"])
 app.include_router(contact_router, prefix="/api/contacts", tags=["Contacts"])
 app.include_router(upload_router, prefix="/api/upload", tags=["Upload"])
 app.include_router(email_router, prefix="/api/email", tags=["Email"])
+
+

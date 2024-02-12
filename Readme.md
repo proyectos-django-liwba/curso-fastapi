@@ -60,6 +60,22 @@
 * descripción: es una librería para el envió de correos
 * [Documentación](https://sabuhish.github.io/fastapi-mail/example/)
 
+# 2.0 Base de datos
+* Cada base de datos requiere un conector que se debe instalar de forma independiente. Luego configurar la conexión con esa base de datos.
+
+# 2.1 instalar dependencia sqlalchemy
+* instalar dependencia: ```pip install sqlalchemy```
+* [Documentación Instalación](https://docs.sqlalchemy.org/en/20/intro.html#installation)
+* [Documentación Guía](https://docs.sqlalchemy.org/en/20/orm/quickstart.html)
+
+# 2.2 instalar dependencia  para base de datos
+#### 2.2.1 BD Postgre SQL
+* instalar dependencia: ```pip install psycopg2 ```
+* [Documentación](https://www.psycopg.org/docs/install.html#quick-install)
+
+#### 2.2.1 BD MySQL conector
+* instalar dependencia: ```pip install mysql-conector-python ```
+
 ### Lista de errores HTTP
 ![alt text](image.png)
 
