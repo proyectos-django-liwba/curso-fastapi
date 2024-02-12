@@ -13,24 +13,24 @@ from jinja2 import Environment, FileSystemLoader
 # Cargar variables de entorno desde el archivo .env
 load_dotenv()
 
-
 class EmailManager:
     # Configuración de mail
     conf = ConnectionConfig(
-        MAIL_USERNAME=os.getenv("MAIL_USERNAME"),
-        MAIL_PASSWORD=os.getenv("MAIL_PASSWORD"),
-        MAIL_FROM=os.getenv("MAIL_FROM"),
+        MAIL_USERNAME=os.getenv("MAIL_USERNAME",""),
+        MAIL_PASSWORD=os.getenv("MAIL_PASSWORD",""),
+        MAIL_FROM=os.getenv("MAIL_FROM",""),
         MAIL_PORT=587,
         MAIL_SERVER="smtp.gmail.com",
         MAIL_STARTTLS=True,
         MAIL_SSL_TLS=False,
+        VALIDATE_CERTS = True
     )
 
     async def send_email(self, to: str, subject: str, user_name: str, link: str = "http://localhost:5173"):
         try:
             # validar el correo
             valid_email = validate_email(to)
-            to = valid_email["email"]
+            to = valid_email.email
 
             # Renderizar el template HTML
             env = Environment(loader=FileSystemLoader("views"))

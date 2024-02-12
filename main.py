@@ -17,6 +17,9 @@ from router.upload_router import upload_router
 from router.email_router import email_router
 
 from data.conection import ConexionBD
+#from data.conection2 import engine, Base
+#from data import user_schema
+#from data.user_schema import UserSchema
 
 # Orígenes permitidos
 origins = os.getenv("ALLOWED_ORIGINS", "").split(",")
@@ -52,9 +55,10 @@ app.mount("/assets", StaticFiles(directory=assets_path), name="assets")
 app.mount("/uploads", StaticFiles(directory=uploads_path), name="uploads")
 
 # Base de datos
-conexion = ConexionBD()
-conexion.verificar_conexion()
-conexion.create_tables()
+#ConexionBD().verificar_conexion()
+ConexionBD().create_tables()
+#ConexionBD().drop_tables()
+
 
 # Rutas de la aplicación
 app.include_router(home_router)
