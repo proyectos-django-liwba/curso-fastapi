@@ -1,6 +1,124 @@
-# Sección 1 - Curso de Python FastAPI
+# Guía de FastAPI 2024 
+[![FastAPI](./assets/images/fastapi.png)](https://fastapi.tiangolo.com/)
 
-## 0 FastAPI
+* Wilfredo Barquero Herrera
+    - [![Gmail](https://img.shields.io/badge/Gmail-D14836?style=for-the-badge&logo=gmail&logoColor=white)](liwbarqueroh@gmail.com )
+    - [![GitHub](https://img.shields.io/badge/github-%23121011.svg?style=for-the-badge&logo=github&logoColor=white)](https://github.com/liwBh)
+* Elmer Mejias Carranza
+    - [![GitHub](https://img.shields.io/badge/github-%23121011.svg?style=for-the-badge&logo=github&logoColor=white)](https://github.com/ing-Elmer)
+    - [![Gmail](https://img.shields.io/badge/Gmail-D14836?style=for-the-badge&logo=gmail&logoColor=white)](https://elmermejias47@gmail.com)
+
+
+## Arquitectura de proyecto
+
+##### 1. Descripción de las capas:
+* 📦**Views**: vistas de la api
+* 📦**Uploads**: Almacenamiento de archivos 
+* 📦**Api**: 
+    - 📁**Router**: implementación de rutas para cada modulo
+        ```
+            file_router.py
+        ```
+    - 📁**Models**: Modelos Pydantic, para validaciones de request
+        ```
+            file_model.py
+        ```
+    - 📁**Data**: Capa de base de datos contiene la configuración y schema models "tablas"
+        ```
+            connection_data.py
+            file_data.py
+        ```
+    - 📁**Controller**: Capa intermedia que abstrae la lógica de las rutas, se concentra en realizar los llamados de otras capas y validaciones.
+        ```
+            file_controller.py
+        ``` 
+    - 📁**Service**: Capa intermedia que abstrae la lógica de la base de datos
+        ```
+            file_service.py
+        ```
+* 📦**Core**: Lógica principal del proyecto
+    - 📁**Validaciones**: validaciones - enums
+    - 📁**File**: manejo de archivos
+    - 📁**Email**: manejo de emails 
+    - 📁**Security**: lógica de seguridad como permisos, autenticación, encriptaron; 
+    ```
+        security_permissions.py
+        security_auth.py
+        security_encryption.py
+    ```  
+* 📦**Resources**: Acceso a recursos internos de proyecto: 
+    - 📁**Template**: código html que se inyecte en lógica
+    - 📁**Images**: imágenes de vistas y templates
+    - 📁**Styles**: estilos css, scss, etc...
+    - 📁**Js**: código javascript para template y vistas
+* [⚙️**main.py**](main.py): archivo principal de ejecución del proyecto,configuración y implementación de rutas
+
+##### Estructura de carpetas:
+```
+app/
+├── core/
+│   └──validations/
+│       └── file_validation.py
+│       └── ...
+│   └──file/
+│       └── file_file.py
+│       └── ...
+│   └──emails/
+│       └── file_email.py
+│       └── ...
+│   └──security/
+│       └── permissions_security.py
+│       └── auth_security.py
+│       └── encryption_security.py
+│       └── ...
+│
+│
+├── uploads/
+│
+│
+├── views/
+│
+├── resources/ 
+│   └── template   
+│       └── file.html
+│       └── ...
+│   └── images/   
+│       └── file.png
+│       └── file.jpg
+│       └── file.web
+│       └── file.jpeg
+│       └── ...
+│   └── styles/   
+│       └── file.css
+│       └── file.scss
+│       └── ...
+│   └── js/   
+│       └── file.js
+│       └── ...
+├── api/            
+│   └── routers/   
+│       └── file_router.py
+│       └── ...
+│   └── models/      
+│       └── file_model.py
+│       └── ...
+│   └── data/   
+│       └── connection_data.py
+│       └── file_data.py
+│       └── ...
+│   └── controller/      
+│       └── file_controller.py
+│       └── ...
+└── main.py
+
+```
+
+## Contenido de la guía 📖
+
+[Problemas con el Interprete](#problemas-con-el-interprete)
+
+
+
 * [Documentación oficial](https://fastapi.tiangolo.com/)
 
 ## 1.1 - Crear entorno virtual = env
@@ -137,6 +255,7 @@
 #### Comandos alembic
 * Crear migración: ```alembic revision --autogenerate -m "nombre-migracion"```
 * Aplicar la ultima migración: ```alembic upgrade head```
+
 
 ### Lista de errores HTTP
 ![alt text](./assets/images/http-errores-1.png)
