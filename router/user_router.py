@@ -60,14 +60,16 @@ async def create_user(user: User, db: Session = Depends(ConexionBD().get_db)):
         raise e
     except Exception as e:
         raise CustomError(500, f"Error al crear el usuario: {str(e)}")
-    
 
-@user_router.get("/")
+
+@user_router.get("/by_sql")
 async def get_users(db: Session = Depends(ConexionBD().get_db)):
     try:
         # Ejecutar la consulta sql
-        result = db.execute(text("select id, username, first_name, last_name, email, role from users"))
-        
+        result = db.execute(
+            text("select id, username, first_name, last_name, email, role from users")
+        )
+
         users = []
         for row in result:
             user_data = {
@@ -76,29 +78,25 @@ async def get_users(db: Session = Depends(ConexionBD().get_db)):
                 "first_name": row[2],
                 "last_name": row[3],
                 "email": row[4],
-                "role": row[5]
+                "role": row[5],
             }
             users.append(user_data)
 
         return {"users": users}
-    
+
     except CustomError as e:
         raise e
     except Exception as e:
         raise CustomError(500, f"Error al obtener los usuarios: {str(e)}")
 
-@user_router.get("/{user_id}")
-async def get_user(user_id: int, db: Session = Depends(ConexionBD().get_db)):
+
+@user_router.get("/by_orm")
+async def get_user(db: Session = Depends(ConexionBD().get_db)):
     try:
-        if user_id is None:
-            raise CustomError(400, "El id del usuario es requerido")
-        
-        if user_id <= 0:
-            raise CustomError(400, "El id del usuario debe ser mayor a 0")
-        
+
         users = db.query(UserSchema).all()
         return {"users": users}
-    
+
     except CustomError as e:
         raise e
     except Exception as e:
