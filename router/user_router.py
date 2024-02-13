@@ -67,7 +67,34 @@ async def get_users(db: Session = Depends(ConexionBD().get_db)):
     try:
         # Ejecutar la consulta sql
         result = db.execute(
-            text("select id, username, first_name, last_name, email, role from users")
+            text("SELECT id, username, first_name, last_name, email, role from users")
+        )
+
+        users = []
+        for row in result:
+            user_data = {
+                "id": row[0],
+                "username": row[1],
+                "first_name": row[2],
+                "last_name": row[3],
+                "email": row[4],
+                "role": row[5],
+            }
+            users.append(user_data)
+
+        return {"users": users}
+
+    except CustomError as e:
+        raise e
+    except Exception as e:
+        raise CustomError(500, f"Error al obtener los usuarios: {str(e)}")
+
+@user_router.get("/by_bd_function")
+async def get_users(db: Session = Depends(ConexionBD().get_db)):
+    try:
+        # Ejecutar la consulta sql
+        result = db.execute(
+            text("SELECT * FROM obtener_usuarios();")
         )
 
         users = []
@@ -96,6 +123,28 @@ async def get_user(db: Session = Depends(ConexionBD().get_db)):
 
         users = db.query(UserSchema).all()
         return {"users": users}
+
+    except CustomError as e:
+        raise e
+    except Exception as e:
+        raise CustomError(500, f"Error al obtener los usuarios: {str(e)}")
+
+@user_router.get("/by_id/{user_id}")
+async def get_user(user_id: int ,db: Session = Depends(ConexionBD().get_db)):
+    try:
+        
+        if user_id is None:
+            raise CustomError(400, "El id del usuario es requerido")
+        
+        if user_id <= 0:
+            raise CustomError(400, "El id del usuario debe ser mayor a 0")
+        
+        user = db.query(UserSchema).filter(UserSchema.id == user_id).first()
+
+        if user is None:
+            raise CustomError(404, "Usuario no encontrado")
+       
+        return {"user": user}
 
     except CustomError as e:
         raise e
