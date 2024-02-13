@@ -108,11 +108,43 @@
 * Configurar archivo alembic.ini, agregando la url de conexión a bd
 ```sqlalchemy.url = driver://user:pass@localhost/dbname```
 
+# 3.0 Auth JWT
+
+# 4.0 Permisos
+
+# 5.0 Bitacora
+
+# Dependencias
+
+# Middleware
+
+# Anotaciones
+
+# 6.0 Microservicios
+
+# 7.0 Socket
+
+# Mail
+
+# Template
+
+# Errores
+
+# Estaticos
+
+# Manejo de archivos
+
 #### Comandos alembic
 * Crear migración: ```alembic revision --autogenerate -m "nombre-migracion"```
 * Aplicar la ultima migración: ```alembic upgrade head```
 
 ### Lista de errores HTTP
-![alt text](image.png)
+![alt text](./assets/images/http-errores-1.png)
 
-![alt text](image-1.png)
+![alt text](./assets/images/http-errores-2.png)
+
+
+### Problemas con el Interprete 
+![alt text](./assets/images/bug-interprete-1.png)
+
+![alt text](./assets/images/bug-interprete-2.png)

@@ -10,6 +10,7 @@ class User(BaseModel):
     email: str = Field(..., min_length=11, max_length=50)
     password: str = Field(..., min_length=8, max_length=16)
     role: str = Field("user", min_length=4, max_length=5)
+    
 
     class Config:
         from_attributes = True
