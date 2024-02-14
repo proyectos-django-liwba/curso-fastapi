@@ -8,7 +8,13 @@ class TaskController:
     
     def create_task(task: Task, db: Session):
         try:
+            # validación de datos
+            task.validate_create()
+            
+            # Crear la tarea
             result = TaskService.create_task(task, db)
+            
+            # Retornar la respuesta
             return ResponseBase(200, "Task created successfully", result).to_dict()
         except CustomError as e:
             raise e
@@ -35,7 +41,13 @@ class TaskController:
     
     def update_task(task_id: int, task: Task, db: Session):
         try:
+            # validación de datos
+            task.validate_update()
+            
+            # Actualizar la tarea   
             result = TaskService.update_task(task_id, task, db)
+            
+            # Retornar la respuesta
             return ResponseBase(200, "Task updated successfully", result).to_dict()
         except CustomError as e:
             raise e

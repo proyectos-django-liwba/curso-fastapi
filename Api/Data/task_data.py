@@ -21,6 +21,9 @@ class TaskData(ConexionBD.Base):
 
     def create_task(task: Task):
         return TaskData(title=task.title, status=task.status)
+    
+    def update_task(task: Task):
+        return TaskData(id=task.id, title=task.title, status=task.status)
 
 
 """ # Almacenar tareas

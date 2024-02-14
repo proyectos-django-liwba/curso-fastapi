@@ -1,6 +1,20 @@
 import re
 
 class ValidatorModels:
+    # validar que el valor no sea nulo
+    @staticmethod
+    def not_null(value, name):
+        if value is None:
+            raise ValueError(f"El valor de {name} no debe ser nulo")
+        return value
+    
+    # validar ids positivos
+    @staticmethod
+    def is_positive_integer(value, name):
+        if not isinstance(value, int) or value <= 0:
+            raise ValueError(f"El valor de {name} debe ser un número entero positivo")
+        return value
+    
     # Validar espcaios en blanco
     @staticmethod
     def not_contains_space(value, name):
@@ -18,7 +32,7 @@ class ValidatorModels:
     # Validar que el valor sea un número
     @staticmethod
     def is_number(value, name):
-        if not value.isdigit():
+        if not isinstance(value, int):
             raise ValueError(f"El valor de {name} debe ser un número")
         return value
 
@@ -54,20 +68,6 @@ class ValidatorModels:
             raise ValueError(
                 f"El valor de {name} debe ser una fecha con el formato dd/mm/yyyy"
             )
-        return value
-
-    # Validar que el valor sea un número decimal, con un regex
-    @staticmethod
-    def is_decimal(value, name):
-        if not re.match(r"^\d+\.\d+$", value):
-            raise ValueError(f"El valor de {name} debe ser un número decimal")
-        return value
-
-    # Validar que el valor sea un número entero positivo, con un regex
-    @staticmethod
-    def is_positive_integer(value, name):
-        if not re.match(r"^\d+$", value):
-            raise ValueError(f"El valor de {name} debe ser un número entero positivo")
         return value
 
     # validar un minimo de caracteres

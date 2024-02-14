@@ -13,6 +13,7 @@ class Task(BaseModel):
     id: Optional[int] = None
     title: str
     status : StatusType
+    
     #category: CategoryTask
     #user: User
     # tags: List[str] = [] # Lista de strings
@@ -29,40 +30,32 @@ class Task(BaseModel):
             }
         }
         
-    """ @field_validator("id")
-    def id_validator(cls, value):
-        ValidatorModels.not_empty(value, "id")
-        return value """
-    
-    """ @field_validator("id")
-    def id_number(cls, value):
-        ValidatorModels.is_number(value, "id")
-        return value """
+    def validate_create(self):
+       # validaciones de title
+        ValidatorModels.not_empty(self.title, "title")
+        ValidatorModels.min_length(self.title, "title", 5)
+        ValidatorModels.max_length(self.title, "title", 100)
+        # validaciones de status
+        ValidatorModels.not_empty(self.status, "status")
+        ValidatorModels.min_length(self.status, "status", 5)
+        ValidatorModels.max_length(self.status, "status", 20)
         
-    @field_validator("title")
-    def task_validator(cls, value):
-        ValidatorModels.not_empty(value, "title")
-        return value
-
-    @field_validator("title")
-    def task_min_length(cls, value):
-        ValidatorModels.min_length(value, "title", 5)
-        return value
-
-    @field_validator("title")
-    def task_max_length(cls, value):
-        ValidatorModels.max_length(value, "title", 100)
-        return value
-
-    @field_validator("status")
-    def status_validator(cls, value):
-        ValidatorModels.not_empty(value, "status")
-        return value
-    
+    def validate_update(self):
+        # validaciones de id
+        ValidatorModels.not_null(self.id, "id")
+        ValidatorModels.is_positive_integer(self.id, "id")
+        # validaciones de title
+        ValidatorModels.not_empty(self.title, "title")
+        ValidatorModels.min_length(self.title, "title", 5)
+        ValidatorModels.max_length(self.title, "title", 100)
+        # validaciones de status
+        ValidatorModels.not_empty(self.status, "status")
+        ValidatorModels.min_length(self.status, "status", 5)
+        ValidatorModels.max_length(self.status, "status", 20)
+        
     def __str__(self):
         return f"Task(id={self.id}, title={self.title}, status={self.status})"
-
-
+            
     # clases anidadas
     """ class Task(BaseModel):
         id: int

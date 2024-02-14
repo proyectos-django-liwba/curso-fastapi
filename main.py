@@ -38,8 +38,8 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-# Manejador de errores
+    
+# Manejador de errores personalizado
 @app.exception_handler(CustomError)
 async def unicorn_exception_handler(request: Request, exc: CustomError):
     return JSONResponse(
