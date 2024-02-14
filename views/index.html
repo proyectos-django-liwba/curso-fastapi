@@ -4,10 +4,20 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Fast Api</title>
+    <!-- favicon -->
+    <link rel="icon" href={{ url_for('Resources', path='/favicon/favicon.ico') }} />
+    <link rel="apple-touch-icon" sizes="180x180" 
+    href={{ url_for('Resources', path='/favicon/apple-touch-icon.png') }}>
+    <link rel="icon" type="image/png" sizes="32x32"
+    href={{ url_for('Resources', path='/favicon/favicon-32x32.png') }}>
+    <link rel="icon" type="image/png" sizes="16x16"
+    href={{ url_for('Resources', path='/favicon/favicon-16x16.png') }}>
+    <meta name="msapplication-TileColor" content="#da532c">
+    <meta name="theme-color" content="#ffffff">
 
-    <link rel="stylesheet" href={{ url_for('assets', path='Bootstrap/bootstrap.min.css') }} />
-    <script src="assets/Bootstrap/bootstrap.bundle.min.js"></script>
-
+    <!-- styles -->
+    <link rel="stylesheet" href={{ url_for('Resources', path='Styles/bootstrap.min.css') }} />
+    <script src={{ url_for('Resources', path='Js/bootstrap.bundle.min.js') }}></script>
   </head>
   <body>
     <div class="bg-dark min-vh-100">

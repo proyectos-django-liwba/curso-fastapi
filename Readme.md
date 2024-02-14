@@ -285,7 +285,12 @@ pip install fastapi-mail
 * [Docuementación Guía](https://fastapi.tiangolo.com/tutorial/security/oauth2-jwt/#install-passlib)
 
 #### 3.7  Migraciones Alembic
-* Instalar dependencia:```pip install alembic ```
+
+## 6.0 - FastAPI Mail
+
+#### Configuración
+* Configurar las variables de entorno en un archivo .env
+    ```* Instalar dependencia:```pip install alembic ```
 * [Documentación alembic](https://alembic.sqlalchemy.org/en/latest/)
 
 ## 4. Base de datos

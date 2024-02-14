@@ -1,25 +1,24 @@
-# Importaciones
-import os
 # Dependencias
+import os
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
 #errores
-from domain.error import CustomError
-# Importar rutas
-from router.home_router import home_router
-from router.user_router import user_router
-from router.task_router import task_router
-from router.contact_router import contact_router
-from router.upload_router import upload_router
-from router.email_router import email_router
+from Core.Validations.error import CustomError
+# Rutas
+from Api.Routes.home_router import home_router
+from Api.Routes.user_router import user_router
+from Api.Routes.task_router import task_router
+from Api.Routes.contact_router import contact_router
+from Api.Routes.upload_router import upload_router
+from Api.Routes.email_router import email_router
+# Base de datos
+from Api.Data.conection import ConexionBD
 
-from data.conection import ConexionBD
-#from data.conection2 import engine, Base
-#from data import user_schema
-#from data.user_schema import UserSchema
+# Cargar variables de entorno
+load_dotenv()
 
 # Orígenes permitidos
 origins = os.getenv("ALLOWED_ORIGINS", "").split(",")
@@ -49,10 +48,10 @@ async def unicorn_exception_handler(request: Request, exc: CustomError):
     )
 
 # Configurar archivos estáticos
-assets_path = os.path.join(os.path.dirname(__file__), "assets/")
-uploads_path = os.path.join(os.path.dirname(__file__), "uploads/")
-app.mount("/assets", StaticFiles(directory=assets_path), name="assets")
-app.mount("/uploads", StaticFiles(directory=uploads_path), name="uploads")
+resources_path = os.path.join(os.path.dirname(__file__), "Resources/")
+uploads_path = os.path.join(os.path.dirname(__file__), "Uploads/")
+app.mount("/Resources", StaticFiles(directory=resources_path), name="Resources")
+app.mount("/Uploads", StaticFiles(directory=uploads_path), name="Uploads")
 
 # Base de datos
 #ConexionBD().verificar_conexion()
