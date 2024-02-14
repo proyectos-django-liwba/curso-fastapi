@@ -10,7 +10,7 @@ from Core.Validations.validator_models import ValidatorModels
 
 
 class Task(BaseModel):
-    id: Optional[int]
+    id: Optional[int] = None
     title: str
     status : StatusType
     #category: CategoryTask
@@ -29,15 +29,15 @@ class Task(BaseModel):
             }
         }
         
-    @field_validator("id")
+    """ @field_validator("id")
     def id_validator(cls, value):
         ValidatorModels.not_empty(value, "id")
-        return value
+        return value """
     
-    @field_validator("id")
+    """ @field_validator("id")
     def id_number(cls, value):
         ValidatorModels.is_number(value, "id")
-        return value
+        return value """
         
     @field_validator("title")
     def task_validator(cls, value):
