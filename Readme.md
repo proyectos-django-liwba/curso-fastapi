@@ -368,8 +368,95 @@ pip install mysql-conector-python
 
 ## 18. Manejo de archivos
 
+## 19. Manejo de Errores
+* [Documentación errores](https://fastapi.tiangolo.com/tutorial/handling-errors/#requestvalidationerror-vs-validationerror)
 
+* Manejo de errores personalizados, configurar en el main.py
+```
+from Core.Validations.custom_error import CustomError
+from fastapi.exceptions import RequestValidationError
+from starlette.exceptions import HTTPException as StarletteHTTPException
+from fastapi import FastAPI, Request
+from fastapi.responses import JSONResponse
 
+# Manejadores de errores HTTP
+@app.exception_handler(StarletteHTTPException)
+async def http_exception_handler(request, exc):
+    return JSONResponse(
+        status_code=exc.status_code,
+        content={"error": {
+                "code": exc.status_code, 
+                "message": str(exc.detail),
+                "url": str(request.url)
+            }
+        },
+    )
+
+# Manejador de errores validación
+@app.exception_handler(RequestValidationError)
+async def validation_exception_handler(request, exc):
+    errors = []
+    
+    for error in exc.errors():
+         errors.append({
+            "msg": error["msg"],
+            "body": error["loc"][1],
+            "input": error["input"]
+        })
+    
+    return JSONResponse(
+        status_code=422,
+        content={"error": {
+            "code": 422, 
+            "message": f"Error de validación: {msg}"
+            }, 
+            "errors": errors,
+        }
+    )
+    
+# Manejador de errores personalizado
+@app.exception_handler(CustomError)
+async def unicorn_exception_handler(request: Request, exc: CustomError):
+    return JSONResponse(
+        status_code=exc.code,
+        content={"error": {"code": exc.code, "message": exc.message}},
+    )
+```
+* crear clase de error personalizado
+```
+class CustomError(Exception):
+  def __init__(self, code, message):
+    self.code = code
+    self.message = message
+
+  def __str__(self):
+    return {
+      "error":{
+        "code": self.code,
+        "message": self.message
+      }
+    }
+
+```
+
+* Implementar error personalizado ejemplo
+```
+    def create_task(task: Task, db: Session):
+        try:
+            # validación de datos
+            task.validate_create()
+            
+            # Crear la tarea
+            result = TaskService.create_task(task, db)
+            
+            # Retornar la respuesta
+            return ResponseBase(200, "Task created successfully", result).to_dict()
+        except CustomError as e:# Excepciones que validemos
+            raise e
+        except Exception as e:# Excepciones que no validamos
+            raise CustomError(500, f"Error al crear la tarea: {str(e)}")
+
+```
 
 ### Lista de errores HTTP
 | Código | Estado | Descripción |

@@ -6,7 +6,9 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
 #errores
-from Core.Validations.error import CustomError
+from Core.Validations.custom_error import CustomError
+from fastapi.exceptions import RequestValidationError
+from starlette.exceptions import HTTPException as StarletteHTTPException
 # Rutas
 from Api.Routes.home_router import home_router
 from Api.Routes.user_router import user_router
@@ -38,6 +40,41 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Manejadores de errores HTTP
+@app.exception_handler(StarletteHTTPException)
+async def http_exception_handler(request, exc):
+    return JSONResponse(
+        status_code=exc.status_code,
+        content={"error": {
+                "code": exc.status_code, 
+                "message": str(exc.detail),
+                "url": str(request.url)
+            }
+        },
+    )
+
+# Manejador de errores validación
+@app.exception_handler(RequestValidationError)
+async def validation_exception_handler(request, exc):
+    errors = []
+    
+    for error in exc.errors():
+         errors.append({
+            "msg": error["msg"],
+            "body": error["loc"][1],
+            "input": error["input"]
+        })
+    
+    return JSONResponse(
+        status_code=422,
+        content={"error": {
+            "code": 422, 
+            "message": f"Error de validación: {msg}"
+            }, 
+            "errors": errors,
+        }
+    )
     
 # Manejador de errores personalizado
 @app.exception_handler(CustomError)

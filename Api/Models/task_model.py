@@ -31,7 +31,11 @@ class Task(BaseModel):
         }
         
     def validate_create(self):
-       # validaciones de title
+        #validar id
+        """ ValidatorModels.not_null(self.id, "id")
+        ValidatorModels.is_positive_integer(self.id, "id") """
+        ValidatorModels.is_number(self.id, "id")
+        # validaciones de title
         ValidatorModels.not_empty(self.title, "title")
         ValidatorModels.min_length(self.title, "title", 5)
         ValidatorModels.max_length(self.title, "title", 100)

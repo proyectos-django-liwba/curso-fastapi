@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from Core.Validations.error import CustomError
+from Core.Validations.custom_error import CustomError
 from Api.Service.task_service import TaskService
 from Api.Models.task_model import Task
 from Api.Response.response_base import ResponseBase

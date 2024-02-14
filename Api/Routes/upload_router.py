@@ -5,7 +5,7 @@ from typing import List
 from fastapi import APIRouter, File, UploadFile
 
 # Importaciones
-from Core.Validations.error import CustomError
+from Core.Validations.custom_error import CustomError
 from Api.Models.upload_model import Upload
 from Core.Files.file import FileManager
 

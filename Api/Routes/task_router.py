@@ -11,14 +11,10 @@ from Api.Models.task_model import Task
 # Crear el router
 task_router = APIRouter()
 
-def validate_task(task):
-    # validar que el id sea un número
-    if not isinstance(task.id, int):
-        raise HTTPException(status_code=400, detail="El id debe ser un número")
-
 # Definir rutas
 @task_router.post("/")
 def create_task(task: Task, db: Session = Depends(ConexionBD().get_db)):
+    print("hola")
     return TaskController.create_task(task, db)
 
 @task_router.get("/{task_id}")

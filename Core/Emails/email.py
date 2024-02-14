@@ -5,7 +5,7 @@ from email_validator import validate_email, EmailNotValidError
 from dotenv import load_dotenv
 from jinja2 import Environment, FileSystemLoader
 # Importaciones
-from Core.Validations.error import CustomError
+from Core.Validations.custom_error import CustomError
 
 # Cargar variables de entorno desde el archivo .env
 load_dotenv()

@@ -1,4 +1,4 @@
-from Core.Validations.error import CustomError
+from Core.Validations.custom_error import CustomError
 import base64
 import re
 

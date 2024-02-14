@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 # Importaciones
 from Api.Data.task_data import TaskData
 from Api.Models.task_model import Task
-from Core.Validations.error import CustomError
+from Core.Validations.custom_error import CustomError
 
 
 

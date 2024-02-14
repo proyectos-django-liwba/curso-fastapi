@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 from sqlalchemy import text
 from passlib.context import CryptContext
 # importaciones
-from Core.Validations.error import CustomError
+from Core.Validations.custom_error import CustomError
 from Api.Data.conection import ConexionBD
 from Api.Data.user_schema import UserSchema
 from Api.Models.user_model import User
