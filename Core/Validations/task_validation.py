@@ -2,10 +2,8 @@ from Api.Models.task_model import Task
 from Core.Validations.validator_models import ValidatorModels
 
 class TaskValidation:
+    
     def validate_create(task: Task):
-        #validar id
-        ValidatorModels.not_null(task.id, "id")
-        ValidatorModels.is_positive_integer(task.id, "id")
         # validaciones de title
         ValidatorModels.not_empty(task.title, "title")
         ValidatorModels.min_length(task.title, "title", 4)

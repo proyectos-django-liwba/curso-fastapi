@@ -481,6 +481,11 @@ from jinja2 import Environment, FileSystemLoader
 
     # agregar al objeto de MessageSchema, el atributo de  attachments=[adjunto]
 ```
+* Implementar el archivo adjunto en el template
+```
+    <img src="cid:logo_image" >
+
+```
 
 * Definir el MessageSchema
 ```
@@ -644,7 +649,10 @@ Tiene función principal es contener toda la lógica que la API requiera:
 
 
 ## 22. Relaciones en ORM - Alchemist
-
+#### 22.1 One to Many
+#### 22.2 Many to Many
+#### 22.3 Invertida
+#### 22.4 
 
 ## 23. Variables de entorno
 Se requiere el uso de la dependencia [Python Dotenv](#33-variables-de-entorno---python-dotenv)
@@ -655,7 +663,7 @@ Se requiere el uso de la dependencia [Python Dotenv](#33-variables-de-entorno---
 ```
 VARIABLE_NOMBRE=valor_variable
 ```
-* Código ejemplo
+* Uso de variables de entorno
 ```
 # dependencia
 from dotenv import load_dotenv

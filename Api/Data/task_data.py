@@ -15,6 +15,7 @@ class TaskData(ConexionBD.Base):
     #created_at = Column(TIMESTAMP, server_default=text("now()"))
     #updated_at = Column(TIMESTAMP, server_default=text("now()"), onupdate=text("now()"))
 
+
     def __str__(self):
         return f"Task(id={self.id}, title={self.title}, status={self.status})"
 
@@ -24,45 +25,3 @@ class TaskData(ConexionBD.Base):
     
     def update_task(task: Task):
         return TaskData(id=task.id, title=task.title, status=task.status)
-
-
-""" # Almacenar tareas
-tasks_list = [
-    {
-        "id": 1,
-        "title": "Limpiar la casa",
-        "status": StatusType.DONE,
-        "category": {"id": 1, "name": "Hogar", "description": "Tareas del hogar"},
-        "user": {
-            "id": 1,
-            "first_name": "John",
-            "last_name": "Mora Matarrita",
-            "email": "correo@correo.com",
-        },
-    },
-    {
-        "id": 2,
-        "title": "Hacer la compra",
-        "status": StatusType.PENDING,
-        "category": {"id": 1, "name": "Hogar", "description": "Tareas del hogar"},
-        "user": {
-            "id": 1,
-            "first_name": "John",
-            "last_name": "Mora Matarrita",
-            "email": "correo@correo.com",
-        },
-    },
-    {
-        "id": 3,
-        "title": "Cocinar la cena",
-        "status": StatusType.PENDING,
-        "category": {"id": 1, "name": "Hogar", "description": "Tareas del hogar"},
-        "user": {
-            "id": 1,
-            "first_name": "John",
-            "last_name": "Mora Matarrita",
-            "email": "correo@correo.com",
-        },
-    },
-]
- """

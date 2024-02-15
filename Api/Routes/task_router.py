@@ -36,3 +36,6 @@ def update_task(task: Task = Body(example=task_example_update), db: Session = De
 def delete_task(task_id: int, db: Session = Depends(ConexionBD().get_db)):
     return TaskController.delete_task(task_id, db)
 
+@task_router.get("/{page}/{size}")
+def paginate_tasks(page: int, size: int, db: Session = Depends(ConexionBD().get_db)):
+    return TaskController.paginate_tasks(page, size, db)

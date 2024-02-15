@@ -4,6 +4,7 @@ from Api.Models.task_model import Task
 from Api.Response.response_base import ResponseBase
 from Core.Validations.custom_error import CustomError
 from Core.Validations.task_validation import TaskValidation
+from Core.Pagination.pagination import paginate, PageParams
 
 class TaskController: 
     
@@ -78,3 +79,14 @@ class TaskController:
             raise e
         except Exception as e:
             raise CustomError(500, f"Error al eliminar la tarea: {str(e)}")
+        
+    def paginate_tasks(page: int, size: int, db: Session):
+        try:
+            
+            result = TaskService.paginate_tasks(page, size, PageParams, paginate, db)
+
+            return ResponseBase(200, "Tasks obtained successfully", result).to_dict()
+        except CustomError as e:
+            raise e
+        except Exception as e:
+            raise CustomError(500, f"Error al listar las tareas: {str(e)}")

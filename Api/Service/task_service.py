@@ -54,3 +54,10 @@ class TaskService:
         
         db.delete(_task)
         db.commit()
+
+    def paginate_tasks(page: int, size: int,PageParams: dict, paginate: callable, db: Session):
+        # inicializar el objeto de paginación
+        page_params = PageParams(page=page, size=size)
+        
+        # retornar el resultado de la paginación
+        return paginate(page_params, db.query(TaskData), Task)
