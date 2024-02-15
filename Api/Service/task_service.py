@@ -5,8 +5,6 @@ from Api.Data.task_data import TaskData
 from Api.Models.task_model import Task
 from Core.Validations.custom_error import CustomError
 
-
-
 class TaskService:
         
     def create_task(task: Task, db: Session ):
@@ -27,15 +25,15 @@ class TaskService:
         return result
     
     def get_all_tasks(db: Session):
-        return db.query(TaskData).all()
+        return db.query(TaskData).order_by(TaskData.id).all()
     
     def get_tasks_by_status(status: str, db: Session):
-        return db.query(TaskData).filter(TaskData.status == status).all()
+        return db.query(TaskData).order_by(TaskData.id).filter(TaskData.status == status).all()
     
     def update_task( task: Task, db: Session):
       
-        _task = db.query(TaskData).get(id)
- 
+        _task = db.query(TaskData).get(task.id)
+
         if _task is None:
             raise CustomError(404, "Task not found")
         

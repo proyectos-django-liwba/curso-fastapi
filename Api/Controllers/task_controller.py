@@ -1,16 +1,16 @@
 from sqlalchemy.orm import Session
-from Core.Validations.custom_error import CustomError
-from Core.Enums.task_enum import StatusType
 from Api.Service.task_service import TaskService
 from Api.Models.task_model import Task
 from Api.Response.response_base import ResponseBase
+from Core.Validations.custom_error import CustomError
+from Core.Validations.task_validation import TaskValidation
 
 class TaskController: 
     
     def create_task(task: Task, db: Session):
         try:
             # validación de datos
-            task.validate_create()
+            TaskValidation.validate_create(task)
             
             # Crear la tarea
             result = TaskService.create_task(task, db)
@@ -24,6 +24,9 @@ class TaskController:
         
     def get_task(task_id: int, db: Session):
         try:
+            # validar id
+            TaskValidation.validate_id(task_id)
+            
             result = TaskService.getTask(task_id, db)
             return ResponseBase(200, "Task obtained successfully", result).to_dict()
         except CustomError as e:
@@ -52,7 +55,7 @@ class TaskController:
     def update_task( task: Task, db: Session):
         try:
             # validación de datos
-            task.validate_update()
+            TaskValidation.validate_update(task)
             
             # Actualizar la tarea   
             result = TaskService.update_task(task, db)
@@ -66,6 +69,9 @@ class TaskController:
     
     def delete_task(task_id: int, db: Session):
         try:
+            # validar id
+            TaskValidation.validate_id(task_id)
+            
             TaskService.delete_task(task_id, db)
             return ResponseBase(200, "Task deleted successfully").to_dict()
         except CustomError as e:
