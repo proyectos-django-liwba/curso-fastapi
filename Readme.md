@@ -143,6 +143,7 @@ app/
     - [Fastapi Mail](#35-envio-de-correos---fastapi-mail)
     - [Passlib](#36-hasheo-de-contraseña-passlib)
     - [Alembic](#37-migraciones-alembic)
+    - [Email Validator](#38-validación-de-correo---email-validator)
 * [Base de datos](#4-base-de-datos)
     - [Conector Postgre](#411-conector-bd-postgre-sql)
     - [Conector Mysql](#412-conector-bd-mysql)
@@ -157,9 +158,9 @@ app/
 * [Anotaciones](#11-anotaciones)
 * [Microservices](#12-microservicios)
 * [Socket](#13-socket)
-* [Mail](#14-mail)
+* [Estáticos](#14-estaticos)
 * [Template](#15-template)
-* [Estáticos](#16-estaticos)
+* [Mail](#16-mail)
 * [Manejo de archivos](#17-manejo-de-archivos)
 * [Manejo de errores](#18-manejo-de-errores)
 * [Encriptado de datos](#19-encriptado-de-datos)
@@ -318,6 +319,12 @@ pip install fastapi-mail
     ```* Instalar dependencia:```pip install alembic ```
 * [Documentación alembic](https://alembic.sqlalchemy.org/en/latest/)
 
+#### 3.8 Validación de correo - Email validator
+* Instalar dependencia 
+```
+pip install email-validator
+```
+* [Documentación Email Validator](https://pypi.org/project/email-validator/)
 
 ## 4. Base de datos
 * Cada base de datos requiere un conector que se debe instalar de forma independiente. Luego configurar la conexión con esa base de datos.
@@ -337,8 +344,6 @@ pip install mysql-conector-python
  ```
  * [Documentación Conector](https://dev.mysql.com/doc/connector-python/en/)
  * [Documentación Guía](https://dev.mysql.com/doc/connector-python/en/connector-python-tutorial-cursorbuffered.html)
- 
-
 
 ## 5. Migraciones 
 
@@ -370,11 +375,11 @@ pip install mysql-conector-python
 * Aplicar la ultima migración: ```alembic upgrade head```
 
 ## 6. Auth JWT
-
+---Elmer
 ## 7. Permisos
 
 ## 8. Bitacora
-
+--Elmer
 ## 9. Dependencias
 
 ## 10. Middleware
@@ -384,12 +389,123 @@ pip install mysql-conector-python
 ## 12. Microservicios
 
 ## 13. Socket
+--Elmer
 
-## 14. Mail
+## 14. Estaticos
+* Requiere el uso de las dependencias 
+```
+import os
+from fastapi.staticfiles import StaticFiles
+```
+* Configurar las rutas de los archivos
+```
+resources_path = os.path.join(os.path.dirname(__file__), "Resources/")
+app.mount("/Resources", StaticFiles(directory=resources_path), name="Resources")
+```
 
 ## 15. Template
+* Requiere definir como ruta estática la carpeta donde se encuentran
+* El uso de variables en los archivos .html
+```
+{{user_name}} 
+```
+* Hacer uso de otros achivos como .css, .js, etc...
+```
+ href={{ url_for('Resources', path='/favicon/favicon-16x16.png') }}
+```
+* Emplear .html como vista, también requiere la dependencia [Jinja2](#31-manejo-de-archivos-jinja2)
+```
+# dependencia
+from fastapi.templating import Jinja2Templates
 
-## 16. Estaticos
+# Configurar archivos de vista
+views_path = os.path.join(os.path.dirname(__file__), "../../Views/")
+views_path = Jinja2Templates(directory=views_path)
+
+# Definir rutas
+@home_router.get("/", tags={tag})
+def get_home(request: Request):
+  return views_path.TemplateResponse("index.html", {"request": request, "title": "Introducción FastAPI"})
+```
+
+## 16. Mail
+* Requiere la instalación de: [Fastapi Mail](#35-envio-de-correos---fastapi-mail), [dotenv](#33-variables-de-entorno---python-dotenv), [Jinja2](#31-manejo-de-archivos-jinja2), [Email  Validator](#38-validación-de-correo---email-validator)
+* Crear un archivo para crear una clase con la configuración y lógica
+* Principales importaciones 
+```
+import os
+from fastapi_mail import FastMail, MessageSchema, ConnectionConfig, MessageType
+from email_validator import validate_email, EmailNotValidError
+from dotenv import load_dotenv
+from jinja2 import Environment, FileSystemLoader
+```
+* Configuraciones
+```
+    conf = ConnectionConfig(
+        MAIL_USERNAME=os.getenv("MAIL_USERNAME",""),
+        MAIL_PASSWORD=os.getenv("MAIL_PASSWORD",""),
+        MAIL_FROM=os.getenv("MAIL_FROM",""),
+        MAIL_PORT=587,
+        MAIL_SERVER="smtp.gmail.com",
+        MAIL_STARTTLS=True,
+        MAIL_SSL_TLS=False,
+        VALIDATE_CERTS = True
+    )
+```
+* Agregar template a cuerpo de correo
+```
+    # Renderizar el template HTML
+    env = Environment(loader=FileSystemLoader("Resources/Template"))
+    template = env.get_template("email.html")
+```
+* Agregar variables a template
+```
+    html_content = template.render(
+        subject=subject, user_name=user_name, link=link
+    )
+```
+* Adjuntar archivos al correo, mediante el header creamos un CID para agregar directamente la imagen al template, si solo se busca adjuntar archivos los headers no son necesarios
+```
+    # Obtener la ruta del archivo 
+    logo_path = os.path.join(os.path.dirname(__file__), "../../Resources/Images/logo.png")
+
+    # crear un objeto para adjuntar archivo
+    adjunto = {
+        "file": logo_path,
+        "filename": "logo.png",
+        "type": "image/png",
+        "headers": {
+            "Content-ID": "<logo_image>",
+        },
+    }
+
+    # agregar al objeto de MessageSchema, el atributo de  attachments=[adjunto]
+```
+
+* Definir el MessageSchema
+```
+    email_content = MessageSchema(
+        subject=subject,
+        recipients=[to],
+        body=html_content,
+        subtype=MessageType.html,
+        attachments=[adjunto],
+    )
+```
+* Enviar mail
+```
+    fm = FastMail(self.conf)
+    await fm.send_message(email_content)
+```
+* Validar excepciones del formato del correo
+```
+    # validar el correo antes de agregarlo a MessageSchema
+    valid_email = validate_email(to)
+
+    # capturar excepción dentro de un try
+        except EmailNotValidError as e:
+            raise Exception(f"Error al enviar el correo: {str(e)}")
+```
 
 ## 17. Manejo de archivos
 
@@ -484,7 +600,7 @@ class CustomError(Exception):
 ```
 
 ## 19. Encriptado de datos
-
+--- Elmer
 
 ## 20. Flujo de trabajo de módulos 
 * Crear archivo de ruta en Api/Routes/file_router.py
@@ -500,29 +616,55 @@ class CustomError(Exception):
     - 5 Dentro de cada método hacer llamado método del service Api/Service/file_service.py
 * Crear archivo service en Api/Service/file_service.py
 
-## 21. Descripción función de package Api
+## 21. Descripción función de packages
+#### 21.1 Package Api
 * Controllers: se encarga de unir toda la lógica necesaria para cada endpoint
 * Data: conexión a base de datos y archivos models schema
 * Models: contiene los models para validación de request y examples
 * Response: contiene la estructura de la respuesta base de las peticiones
 * Routes: contiene los endpoint de cada modulo y la configuraciones que requiera
 
-## 21. Descripción función de package Resources
+#### 21.2 Package Resources
 Tiene como propósito almacenar en carpetas especificas los recurso internos de la API
 
-## 22. Descripción función de package Uploads
+#### 21.3 Package Uploads
 Tiene como función almacenar todos los archivos de acceso publico 
 
-## 23. Descripción función de package Views
+#### 21.4 Package Views
 Contiene las vistas que deseamos implementar en la API
 
-## 23. Descripción función de package Core
+#### 21.5 Package Core
 Tiene función principal es contener toda la lógica que la API requiera:
 * Validations: validaciones y errores
 * Security: permisos, autenticación y encriptación
 * Enums: crear tipados personalizados
 * Emails: envió de correos
 * Files: manejo de archivos
+
+
+
+## 22. Relaciones en ORM - Alchemist
+
+
+## 23. Variables de entorno
+Se requiere el uso de la dependencia [Python Dotenv](#33-variables-de-entorno---python-dotenv)
+
+* Crear archivo .env
+* Definir en el archivo.env mis variables de entorno
+* Declaración de las variables de entorno
+```
+VARIABLE_NOMBRE=valor_variable
+```
+* Código ejemplo
+```
+# dependencia
+from dotenv import load_dotenv
+
+# iniciar dotenv
+load_dotenv()
+
+variable = os.getenv("VARIABLE_ENTORNO", "valor por defecto - opcional")
+```
 
 ### Lista de errores HTTP
 | Código | Estado | Descripción |
