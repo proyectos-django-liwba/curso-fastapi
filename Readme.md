@@ -1,9 +1,9 @@
 # Guía de FastAPI 2024 
-[![FastAPI](./assets/images/fastapi.png)](https://fastapi.tiangolo.com/)
+[![FastAPI](./Resources/Images/fastapi.png)](https://fastapi.tiangolo.com/)
 
 
 ## Desarrolladores 
-![coders](./assets/images/coders.png)
+![coders](./Resources/Images/coders.png)
 * 🧑‍💻Wilfredo Barquero Herrera
      [![Gmail](https://img.shields.io/badge/Gmail-D14836?style=for-the-badge&logo=gmail&logoColor=white)](liwbarqueroh@gmail.com )
      [![GitHub](https://img.shields.io/badge/github-%23121011.svg?style=for-the-badge&logo=github&logoColor=white)](https://github.com/liwBh)
@@ -130,10 +130,39 @@ app/
 * [Arquitectura de proyecto](#arquitectura-de-proyecto)
     - [1.Descripción de las capas](#1.-descripción-de-las-capas:)
     - [2. Estructura de carpetas](#2.-estructura-de-carpetas:)
-
 * [FastAPI](#1-fastapi)
-
-
+* [Iniciar proyecto](#2-iniciar-proyecto)
+    - [Iniciar proyecto](#21-crear-proyecto)
+    - [Iniciar proyecto](#22-crear-servidor)
+    - [Iniciar proyecto](#23-comandos-de-inicio-servidor)
+* [Instalación de dependencias](#3-instalación-de-dependencias)
+    - [Jinga2](#31-manejo-de-archivos-jinja2)
+    - [SqlAlchemy](#32-orm---sql-sqlalchemy)
+    - [Pydantic](#33-validación-pydantic)
+    - [Python Multipart](#34-manejo-de-archivos---python-multipart)
+    - [Fastapi Mail](#35-envio-de-correos---fastapi-mail)
+    - [Passlib](#36-hasheo-de-contraseña-passlib)
+    - [Alembic](#37-migraciones-alembic)
+* [Base de datos](#4-base-de-datos)
+    - [Conector Postgre](#411-conector-bd-postgre-sql)
+    - [Conector Mysql](#412-conector-bd-mysql)
+* [Migraciones](#5-migraciones)
+    - [Iniciar proyecto](#51-configuración-alembic)
+    - [Iniciar proyecto](#52-comandos-alembic)
+* [Auth JWT](#6-auth-jwt)
+* [Permisos](#7-permisos)
+* [Bitácora](#8-bitacora)
+* [Dependencias](#9-dependencias)
+* [Middleware](#10-middleware)
+* [Anotaciones](#11-anotaciones)
+* [Microservices](#12-microservicios)
+* [Socket](#13-socket)
+* [Mail](#14-mail)
+* [Template](#15-template)
+* [Estáticos](#16-estaticos)
+* [Manejo de archivos](#17-manejo-de-archivos)
+* [Manejo de errores](#18-manejo-de-errores)
+* [Encriptado de datos](#19-encriptado-de-datos)
 * [Lista de errores HTTP](#lista-de-errores-http)
 * [Problemas con el Interprete](#problemas-con-el-interprete)
 
@@ -285,13 +314,10 @@ pip install fastapi-mail
 * [Docuementación Guía](https://fastapi.tiangolo.com/tutorial/security/oauth2-jwt/#install-passlib)
 
 #### 3.7  Migraciones Alembic
-
-## 6.0 - FastAPI Mail
-
-#### Configuración
 * Configurar las variables de entorno en un archivo .env
     ```* Instalar dependencia:```pip install alembic ```
 * [Documentación alembic](https://alembic.sqlalchemy.org/en/latest/)
+
 
 ## 4. Base de datos
 * Cada base de datos requiere un conector que se debe instalar de forma independiente. Luego configurar la conexión con esa base de datos.
@@ -350,6 +376,7 @@ pip install mysql-conector-python
 ## 8. Bitacora
 
 ## 9. Dependencias
+
 ## 10. Middleware
 
 ## 11. Anotaciones
@@ -362,13 +389,11 @@ pip install mysql-conector-python
 
 ## 15. Template
 
-## 16. Errores
+## 16. Estaticos
 
-## 17. Estaticos
+## 17. Manejo de archivos
 
-## 18. Manejo de archivos
-
-## 19. Manejo de Errores
+## 18. Manejo de Errores
 * [Documentación errores](https://fastapi.tiangolo.com/tutorial/handling-errors/#requestvalidationerror-vs-validationerror)
 
 * Manejo de errores personalizados, configurar en el main.py
@@ -458,6 +483,9 @@ class CustomError(Exception):
 
 ```
 
+## 19. Encriptado de datos
+
+
 ### Lista de errores HTTP
 | Código | Estado | Descripción |
 |---|---|---|
@@ -472,6 +500,7 @@ class CustomError(Exception):
 | 401 | Unauthorized | El cliente no está autorizado para acceder al recurso solicitado. |
 | 403 | Forbidden | El cliente tiene prohibido acceder al recurso solicitado. |
 | 404 | Not Found | El recurso solicitado no se encuentra en el servidor. |
+| 422 | Unprocessable Entity | La solicitud no se puede procesar debido a errores en la entidad. |
 |5XX| 🟥 |Error del servidor|
 | 500 | Internal Server Error | Se ha producido un error inesperado en el servidor. |
 | 503 | Service Unavailable | El servidor no está disponible temporalmente. |
@@ -480,6 +509,6 @@ class CustomError(Exception):
 ### Problemas con el Interprete
 Si no reconoce el interprete debes elegirlo de forma manual.
 
-![alt text](./assets/images/bug-interprete-1.png)
+![alt text](./Resources/Images/bug-interprete-1.png)
 
-![alt text](./assets/images/bug-interprete-2.png)
+![alt text](./Resources/Images/bug-interprete-2.png)
