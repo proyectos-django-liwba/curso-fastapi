@@ -486,6 +486,44 @@ class CustomError(Exception):
 ## 19. Encriptado de datos
 
 
+## 20. Flujo de trabajo de módulos 
+* Crear archivo de ruta en Api/Routes/file_router.py
+* Agregar los endpoints en el archivo de rutas
+* Agregar el router en main.py
+* Crear archivo model en Api/Models/file_model.py
+* Agregar en archivo de ejemplos los ejemplos del model,  Api/Models/examples.py  
+* Crear archivo controller en Api/Controllers/file_controller.py
+    - 1 Definir los métodos para cada endpoints
+    - 2 Dentro de cada método hacer implementar estructura de control de excepciones 
+    - 3 Dentro de cada método hacer validaciones Core/Validations/file_validation.py
+    - 4 Dentro de cada método hacer llamado métodos de procesos lógicos
+    - 5 Dentro de cada método hacer llamado método del service Api/Service/file_service.py
+* Crear archivo service en Api/Service/file_service.py
+
+## 21. Descripción función de package Api
+* Controllers: se encarga de unir toda la lógica necesaria para cada endpoint
+* Data: conexión a base de datos y archivos models schema
+* Models: contiene los models para validación de request y examples
+* Response: contiene la estructura de la respuesta base de las peticiones
+* Routes: contiene los endpoint de cada modulo y la configuraciones que requiera
+
+## 21. Descripción función de package Resources
+Tiene como propósito almacenar en carpetas especificas los recurso internos de la API
+
+## 22. Descripción función de package Uploads
+Tiene como función almacenar todos los archivos de acceso publico 
+
+## 23. Descripción función de package Views
+Contiene las vistas que deseamos implementar en la API
+
+## 23. Descripción función de package Core
+Tiene función principal es contener toda la lógica que la API requiera:
+* Validations: validaciones y errores
+* Security: permisos, autenticación y encriptación
+* Enums: crear tipados personalizados
+* Emails: envió de correos
+* Files: manejo de archivos
+
 ### Lista de errores HTTP
 | Código | Estado | Descripción |
 |---|---|---|

@@ -68,9 +68,9 @@ async def validation_exception_handler(request, exc):
     
     return JSONResponse(
         status_code=422,
-        content={"error": {
+        content={"datails": {
             "code": 422, 
-            "message": f"Error de validación: {msg}"
+            "message": f"La solicitud no pudo ser procesada",
             }, 
             "errors": errors,
         }

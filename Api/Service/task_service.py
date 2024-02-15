@@ -1,12 +1,9 @@
 # Dependencias
-from fastapi import Depends
 from sqlalchemy.orm import Session
 # Importaciones
 from Api.Data.task_data import TaskData
 from Api.Models.task_model import Task
 from Core.Validations.custom_error import CustomError
-
-
 
 class TaskService:
         
@@ -20,21 +17,23 @@ class TaskService:
         return _task
     
     def getTask(id: int, db: Session):
-        result = db.query(TaskData).filter(TaskData.id == id).first()
+        result = db.query(TaskData).get(id)
        
         if result is None:
             raise CustomError(404, "Task not found")
         
         return result
     
-    
     def get_all_tasks(db: Session):
-        return db.query(TaskData).all()
+        return db.query(TaskData).order_by(TaskData.id).all()
     
-    def update_task(id: int, task: Task, db: Session):
+    def get_tasks_by_status(status: str, db: Session):
+        return db.query(TaskData).order_by(TaskData.id).filter(TaskData.status == status).all()
+    
+    def update_task( task: Task, db: Session):
       
-        _task = db.query(TaskData).filter(TaskData.id == id).first()
- 
+        _task = db.query(TaskData).get(task.id)
+
         if _task is None:
             raise CustomError(404, "Task not found")
         
@@ -42,14 +41,16 @@ class TaskService:
         _task.status = task.status
 
         db.commit()
-        return task
+        db.refresh(_task)
+        # retorna el objeto con todos los atributos
+        # puede ser necesario devolver solo algunos atributos
+        return _task
     
     def delete_task(id: int, db: Session):
-        _task = db.query(TaskData).filter(TaskData.id == id).first()
+        _task = db.query(TaskData).get(id)
  
         if _task is None:
             raise CustomError(404, "Task not found")
         
         db.delete(_task)
         db.commit()
-        return {"message": "Task deleted successfully"}
