@@ -29,6 +29,7 @@ class TaskService:
     
     
     def get_all_tasks(db: Session):
+        
         return db.query(TaskData).all()
     
     def update_task(id: int, task: Task, db: Session):
@@ -42,7 +43,8 @@ class TaskService:
         _task.status = task.status
 
         db.commit()
-        return task
+        db.refresh(_task)
+        return _task
     
     def delete_task(id: int, db: Session):
         _task = db.query(TaskData).filter(TaskData.id == id).first()
@@ -52,4 +54,3 @@ class TaskService:
         
         db.delete(_task)
         db.commit()
-        return {"message": "Task deleted successfully"}

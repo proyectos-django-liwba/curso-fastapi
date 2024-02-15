@@ -37,11 +37,11 @@ class Task(BaseModel):
         ValidatorModels.is_number(self.id, "id")
         # validaciones de title
         ValidatorModels.not_empty(self.title, "title")
-        ValidatorModels.min_length(self.title, "title", 5)
+        ValidatorModels.min_length(self.title, "title", 4)
         ValidatorModels.max_length(self.title, "title", 100)
         # validaciones de status
         ValidatorModels.not_empty(self.status, "status")
-        ValidatorModels.min_length(self.status, "status", 5)
+        ValidatorModels.min_length(self.status, "status", 4)
         ValidatorModels.max_length(self.status, "status", 20)
         
     def validate_update(self):
@@ -50,11 +50,11 @@ class Task(BaseModel):
         ValidatorModels.is_positive_integer(self.id, "id")
         # validaciones de title
         ValidatorModels.not_empty(self.title, "title")
-        ValidatorModels.min_length(self.title, "title", 5)
+        ValidatorModels.min_length(self.title, "title", 4)
         ValidatorModels.max_length(self.title, "title", 100)
         # validaciones de status
         ValidatorModels.not_empty(self.status, "status")
-        ValidatorModels.min_length(self.status, "status", 5)
+        ValidatorModels.min_length(self.status, "status", 4)
         ValidatorModels.max_length(self.status, "status", 20)
         
     def __str__(self):
