@@ -375,7 +375,42 @@ pip install mysql-conector-python
 * Aplicar la ultima migración: ```alembic upgrade head```
 
 ## 6. Auth JWT
----Elmer
+* Instalar dependencia: 
+```
+pip install "python-jose[cryptography]"
+ ```
+* [Documentación Guía](https://fastapi.tiangolo.com/tutorial/security/oauth2-jwt/)
+
+* Configurar variables de entorno 
+ ```
+SECRET_KEY = "SECRET_KEY"
+ALGORITHM = "HS256"
+DEFAULT_EXPIRE_MINUTES = 30
+```
+* Guia de uso
+    - 1: Importación
+    ```
+    from datetime import datetime, timedelta, timezone
+    from jose import JWTError, jwt
+    import os
+    ```
+    - 2: Crear constructor
+    ```
+    def __init__(self):
+        self.SECRET_KEY = os.getenv("SECRET_KEY")
+        self.ALGORITHM = os.getenv("ALGORITHM")
+        self.DEFAULT_EXPIRE_MINUTES = os.getenv("DEFAULT_EXPIRE_MINUTES")
+    ```
+    - 3: Crear el metodo para generar tokens
+    ```
+        def create_token(self, data: dict, token_type: str, expires_minutes: int | None = None):
+        to_encode = data.copy()
+        expire_minutes = expires_minutes or self.DEFAULT_EXPIRE_MINUTES
+        expire = datetime.now(timezone.utc) + timedelta(minutes=expire_minutes)
+        to_encode.update({"exp": expire, "type": token_type})
+        encoded_jwt = jwt.encode(to_encode, self.SECRET_KEY, algorithm=self.ALGORITHM)
+        return encoded_jwt
+    ```
 ## 7. Permisos
 
 ## 8. Bitacora
