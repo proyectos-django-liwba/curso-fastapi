@@ -1,5 +1,6 @@
 from sqlalchemy.orm import Session
 from Core.Validations.custom_error import CustomError
+from Core.Enums.task_enum import StatusType
 from Api.Service.task_service import TaskService
 from Api.Models.task_model import Task
 from Api.Response.response_base import ResponseBase
@@ -39,13 +40,22 @@ class TaskController:
         except Exception as e:
             raise CustomError(500, f"Error al listar las tareas: {str(e)}")
     
-    def update_task(task_id: int, task: Task, db: Session):
+    def get_tasks_by_status(status:str, db: Session):
+        try:
+            result = TaskService.get_tasks_by_status(status, db)
+            return ResponseBase(200, "Tasks obtained successfully", result).to_dict()
+        except CustomError as e:
+            raise e
+        except Exception as e:
+            raise CustomError(500, f"Error al listar las tareas: {str(e)}")
+    
+    def update_task( task: Task, db: Session):
         try:
             # validación de datos
             task.validate_update()
             
             # Actualizar la tarea   
-            result = TaskService.update_task(task_id, task, db)
+            result = TaskService.update_task(task, db)
             
             # Retornar la respuesta
             return ResponseBase(200, "Task updated successfully", result).to_dict()
