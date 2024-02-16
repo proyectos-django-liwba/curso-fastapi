@@ -326,6 +326,13 @@ pip install email-validator
 ```
 * [Documentación Email Validator](https://pypi.org/project/email-validator/)
 
+#### 3.9 Autentificación JWT
+* Instalar dependencia 
+```
+pip install "python-jose[cryptography]"
+```
+* [Documentación](https://fastapi.tiangolo.com/tutorial/security/oauth2-jwt/)
+
 ## 4. Base de datos
 * Cada base de datos requiere un conector que se debe instalar de forma independiente. Luego configurar la conexión con esa base de datos.
 
@@ -375,11 +382,6 @@ pip install mysql-conector-python
 * Aplicar la ultima migración: ```alembic upgrade head```
 
 ## 6. Auth JWT
-* Instalar dependencia: 
-```
-pip install "python-jose[cryptography]"
- ```
-* [Documentación Guía](https://fastapi.tiangolo.com/tutorial/security/oauth2-jwt/)
 
 * Configurar variables de entorno 
  ```
@@ -640,7 +642,20 @@ class CustomError(Exception):
 ```
 
 ## 19. Encriptado de datos
---- Elmer
+
+* Guia de uso
+    - 1: Importación
+    `
+    from passlib.context import CryptContext
+    `
+    - 2: Crear el contexto de encriptación
+    `pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")`
+    - 3: Crear el metodo para encryptar contraseñas 
+    ```
+        @staticmethod
+    def hash_password(password: str) -> str:
+        return SecurityEncryption.pwd_context.hash(password)
+    ```
 
 ## 20. Flujo de trabajo de módulos 
 * Crear archivo de ruta en Api/Routes/file_router.py
