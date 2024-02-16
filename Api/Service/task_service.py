@@ -11,6 +11,7 @@ class TaskService:
     def create_task(task: Task, db: Session ):
 
         _task = TaskData(title=task.title, status=task.status, category_task_id=task.category_task_id, user_id=task.user_id)
+        
         try: 
             db.add(_task)
             db.commit()

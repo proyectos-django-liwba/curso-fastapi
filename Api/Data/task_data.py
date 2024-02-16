@@ -3,7 +3,7 @@ from sqlalchemy import Column,ForeignKey, Integer, String, TIMESTAMP, text
 from sqlalchemy.orm import relationship
 # Importaciones
 from Api.Data.conection import ConexionBD
-from Api.Models.task_model import Task
+
 
 class TaskData(ConexionBD.Base):
     __tablename__ = "tasks"
@@ -14,6 +14,8 @@ class TaskData(ConexionBD.Base):
     # relacion one to many
     category_task_id = Column(Integer, ForeignKey("category_tasks.id"), nullable=False)
     category_task= relationship("CategoryTasksData", lazy="joined")
+    # relacion one to many inversa
+    #category_task= relationship("CategoryTasksData", lazy="joined", back_populates="tasks")
     # relacion one to many
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
     #user= relationship("UserData", lazy="joined")
@@ -24,10 +26,3 @@ class TaskData(ConexionBD.Base):
 
     def __str__(self):
         return f"Task(id={self.id}, title={self.title}, status={self.status})"
-
-
-    def create_task(task: Task):
-        return TaskData(title=task.title, status=task.status)
-    
-    def update_task(task: Task):
-        return TaskData(id=task.id, title=task.title, status=task.status)

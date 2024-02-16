@@ -1,7 +1,6 @@
 from Core.Validations.validator_models import ValidatorModels
 from Api.Models.upload_model import Upload
 
-
 class UploadValidation:
 
     def validate_create(upload: Upload):

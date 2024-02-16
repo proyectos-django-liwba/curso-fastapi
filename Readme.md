@@ -711,18 +711,27 @@ from sqlalchemy import ForeignKey
 ```
 user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
 ```
-#### 22.2 One to Many Inverse
-Relación inversa de uno a muchos, usando join
-* Requiere importar
-```
-```
-* Implementación, crear un atributo con el nombre en singular de la tabla con la que tiene una relación, agrega como parámetro el nombre de la clase data o model schema
+* Aplicar un join para obtener los datos de la relación, crear un atributo con el nombre en singular de la tabla con la que tiene una relación, agrega como parámetro el nombre de la clase data o model schema
 ```
 category_task= relationship("CategoryTask", lazy="joined")
 ```
+#### 22.2 One to Many Inverse
+La relación inversa permite recuperar datos desde la clase que no tiene la foreignkey como un arreglo de todos los registros asociados.
+
+* Agregar en la relación de muchos, la propiedad: back_populates y ligarla a una variable para aplicar la relación inversa y recuperar los registros asociados
+```
+ # TaskData
+ category_task= relationship("CategoryTasksData", lazy="joined", back_populates="tasks")
+```
+
+* Agregar en la relación de uno, una variable tasks, para insertar los registros asociados
+```
+# CategoryTasksData
+ tasks = relationship("TaskData",lazy="joined", back_populates="category_task")
+```
 #### 22.2 Many to Many
-#### 22.3 Invertida
-#### 22.4 
+#### 22.3 Many to Many Invertida
+
 
 ## 23. Variables de entorno
 Se requiere el uso de la dependencia [Python Dotenv](#33-variables-de-entorno---python-dotenv)

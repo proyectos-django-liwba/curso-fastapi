@@ -1,5 +1,4 @@
 # Dependencias
-import re
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError, TimeoutError
 # Importaciones
