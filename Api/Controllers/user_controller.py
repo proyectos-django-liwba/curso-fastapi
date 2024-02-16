@@ -91,9 +91,9 @@ class UserController:
             # validar datos
             UserValidation.validate_id(id)
             # eliminar user
-            result = UserService.delete_user(id, db)
+            UserService.delete_user(id, db)
             # retornar respuesta
-            return ResponseBase(200, "User deleted", result).to_dict()
+            return ResponseBase(200, "User deleted").to_dict()
         
         except CustomError as e:
             raise e

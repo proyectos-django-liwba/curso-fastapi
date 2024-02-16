@@ -73,13 +73,5 @@ class UserService:
             if _user is None:
                 raise CustomError(404, "User not found")
             
-            try:
-                db.delete(_user)
-                db.commit()
-                return _user
-            except IntegrityError as e:
-                db.rollback()
-                raise CustomError(400,"Data base integrity error", e.orig.diag.message_detail)
-            except TimeoutError as e:
-                db.rollback()
-                raise CustomError(408,"Data base timeout error", e.orig.diag.message_detail)
+            db.delete(_user)
+            db.commit()
