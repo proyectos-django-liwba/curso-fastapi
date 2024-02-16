@@ -36,7 +36,7 @@ class EmailManager:
                 subject=subject, user_name=user_name, link=link
             )
 
-            # Obtener la ruta del script actual
+            # Obtener la ruta del archivo 
             logo_path = os.path.join(os.path.dirname(__file__), "../../Resources/Images/logo.png")
 
             # Validar que el archivo exista
