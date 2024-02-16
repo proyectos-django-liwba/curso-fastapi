@@ -1,5 +1,5 @@
-from Api.Models.task_model import Task
 from Core.Validations.validator_models import ValidatorModels
+from Api.Models.task_model import Task
 
 class TaskValidation:
     

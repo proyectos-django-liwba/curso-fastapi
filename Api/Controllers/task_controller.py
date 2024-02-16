@@ -17,7 +17,7 @@ class TaskController:
             result = TaskService.create_task(task, db)
             
             # Retornar la respuesta
-            return ResponseBase(200, "Task created successfully", result).to_dict()
+            return ResponseBase(201, "Task created successfully", result).to_dict()
         except CustomError as e:
             raise e
         except Exception as e:

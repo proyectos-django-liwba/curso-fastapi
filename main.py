@@ -59,6 +59,8 @@ async def http_exception_handler(request, exc):
 async def validation_exception_handler(request, exc):
     errors = []
     
+    print(exc.errors())
+    
     for error in exc.errors():
          errors.append({
             "msg": error["msg"],
