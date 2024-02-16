@@ -3,12 +3,16 @@
 task_example_create = {
     "title": "Tarea 1",
     "status": "Pending",
+    "category_task_id": 1,
+    "user_id": 1,
 }
 
 task_example_update = {
     "id": 1,
     "title": "Tarea #",
     "status": "Pending",
+    "category_task_id": 1,
+    "user_id": 1,
 }
 
 upload_example_create = {

@@ -1,5 +1,6 @@
 # Dependencias
 from sqlalchemy.orm import Session
+from sqlalchemy.exc import IntegrityError, TimeoutError
 # Importaciones
 from Core.Validations.custom_error import CustomError
 from Api.Data.task_data import TaskData
@@ -9,12 +10,18 @@ class TaskService:
         
     def create_task(task: Task, db: Session ):
 
-        _task = TaskData.create_task(task)
-        
-        db.add(_task)
-        db.commit()
-        db.refresh(_task)
-        return _task
+        _task = TaskData(title=task.title, status=task.status, category_task_id=task.category_task_id, user_id=task.user_id)
+        try: 
+            db.add(_task)
+            db.commit()
+            db.refresh(_task)
+            return _task
+        except IntegrityError as e:
+            db.rollback()
+            raise CustomError(400,"Data base integrity error", e.orig.diag.message_detail)
+        except TimeoutError as e:
+            db.rollback()
+            raise CustomError(408,"Data base timeout error", e.orig.diag.message_detail)
     
     def getTask(id: int, db: Session):
         result = db.query(TaskData).get(id)
@@ -36,15 +43,22 @@ class TaskService:
 
         if _task is None:
             raise CustomError(404, "Task not found")
-        
-        _task.title = task.title
-        _task.status = task.status
+        try: 
+            _task.title = task.title
+            _task.status = task.status
+            _task.category_task_id = task.category_task_id
+            _task.user_id = task.user_id
 
-        db.commit()
-        db.refresh(_task)
-        # retorna el objeto con todos los atributos
-        # puede ser necesario devolver solo algunos atributos
-        return _task
+            db.commit()
+            db.refresh(_task)
+            return _task
+        except IntegrityError as e:
+            db.rollback()
+            raise CustomError(400,"Data base integrity error", e.orig.diag.message_detail)
+        except TimeoutError as e:
+            db.rollback()
+            raise CustomError(408,"Data base timeout error", e.orig.diag.message_detail)
+    
     
     def delete_task(id: int, db: Session):
         _task = db.query(TaskData).get(id)

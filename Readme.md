@@ -702,6 +702,24 @@ Tiene función principal es contener toda la lógica que la API requiera:
 
 ## 22. Relaciones en ORM - Alchemist
 #### 22.1 One to Many
+Relación de uno a muchos.
+* Requiere importar 
+```
+from sqlalchemy import ForeignKey
+```
+* Definir una columna para el id, indicando el nombre de la tabla y el atributo id
+```
+user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+```
+#### 22.2 One to Many Inverse
+Relación inversa de uno a muchos, usando join
+* Requiere importar
+```
+```
+* Implementación, crear un atributo con el nombre en singular de la tabla con la que tiene una relación, agrega como parámetro el nombre de la clase data o model schema
+```
+category_task= relationship("CategoryTask", lazy="joined")
+```
 #### 22.2 Many to Many
 #### 22.3 Invertida
 #### 22.4 
@@ -740,6 +758,7 @@ variable = os.getenv("VARIABLE_ENTORNO", "valor por defecto - opcional")
 | 401 | Unauthorized | El cliente no está autorizado para acceder al recurso solicitado. |
 | 403 | Forbidden | El cliente tiene prohibido acceder al recurso solicitado. |
 | 404 | Not Found | El recurso solicitado no se encuentra en el servidor. |
+| 408 | Request Timeout | El tiempo de espera se agotado |
 | 422 | Unprocessable Entity | La solicitud no se puede procesar debido a errores en la entidad. |
 |5XX| 🟥 |Error del servidor|
 | 500 | Internal Server Error | Se ha producido un error inesperado en el servidor. |

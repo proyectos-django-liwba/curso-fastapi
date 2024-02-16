@@ -17,12 +17,12 @@ class UploadValidation:
         ValidatorModels.not_null(upload.file, "file")
         ValidatorModels.not_empty(upload.file, "file")
         
-    def validate_id(id):
+    def validate_id(id : int):
         # validaciones de id
         ValidatorModels.not_null(id, "id")
         ValidatorModels.is_positive_integer(id, "id")
           
-    def validate_file(size, content_type):
+    def validate_file(size: int, content_type: str):
         valid_formats = ["image/jpeg", "image/png", "image/jpg"]
         max_size = 1 * 1024 * 1024
         # validar el formato del archivo
@@ -30,7 +30,7 @@ class UploadValidation:
         # validar el tamaño del archivo
         ValidatorModels.max_size(size, "file", max_size)
         
-    def validate_user_id(user_id):
+    def validate_user_id(user_id: int):
         # validaciones de user_id
         ValidatorModels.not_null(user_id, "user_id")
         ValidatorModels.is_positive_integer(user_id, "user_id")

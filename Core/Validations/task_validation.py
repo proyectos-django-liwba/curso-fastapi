@@ -12,8 +12,14 @@ class TaskValidation:
         ValidatorModels.not_empty(task.status, "status")
         ValidatorModels.min_length(task.status, "status", 4)
         ValidatorModels.max_length(task.status, "status", 20)
+        # validaciones de category_task_id
+        ValidatorModels.not_null(task.category_task_id, "category_task_id")
+        ValidatorModels.is_positive_integer(task.category_task_id, "category_task_id")
+        # validaciones de user_id
+        ValidatorModels.not_null(task.user_id, "user_id")
+        ValidatorModels.is_positive_integer(task.user_id, "user_id")
         
-    def validate_update(task):
+    def validate_update(task: Task):
         # validaciones de id
         ValidatorModels.not_null(task.id, "id")
         ValidatorModels.is_positive_integer(task.id, "id")
@@ -25,8 +31,14 @@ class TaskValidation:
         ValidatorModels.not_empty(task.status, "status")
         ValidatorModels.min_length(task.status, "status", 4)
         ValidatorModels.max_length(task.status, "status", 20)
+        # validaciones de category_task_id
+        ValidatorModels.not_null(task.category_task_id, "category_task_id")
+        ValidatorModels.is_positive_integer(task.category_task_id, "category_task_id")
+        # validaciones de user_id
+        ValidatorModels.not_null(task.user_id, "user_id")
+        ValidatorModels.is_positive_integer(task.user_id, "user_id")
      
-    def validate_id(id):
+    def validate_id(id: int):
         # validaciones de id
         ValidatorModels.not_null(id, "id")
         ValidatorModels.is_positive_integer(id, "id")

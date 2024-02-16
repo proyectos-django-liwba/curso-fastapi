@@ -26,7 +26,7 @@ class CategoryTasksValidation:
         ValidatorModels.min_length(category_task.description, "description", 4)
         ValidatorModels.max_length(category_task.description, "description", 300)
      
-    def validate_id(id):
+    def validate_id(id: int):
         # validaciones de id
         ValidatorModels.not_null(id, "id")
         ValidatorModels.is_positive_integer(id, "id")
