@@ -20,3 +20,14 @@ upload_example_update = {
     "id": 1,
     "file": "base64_file",
 }
+
+category_tasks_example_create = {
+    "name": "Tarea",
+    "description": "Descripción de la tarea"
+}
+
+category_tasks_example_update = {
+    "id": 1,
+    "name": "Tarea",
+    "description": "Descripción de la tarea"
+}
