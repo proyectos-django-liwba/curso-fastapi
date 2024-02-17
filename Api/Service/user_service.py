@@ -1,5 +1,5 @@
 # Dependencias
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, load_only
 from sqlalchemy.exc import IntegrityError, TimeoutError
 # Importaciones
 from Core.Validations.custom_error import CustomError
@@ -32,7 +32,14 @@ class UserService:
         
         
         def get_user(id: int, db: Session):
-            result = db.query(UserData).get(id)
+            #result = db.query(UserData).get(id)
+            result = db.query(UserData).options(load_only(
+                UserData.id,
+                UserData.first_name,
+                UserData.last_name,
+                UserData.email,
+                UserData.role
+                )).get(id)
         
             if result is None:
                 raise CustomError(404, "User not found")

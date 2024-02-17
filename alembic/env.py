@@ -11,6 +11,7 @@ from Api.Data.user_data import UserData
 from Api.Data.category_tasks_data import CategoryTasksData
 from Api.Data.task_data import TaskData
 from Api.Data.upload_data import UploadData
+from Api.Data.tag_data import TagData
 
 load_dotenv()
 
@@ -32,6 +33,7 @@ target_metadata = {
     UserData.metadata, 
     CategoryTasksData.metadata, 
     TaskData.metadata,
+    TagData.metadata,
     UploadData.metadata,
     }
 

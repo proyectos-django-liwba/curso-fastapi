@@ -62,3 +62,13 @@ user_example_change_password = {
     "confirm_password": "Usuario1234"
 }
 
+# tag
+
+tag_example_create = {
+    "name": "Tag 1"
+}
+
+tag_example_update = {
+    "id": 1,
+    "name": "Tag 1"
+}

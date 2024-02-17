@@ -1,11 +1,13 @@
+# dependencias
 from sqlalchemy.orm import Session
-from Api.Service.user_service import UserService
-from Api.Models.user_model import User
+from passlib.context import CryptContext
+# importaciones
 from Api.Response.response_base import ResponseBase
 from Core.Validations.custom_error import CustomError
+from Api.Service.user_service import UserService
+from Api.Models.user_model import User
 from Core.Validations.user_validation import UserValidation
 from Core.Emails.email import EmailManager
-from passlib.context import CryptContext
 
 class UserController:
     
@@ -55,8 +57,7 @@ class UserController:
             raise e
         except Exception as e:
             raise CustomError(500, f"Error getting user: {str(e)}")
-        
-        
+             
     def get_all_users(db: Session):
         try:
             # buscar users
@@ -84,8 +85,7 @@ class UserController:
             raise e
         except Exception as e:
             raise CustomError(500, f"Error updating user: {str(e)}")
-        
-        
+           
     def delete_user(id: int, db: Session):
         try:
             # validar datos

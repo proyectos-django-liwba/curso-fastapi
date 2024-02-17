@@ -42,5 +42,14 @@ class TaskValidation:
         # validaciones de id
         ValidatorModels.not_null(id, "id")
         ValidatorModels.is_positive_integer(id, "id")
+        
+        
+    def validate_tags(task_id: int, tag_id: int):
+        # validaciones de task_id
+        ValidatorModels.not_null(task_id, "task_id")
+        ValidatorModels.is_positive_integer(task_id, "task_id")
+        # validaciones de tag_id
+        ValidatorModels.not_null(tag_id, "tag_id")
+        ValidatorModels.is_positive_integer(tag_id, "tag_id")
      
 

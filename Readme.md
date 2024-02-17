@@ -129,15 +129,15 @@ app/
 
 ## Contenido de la guía 📖
 * [Desarrolladores](#desarrolladores)
-* [Arquitectura de proyecto](#arquitectura-de-proyecto)
+* [0. Arquitectura de proyecto](#arquitectura-de-proyecto)
     - [1.Descripción de las capas](#1.-descripción-de-las-capas:)
     - [2. Estructura de carpetas](#2.-estructura-de-carpetas:)
-* [FastAPI](#1-fastapi)
-* [Iniciar proyecto](#2-iniciar-proyecto)
-    - [Iniciar proyecto](#21-crear-proyecto)
-    - [Iniciar proyecto](#22-crear-servidor)
-    - [Iniciar proyecto](#23-comandos-de-inicio-servidor)
-* [Instalación de dependencias](#3-instalación-de-dependencias)
+* [1. FastAPI](#1-fastapi)
+* [2. Iniciar proyecto](#2-iniciar-proyecto)
+    - [Crear proyecto](#21-crear-proyecto)
+    - [Crear servidor](#22-crear-servidor)
+    - [Comandos servidor](#23-comandos-de-inicio-servidor)
+* [3. Instalación de dependencias](#3-instalación-de-dependencias)
     - [Jinga2](#31-manejo-de-archivos-jinja2)
     - [SqlAlchemy](#32-orm---sql-sqlalchemy)
     - [Pydantic](#33-validación-pydantic)
@@ -146,26 +146,31 @@ app/
     - [Passlib](#36-hasheo-de-contraseña-passlib)
     - [Alembic](#37-migraciones-alembic)
     - [Email Validator](#38-validación-de-correo---email-validator)
-* [Base de datos](#4-base-de-datos)
+* [4. Base de datos](#4-base-de-datos)
     - [Conector Postgre](#411-conector-bd-postgre-sql)
     - [Conector Mysql](#412-conector-bd-mysql)
-* [Migraciones](#5-migraciones)
+* [5. Migraciones](#5-migraciones)
     - [Iniciar proyecto](#51-configuración-alembic)
     - [Iniciar proyecto](#52-comandos-alembic)
-* [Auth JWT](#6-auth-jwt)
-* [Permisos](#7-permisos)
-* [Bitácora](#8-bitacora)
-* [Dependencias](#9-dependencias)
-* [Middleware](#10-middleware)
-* [Anotaciones](#11-anotaciones)
-* [Microservices](#12-microservicios)
-* [Socket](#13-socket)
-* [Estáticos](#14-estaticos)
-* [Template](#15-template)
-* [Mail](#16-mail)
-* [Manejo de archivos](#17-manejo-de-archivos)
-* [Manejo de errores](#18-manejo-de-errores)
-* [Encriptado de datos](#19-encriptado-de-datos)
+* [6. Auth JWT](#6-auth-jwt)
+* [7. Permisos](#7-permisos)
+* [8. Bitácora](#8-bitacora)
+* [9. Dependencias](#9-dependencias)
+* [10. Middleware](#10-middleware)
+* [11. Anotaciones](#11-anotaciones)
+* [12. Microservices](#12-microservicios)
+* [13. Socket](#13-socket)
+* [14. Estáticos](#14-estaticos)
+* [15. Template](#15-template)
+* [16. Mail](#16-mail)
+* [17. Manejo de archivos](#17-manejo-de-archivos)
+* [18. Manejo de errores](#18-manejo-de-errores)
+* [19. Encriptado de datos](#19-encriptado-de-datos)
+* [20. Flujo de trabajo de módulos](#20-flujo-de-trabajo-de-módulos)
+* [21. Descripción función de packages](#21-descripción-función-de-packages)
+* [22. Relaciones en ORM - Alchemist](#22-relaciones-en-orm---alchemist)
+* [23. Variables de entorno](#23-variables-de-entorno)
+* [Problemas con rutas](#problemas-con-rutas)
 * [Lista de errores HTTP](#lista-de-errores-http)
 * [Problemas con el Interprete](#problemas-con-el-interprete)
 
@@ -415,6 +420,7 @@ DEFAULT_EXPIRE_MINUTES = 30
         encoded_jwt = jwt.encode(to_encode, self.SECRET_KEY, algorithm=self.ALGORITHM)
         return encoded_jwt
     ```
+
 ## 7. Permisos
 
 ## 8. Bitacora
@@ -729,9 +735,89 @@ La relación inversa permite recuperar datos desde la clase que no tiene la fore
 # CategoryTasksData
  tasks = relationship("TaskData",lazy="joined", back_populates="category_task")
 ```
-#### 22.2 Many to Many
-#### 22.3 Many to Many Invertida
+#### 22.3 Many to Many
+En este tipo de relación se requieren dos tablas y una tabla intermedia para establecer las relaciones de muchos a muchos. 
+* Crear en data un archivo pivot.data para tablas intermedias
+```
+# dependencias
+from sqlalchemy import Table, Column, ForeignKey, Integer
+# importaciones
+from Api.Data.conection import ConexionBD
 
+# tabla intermedia o pivote
+tasks_tags = Table(
+    "tasks_tags",
+    ConexionBD.Base.metadata,
+    Column("task_id", Integer, ForeignKey("tasks.id"), primary_key=True),
+    Column("tag_id", Integer, ForeignKey("tags.id"), primary_key=True)
+)
+```
+* Aplicar relación many to many, para ello se agrega una linea en el file_data.py
+
+```
+class TaskData(ConexionBD.Base):
+    __tablename__ = "tasks"
+    ...
+    # relacion many to many, con tabla intermedia o pivote 
+    tasks = relationship("TaskData", secondary=tasks_tags, back_populates="tags")
+    
+```
+* Para ejecutar la relación y obtener listado de registros relacionados
+```
+# obtener la tarea
+_task = db.query(TaskData).get(task_id)
+
+# obtener etiquetas asociadas a la tarea
+_task.tags
+```
+* Para ejecutar la relación y agregar registros relacionados
+```
+# obtener la tarea
+_task = db.query(TaskData).get(task_id)
+
+# obtener la etiqueta
+_tag = db.query(TagData).get(tag_id)
+
+# asociar ambas en la tabla intermedia
+_task.tags.append(_tag)
+
+# guardar cambios
+db.commit()
+```
+* Para ejecutar la relación y remover registros relacionados
+```
+# obtener la tarea
+_task = db.query(TaskData).get(task_id)
+
+# obtener la etiqueta
+_tag = db.query(TagData).get(tag_id)
+
+# remover la etiqueta de la tabla intermedia que asocia ambas tablas
+ _task.tags.remove(_tag)
+
+# guardar cambios
+db.commit()
+
+```
+* Se recomienda validar la existencia de task, tag y que ambas estén relacionadas
+```
+# validar que existe la tarea
+_task = db.query(TaskData).get(task_id)
+if _task is None:
+    raise CustomError(404, "Task not found")
+
+# validar que existe la tag
+_tag = db.query(TagData).get(tag_id)
+if _tag is None:
+    raise CustomError(404, "Tag not found")
+
+# validar que hay una asociación task - tag
+if _tag not in _task.tags:
+    raise CustomError(404, "Tag not found in task")
+
+```
+#### 22.4 Relaciones Documentación
+* [Documentación Relationship](https://docs.sqlalchemy.org/en/20/orm/relationships.html)
 
 ## 23. Variables de entorno
 Se requiere el uso de la dependencia [Python Dotenv](#33-variables-de-entorno---python-dotenv)
@@ -773,6 +859,14 @@ variable = os.getenv("VARIABLE_ENTORNO", "valor por defecto - opcional")
 | 500 | Internal Server Error | Se ha producido un error inesperado en el servidor. |
 | 503 | Service Unavailable | El servidor no está disponible temporalmente. |
 
+### Problemas con rutas
+Si tienes errores a la hora de realizar peticiones y te piden parámetros que la url no tiene pero otras si lo tienen pueden intentar una de las siguientes posibles soluciones: 
+
+* Ordenar las rutas desde la que no tienen parámetro en la url, luego las que tienen parámetros en la url de forma descendente 
+![alt text](./Resources/Images/solucion-rutas-1.jpg)
+
+* Agrear un / al final de cada ruta que tiene parámetros en la url
+![alt text](./Resources/Images/solucion-rutas-2.jpg)
 
 ### Problemas con el Interprete
 Si no reconoce el interprete debes elegirlo de forma manual.

@@ -17,6 +17,7 @@ from Api.Routes.contact_router import contact_router
 from Api.Routes.upload_router import upload_router
 from Api.Routes.email_router import email_router
 from Api.Routes.category_tasks_router import category_tasks_router
+from Api.Routes.tag_router import tag_router
 # Base de datos
 from Api.Data.conection import ConexionBD
 
@@ -115,5 +116,6 @@ app.include_router(contact_router, prefix="/api/contacts", tags=["Contacts"])
 app.include_router(upload_router, prefix="/api/upload", tags=["Upload"])
 app.include_router(email_router, prefix="/api/email", tags=["Email"])
 app.include_router(category_tasks_router, prefix="/api/category-tasks", tags=["Category Tasks"])
+app.include_router(tag_router, prefix="/api/tags", tags=["Tags"])
 
 
