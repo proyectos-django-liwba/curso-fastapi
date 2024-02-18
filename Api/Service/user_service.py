@@ -85,11 +85,18 @@ class UserService:
         db.delete(_user)
         db.commit()
 
-    def login_user( email: str, password: str , db: Session):
+    def login_user(email: str, password: str, db: Session):
         user = db.query(UserData).filter(UserData.email == email).first()
         UserValidation.validate_user_exists(user)
         UserValidation.validate_user_verified(user.is_verified)
         UserValidation.validate_user_active(user.is_active)
         UserValidation.validate_credentials(password, user.password)
-        return user
 
+        user_data = {
+            "id": user.id,
+            "first_name": user.first_name,
+            "last_name": user.last_name,
+            "email": user.email,
+            "role": user.role
+        }
+        return user_data

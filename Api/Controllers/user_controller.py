@@ -100,14 +100,12 @@ class UserController:
         try:
             user_password = user.password
             user_email = user.email
-            print(user_password)
-            print(user_email)
-            user = UserService.login_user(user_email, user_password, db)
-            print(user)
-            token = JWT().create_token({"sub": "123456"}, token_type="access", role=user.role, user_id=user.id)
+            user2 = UserService.login_user(user_email, user_password, db)
+            
+            token = JWT().create_token({"sub": "123456"}, token_type="access", role=user2["role"], user_id=user2["id"])
             result = {
-                "user": user,
-                "token": token
+                "user": user2,
+                "access": token
             }
             
             return ResponseBase(200, "Logueado correctamente", result).to_dict()

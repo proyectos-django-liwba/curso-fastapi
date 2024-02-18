@@ -20,17 +20,12 @@ class JWT:
         # parsear a int la variable de entorno
         expire_minutes = int(os.getenv("DEFAULT_EXPIRE_MINUTES"))
         expire = datetime.now(timezone.utc) + timedelta(minutes=expire_minutes)
-        refresh_expire = datetime.now(timezone.utc) + timedelta(minutes=expire_minutes)
-
-        # Crear token refresh
-        to_encode_refresh = {"exp": refresh_expire, "type": token_type, "role": role, "user_id": user_id}
-        refresh = jwt.encode(to_encode_refresh, self.SECRET_KEY, algorithm=self.ALGORITHM)
 
         # Crear token de acceso
         to_encode.update({"exp": expire, "type": token_type, "role": role, "user_id": user_id})
         access = jwt.encode(to_encode, self.SECRET_KEY, algorithm=self.ALGORITHM)
 
-        return {"access": access, "refresh": refresh}
+        return access
     
     def verify_token(self, token: str):
         try:
