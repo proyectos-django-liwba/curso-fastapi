@@ -18,7 +18,7 @@ class UserController:
 
             # validar datos
             UserValidation.validate_create(user)
-            otp = JWT().create_otp(token_type="activate", expires_minutes=1440)
+            otp = JWT().create_otp({"sub": "123456"},token_type="activate", expires_minutes=1440)
             link = f"http://localhost:5173/{otp}"
             
 
@@ -96,11 +96,21 @@ class UserController:
         except Exception as e:
             raise CustomError(500, f"Error deleting user: {str(e)}")
 
-    def login(email, password,db: Session):
+    def login_user(user: User, db: Session):
         try:
-            user = UserService().login_user(db, email, password)
-            token = JWT().create_token(token_type="access", role=user.role, user_id=user.id)
-            return ResponseBase(200, "Logueado correctamente", token).to_dict()
+            user_password = user.password
+            user_email = user.email
+            print(user_password)
+            print(user_email)
+            user = UserService.login_user(user_email, user_password, db)
+            print(user)
+            token = JWT().create_token({"sub": "123456"}, token_type="access", role=user.role, user_id=user.id)
+            result = {
+                "user": user,
+                "token": token
+            }
+            
+            return ResponseBase(200, "Logueado correctamente", result).to_dict()
         except CustomError as e:
             raise e
         except Exception as e:

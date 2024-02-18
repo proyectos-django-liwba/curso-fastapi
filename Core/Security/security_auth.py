@@ -15,15 +15,21 @@ class JWT:
         encoded_jwt = jwt.encode(to_encode, self.SECRET_KEY, algorithm=self.ALGORITHM)
         return encoded_jwt
 
-    def create_token(self, data: dict, token_type: str, expires_minutes: int | None = None, role: str | None = None, user_id: int | None = None):
+    def create_token(self, data: dict, token_type: str, role: str | None = None, user_id: int | None = None):
         to_encode = data.copy()
-        expire_minutes = expires_minutes or self.DEFAULT_EXPIRE_MINUTES
+        # parsear a int la variable de entorno
+        expire_minutes = int(os.getenv("DEFAULT_EXPIRE_MINUTES"))
         expire = datetime.now(timezone.utc) + timedelta(minutes=expire_minutes)
-        refresh_expire = datetime.now(timezone.utc) + timedelta(days=3)
-        refresh_encode = to_encode.update({"exp": refresh_expire, "type": token_type, "role": role, "user_id": user_id})
+        refresh_expire = datetime.now(timezone.utc) + timedelta(minutes=expire_minutes)
+
+        # Crear token refresh
+        to_encode_refresh = {"exp": refresh_expire, "type": token_type, "role": role, "user_id": user_id}
+        refresh = jwt.encode(to_encode_refresh, self.SECRET_KEY, algorithm=self.ALGORITHM)
+
+        # Crear token de acceso
         to_encode.update({"exp": expire, "type": token_type, "role": role, "user_id": user_id})
         access = jwt.encode(to_encode, self.SECRET_KEY, algorithm=self.ALGORITHM)
-        refresh = jwt.encode(refresh_encode, self.SECRET_KEY, algorithm=self.ALGORITHM)
+
         return {"access": access, "refresh": refresh}
     
     def verify_token(self, token: str):

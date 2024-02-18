@@ -13,11 +13,11 @@ class UserData(ConexionBD.Base):
     email = Column(String(50), unique=True, index=True)
     password = Column(String(100))
     role = Column(String(20), default="user")
-    verified = Column(Boolean, default=False)
+    is_verified = Column(Boolean, default=False)
     is_active = Column(Boolean, default=True)
-    otp = Column(String(100), nullable=True)
+    otp = Column(String(200), nullable=True)
     created_at = Column(TIMESTAMP, server_default=text("now()"))
     updated_at = Column(TIMESTAMP, server_default=text("now()"), onupdate=text("now()"))
 
     def __str__(self):
-        return f"User: ( id={self.id}, first_name={self.first_name}, last_name={self.last_name}, email={self.email}, role={self.role}, verified={self.verified}, is_active={self.is_active}, otp={self.otp}, created_at={self.created_at}, updated_at={self.updated_at} )"
+        return f"User: ( id={self.id}, first_name={self.first_name}, last_name={self.last_name}, email={self.email}, role={self.role}, verified={self.is_verified}, is_active={self.is_active}, otp={self.otp}, created_at={self.created_at}, updated_at={self.updated_at} )"

@@ -1,6 +1,7 @@
 from Core.Validations.validator_models import ValidatorModels
 from Api.Models.user_model import User
-
+from Core.Validations.custom_error import CustomError
+from Core.Security.security_encryption import SecurityEncryption
 class UserValidation: 
     
     def validate_create(user: User):
@@ -60,3 +61,22 @@ class UserValidation:
         # validaciones de id
         ValidatorModels.not_null(id, "id")
         ValidatorModels.is_positive_integer(id, "id")
+        
+    
+    def validate_user_exists(user):
+        if user is None:
+            raise CustomError(404, "Usuario no encontrado")
+        
+    def validate_user_active(is_active):
+        if not is_active:
+            raise CustomError(401, "El usuario no está activo")
+        
+    def validate_user_verified(is_verified):
+        if not is_verified:
+            raise CustomError(401, "El usuario no está verificado")
+        
+
+    def validate_credentials(password, hashed_password):
+        if not SecurityEncryption().verify_password(password, hashed_password):
+            raise CustomError(401, "Credenciales incorrectas")
+    

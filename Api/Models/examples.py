@@ -61,6 +61,10 @@ user_example_change_password = {
     "password": "usuario1234",
     "confirm_password": "Usuario1234"
 }
+user_example_login = {
+    "email": "correo@correo.com",
+    "password": "usuario1234"
+}
 
 # tag
 
