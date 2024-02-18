@@ -425,7 +425,64 @@ DEFAULT_EXPIRE_MINUTES = 30
 
 ## 8. Bitacora
 --Elmer
+
 ## 9. Dependencias
+En FastAPI, las dependencias son una herramienta poderosa que te permite desacoplar la lógica de tu aplicación en unidades más pequeñas y reutilizables. Se pueden usar para:
+* 1. Inyección de dependencias:
+    - Permiten inyectar objetos en tus funciones de ruta y otras funciones de tu aplicación. Esto te permite escribir código más modular y fácil de probar.
+    ```
+    # inyectar sesión de base de datos
+        from fastapi import Depends, FastAPI
+
+        app = FastAPI()
+
+        def get_db_connection():
+            # ... 
+
+        @app.get("/")
+        async def root(db: Session = Depends(get_db_connection)):
+            #  ... 
+
+    ```
+* 2. Validación de entrada:
+    - Se pueden usar para validar la entrada de las solicitudes a tu API. Puedes crear funciones que validen la entrada y luego usarlas como dependencias en tus funciones de ruta.
+
+    ```
+        from fastapi import Depends, FastAPI, HTTPException
+
+        app = FastAPI()
+
+        def validate_user_id(user_id: int):
+            if user_id < 1:
+                raise HTTPException(status_code=400, detail="El ID del usuario debe ser mayor a 0")
+
+        @app.get("/users/{user_id}")
+        async def get_user(user_id: int = Depends(validate_user_id)):
+            # ...
+
+    ```
+* 3. Autenticación y autorización:
+    - Se pueden usar para implementar la autenticación y autorización en tu API. Puedes crear funciones que verifiquen si un usuario está autenticado y autorizado para acceder a un recurso, y luego usarlas como dependencias en tus funciones de ruta.
+    ```
+        from fastapi import Depends, FastAPI, HTTPException
+
+        app = FastAPI()
+
+        def authenticate_user(username: str, password: str):
+            # ...
+
+        def authorize_user(user: User):
+            if not user.is_admin:
+                raise HTTPException(status_code=401, detail="El usuario no tiene permiso para acceder a este recurso")
+
+        @app.get("/admin")
+        async def admin_endpoint(user: User = Depends(authenticate_user, authorize_user)):
+            # ... 
+
+    ```
+
+* [Documentación Depends](https://fastapi.tiangolo.com/tutorial/dependencies/)
+
 
 ## 10. Middleware
 
@@ -558,6 +615,73 @@ from jinja2 import Environment, FileSystemLoader
 ```
 
 ## 17. Manejo de archivos
+Almacenamiento de archivos en una carpeta del servidor
+* 1: Declarar en el main la ruta de la carpeta Uploads, de manera que se pueda accede a los recursos de que contiene.
+```
+# importaciones
+import os
+from fastapi.staticfiles import StaticFiles
+
+# Configurar archivos estáticos
+uploads_path = os.path.join(os.path.dirname(__file__), "Uploads/")
+app.mount("/Uploads", StaticFiles(directory=uploads_path), name="Uploads")
+
+```
+* 2: Uso de la clase UploadFile para el manejo de archivos
+```
+# importaciones
+from fastapi import UploadFile
+
+# ruta
+@upload_router.post("/save-upload")
+def upload_file2(file: UploadFile):
+#...
+```
+
+* 3: validaciones del archivo
+```
+    # validar que hay un archivo
+    if not file.filename:
+        raise CustomError(400, "No file provided")
+
+    # validar el formato del archivo
+    valid_formats = ["image/jpeg", "image/png", "image/jpg"]
+    if file.content_type not in valid_formats:
+        raise CustomError(400, "Invalid file format")
+
+    # validar el tamaño del archivo
+    max_size = 1 * 1024 * 1024
+    if file.size > max_size:
+        raise CustomError(400, "File size exceeds the limit of 1MB")
+```
+* 4: Generar un nombre único 
+```
+    # dependencia
+    from uuid import uuid4
+
+    # generar nombre único para cada archivo
+    file_name = f"{uuid4()}-{file.filename}"
+```
+
+* 5: Guardar el archivo en la carpeta
+```
+    # guardar el archivo
+    file_path = os.path.join("Uploads", file_name)
+    with open(file_path, "wb") as f:
+        f.write(file.file.read())
+        f.close()
+```
+
+* 6: Generar url, para acceder a archivo, también esta se puede almacenar en base de datos
+```
+    # generar url para acceder al archivo
+    file_url = f"http://localhost:8000/Uploads/{file_name}"
+```
+* [Documentación UploadFile](https://fastapi.tiangolo.com/reference/uploadfile/)
+
+* [Documentación OS Files](https://docs.python.org/3/library/os.html#files-and-directories)
+
+* [Documentación uuid](https://docs.python.org/3/library/uuid.html)
 
 ## 18. Manejo de Errores
 * [Documentación errores](https://fastapi.tiangolo.com/tutorial/handling-errors/#requestvalidationerror-vs-validationerror)
