@@ -95,3 +95,14 @@ class UserController:
             raise e
         except Exception as e:
             raise CustomError(500, f"Error deleting user: {str(e)}")
+
+    def login(email, password,db: Session):
+        try:
+            user = UserService().login_user(db, email, password)
+            token = JWT().create_token(token_type="access", role=user.role, user_id=user.id)
+            return ResponseBase(200, "Logueado correctamente", token).to_dict()
+        except CustomError as e:
+            raise e
+        except Exception as e:
+            raise CustomError(500, f"Error en el servidor, por favor vuelva a intentar mas tarde: {str(e)}")
+        

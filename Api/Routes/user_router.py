@@ -34,6 +34,9 @@ async def update_user(user: User = Body(example=user_example_update), db: Sessio
 async def delete_user(user_id: int, db: Session = Depends(ConexionBD().get_db)):
     return UserController.delete_user(user_id, db)
 
+@user_router.post("/login")
+async def login_user(user: User = Body(example=user_example_create), db: Session = Depends(ConexionBD().get_db)):
+    return UserController.login_user(user, db)
 
 # Consultas sin ORM
 """ 

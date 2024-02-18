@@ -83,3 +83,12 @@ class UserService:
             
             db.delete(_user)
             db.commit()
+
+        def login_user( email: str, password: str ,db: Session):
+            user = db.query(User).filter(User.email == email).first()
+            ValidatorModels.validate_user_exists(user)
+            ValidatorModels.validate_user_verified(user.is_verified)
+            ValidatorModels.validate_user_active(user.is_active)
+            ValidatorModels.validate_credentials(password, user.password)
+            return user
+
