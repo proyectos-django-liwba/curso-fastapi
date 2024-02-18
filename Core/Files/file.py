@@ -1,7 +1,6 @@
+from Core.Validations.custom_error import CustomError
 import base64
 import re
-import os
-from Core.Validations.custom_error import CustomError
 
 class FileManager:
     def convert_base64_to_image(data):
@@ -31,6 +30,7 @@ class FileManager:
             if not match:
                 raise CustomError(400, "Invalid base64 format")
               
+            print(match.group(1))
             return match.group(1)
         except CustomError as e:
             raise e
@@ -43,6 +43,7 @@ class FileManager:
             if not match:
                 raise CustomError(400, "Invalid base64 format")
               
+            print(match.group(1))
             return match.group(1)
         except CustomError as e:
             raise e
@@ -59,13 +60,3 @@ class FileManager:
             raise e
         except Exception as e:
             raise CustomError(500, f"Error al guardar la imagen: {str(e)}")
-        
-    def delete_file(url):
-        try:
-            path = url.split("http://localhost:8000/")[1]
-            
-            os.remove(path)
-        except CustomError as e:
-            raise e
-        except Exception as e:
-            raise CustomError(500, f"Error al eliminar la imagen: {str(e)}")

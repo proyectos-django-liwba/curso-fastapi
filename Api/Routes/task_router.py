@@ -16,7 +16,7 @@ task_router = APIRouter()
 def create_task(task: Task = Body(example=task_example_create), db: Session = Depends(ConexionBD().get_db)):
     return TaskController.create_task(task, db)
 
-@task_router.get("/{task_id}/")
+@task_router.get("/{task_id}")
 def get_task(task_id: int, db: Session = Depends(ConexionBD().get_db)):
    return TaskController.get_task(task_id, db)
 
@@ -24,7 +24,7 @@ def get_task(task_id: int, db: Session = Depends(ConexionBD().get_db)):
 def get_all_tasks(db: Session = Depends(ConexionBD().get_db)):
     return TaskController.get_all_tasks(db)
 
-@task_router.get("/by_status/{status}/")
+@task_router.get("/by_status/{status}")
 def get_tasks_by_status(status: StatusType, db: Session = Depends(ConexionBD().get_db)):
     return TaskController.get_tasks_by_status(status, db)
 
@@ -32,32 +32,10 @@ def get_tasks_by_status(status: StatusType, db: Session = Depends(ConexionBD().g
 def update_task(task: Task = Body(example=task_example_update), db: Session = Depends(ConexionBD().get_db)):
     return TaskController.update_task(task, db)
 
-@task_router.delete("/{task_id}/")
+@task_router.delete("/{task_id}")
 def delete_task(task_id: int, db: Session = Depends(ConexionBD().get_db)):
     return TaskController.delete_task(task_id, db)
 
-# tablas intermedias
-@task_router.get("/tasks_with_tags")
-def get_all_tasks_with_tags(db: Session = Depends(ConexionBD().get_db)):
-    return TaskController.get_all_tasks_with_tags(db)
-
-@task_router.get("/with_tags/{task_id}/")
-def get_task_with_tags(task_id: int, db: Session = Depends(ConexionBD().get_db)):
-    return TaskController.get_task_with_tags(task_id, db)
-
-
-@task_router.post("/add_tag/{task_id}/{tag_id}/")
-def add_tag(task_id: int, tag_id: int, db: Session = Depends(ConexionBD().get_db)):
-    return TaskController.add_tag(task_id, tag_id, db)
-
-@task_router.delete("/remove_tag/{task_id}/{tag_id}/")
-def remove_tag(task_id: int, tag_id: int, db: Session = Depends(ConexionBD().get_db)):
-    return TaskController.remove_tag(task_id, tag_id, db)
-
-# paginación
-@task_router.get("/{page}/{size}/")
+@task_router.get("/{page}/{size}")
 def paginate_tasks(page: int, size: int, db: Session = Depends(ConexionBD().get_db)):
     return TaskController.paginate_tasks(page, size, db)
-
-
-

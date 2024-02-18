@@ -2,8 +2,6 @@ import re
 from Core.Validations.custom_error import CustomError
 
 class ValidatorModels:
-
-    #! Validaciones para comprobar que hay datos
     # validar que el valor no sea nulo
     @staticmethod
     def not_null(value, name):
@@ -14,17 +12,6 @@ class ValidatorModels:
                 )
         return value
     
-        # Validar que el valor no esté vacío
-    
-    @staticmethod
-    def not_empty(value, name):
-        if len(value) == 0:
-            raise CustomError(
-                400,
-                f"El valor de {name} no debe estar vacío")
-        return value
-
-    #! validaciones numéricas
     # validar ids positivos
     @staticmethod
     def is_positive_integer(value, name):
@@ -34,6 +21,24 @@ class ValidatorModels:
                 f"El valor de {name} debe ser un número entero positivo")
         return value
     
+    # Validar espcaios en blanco
+    @staticmethod
+    def not_contains_space(value, name):
+        if " " not in value:
+            raise CustomError(
+                400,
+                f"El valor de {name} no debe contener espacios")
+        return value
+
+    # Validar que el valor no esté vacío
+    @staticmethod
+    def not_empty(value, name):
+        if len(value) == 0:
+            raise CustomError(
+                400,
+                f"El valor de {name} no debe estar vacío")
+        return value
+
     # Validar que el valor sea un número
     @staticmethod
     def is_number(value, name):
@@ -42,16 +47,6 @@ class ValidatorModels:
                 400,
                 f"El valor de {name} debe ser un número"
                 )
-        return value
-
-    #! validaciones de texto
-    # Validar espcaios en blanco
-    @staticmethod
-    def not_contains_space(value, name):
-        if " " not in value:
-            raise CustomError(
-                400,
-                f"El valor de {name} no debe contener espacios")
         return value
 
     # Validar que el valor sea un correo electrónico, con un regex
@@ -113,25 +108,3 @@ class ValidatorModels:
                 f"El valor de {name} debe tener como máximo {length} caracteres"
             )
         return value
-
-    #! validaciones de archivos
-    # validar formatos permitidos
-    @staticmethod
-    def valid_formats(value, name, valid_formats):
-        if value not in valid_formats:
-            raise CustomError(
-                400,
-                f"El valor de {name} no es un formato permitido"
-            )
-        return value
-    
-    # validar tamaño de archivo
-    @staticmethod
-    def max_size(value, name, max_size):
-        if value > max_size:
-            raise CustomError(
-                400,
-                f"El valor de {name} excede el tamaño máximo permitido"
-            )
-        return value
-    

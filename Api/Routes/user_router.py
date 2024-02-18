@@ -1,45 +1,72 @@
 # dependencias
-from fastapi import APIRouter, Depends, Body
+from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 from sqlalchemy import text
 from passlib.context import CryptContext
 # importaciones
-from Api.Controllers.user_controller import UserController
+from Core.Validations.custom_error import CustomError
 from Api.Data.conection import ConexionBD
 from Api.Models.user_model import User
-from Api.Models.examples import user_example_create, user_example_update, user_example_login
-
-
+from Core.Emails.email import EmailManager
+from Api.Controllers.user_controller import UserController
 # Crear el router
 user_router = APIRouter()
 
-# Definir rutas
-@user_router.post("/")
-async def create_user(user: User = Body(example=user_example_create), db: Session = Depends(ConexionBD().get_db)):
+@user_router.post("/", tags=["User"]) 
+async def create_user(user: User, db: Session = Depends(ConexionBD().get_db)):
     return await UserController.create_user(user, db)
 
-@user_router.get("/{user_id}")
-async def get_user(user_id: int, db: Session = Depends(ConexionBD().get_db)):
-    return UserController.get_user(user_id, db)
+# Configura el contexto de cifrado sin especificar el esquema
+""" pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+ """
 
-@user_router.get("/")
-async def get_all_users(db: Session = Depends(ConexionBD().get_db)):
-    return UserController.get_all_users(db)
+""" # Definir rutas
+@user_router.post("/")
+async def create_user(user: User, db: Session = Depends(ConexionBD().get_db)):
+    try:
 
-@user_router.put("/")
-async def update_user(user: User = Body(example=user_example_update), db: Session = Depends(ConexionBD().get_db)):
-    return UserController.update_user(user, db)
+        # envio de correo
+        otp = "1da-sd22DA-SDAD-A3DASDA-4"
+        link = f"http://localhost:5173/{otp}"
 
-@user_router.delete("/{user_id}")
-async def delete_user(user_id: int, db: Session = Depends(ConexionBD().get_db)):
-    return UserController.delete_user(user_id, db)
+        # enviar correo
+        email_manager = EmailManager()
+        await email_manager.send_email(
+            user.email, "Registro de Usuario", user.username, link
+        )
 
-@user_router.post("/login")
-async def login_user(user: User = Body(example=user_example_login), db: Session = Depends(ConexionBD().get_db)):
-    return UserController.login_user(user, db)
+        # hash de la contraseña
+        hashed_password = pwd_context.hash(user.password)
 
-# Consultas sin ORM
-""" 
+        _user = UserSchema(
+            username=user.username,
+            first_name=user.first_name,
+            last_name=user.last_name,
+            email=user.email,
+            password=hashed_password,
+        )
+
+        db.add(_user)
+        db.commit()
+        db.refresh(_user)
+
+        return {
+            "user": {
+                "id": _user.id,
+                "username": _user.username,
+                "first_name": _user.first_name,
+                "last_name": _user.last_name,
+                "email": _user.email,
+                "role": _user.role,
+            }
+        }
+
+    except CustomError as e:
+        raise e
+    except Exception as e:
+        raise CustomError(500, f"Error al crear el usuario: {str(e)}")
+
+
 @user_router.get("/by_sql")
 async def get_users(db: Session = Depends(ConexionBD().get_db)):
     try:
@@ -127,4 +154,5 @@ async def get_user(user_id: int ,db: Session = Depends(ConexionBD().get_db)):
     except CustomError as e:
         raise e
     except Exception as e:
-        raise CustomError(500, f"Error al obtener los usuarios: {str(e)}") """
+        raise CustomError(500, f"Error al obtener los usuarios: {str(e)}")
+ """

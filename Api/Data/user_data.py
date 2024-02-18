@@ -1,23 +1,27 @@
-# Dependencias
-from sqlalchemy import Column, Integer, String, Boolean, TIMESTAMP, text
-# Importaciones
+from sqlalchemy import Column, Integer, String, Boolean, TIMESTAMP, Text, text
 from Api.Data.conection import ConexionBD
 
-
-class UserData(ConexionBD.Base):
-    __tablename__ = "users"
+class User(ConexionBD.Base):
+    __tablename__ = 'users'
 
     id = Column(Integer, primary_key=True, index=True)
-    first_name = Column(String(50))
-    last_name = Column(String(50))
-    email = Column(String(50), unique=True, index=True)
-    password = Column(String(100))
-    role = Column(String(20), default="user")
-    is_verified = Column(Boolean, default=False)
+    name = Column(String(length=255), index=True)
+    first_name = Column(String(length=255), index=True)
+    last_name = Column(String(length=255), index=True)
+    email = Column(String(length=255), unique=True, index=True)
+    password = Column(String(length=255))
+    phone = Column(Integer, index=True)
+    image = Column(Text, nullable=True)
+    otp = Column(String(length=255), nullable=True)
+    role = Column(String(length=20), default='user')
+    birthdate = Column(TIMESTAMP, nullable=True)
     is_active = Column(Boolean, default=True)
-    otp = Column(String(200), nullable=True)
-    created_at = Column(TIMESTAMP, server_default=text("now()"))
-    updated_at = Column(TIMESTAMP, server_default=text("now()"), onupdate=text("now()"))
-
+    term_conditions = Column(Boolean, default=False)
+    is_verified = Column(Boolean, default=False)
+    last_login = Column(TIMESTAMP, nullable=True)
+    date_joined = Column(TIMESTAMP, server_default=text('now()'))
+    created_at = Column(TIMESTAMP, server_default=text('now()'))
+    updated_at = Column(TIMESTAMP, server_default=text('now()'), onupdate=text('now()'))
+    
     def __str__(self):
-        return f"User: ( id={self.id}, first_name={self.first_name}, last_name={self.last_name}, email={self.email}, role={self.role}, verified={self.is_verified}, is_active={self.is_active}, otp={self.otp}, created_at={self.created_at}, updated_at={self.updated_at} )"
+        return f"User(id={self.id}, name={self.name}, last_name={self.last_name}, email={self.email}, phone={self.phone}, image={self.image}, otp={self.otp}, role={self.role}, birthdate={self.birthdate}, is_active={self.is_active}, term_conditions={self.term_conditions}, is_verified={self.is_verified}, last_login={self.last_login}, date_joined={self.date_joined}, created_at={self.created_at}, updated_at={self.updated_at})"

@@ -18,4 +18,4 @@ views_path = Jinja2Templates(directory=views_path)
 # Definir rutas
 @home_router.get("/", tags={tag})
 def get_home(request: Request):
-  return views_path.TemplateResponse("index.html", {"request": request, "title": "Bienvenido a FastAPI"})
+  return views_path.TemplateResponse("index.html", {"request": request, "title": "Introducción FastAPI"})

@@ -1,116 +1,84 @@
-# dependencias
-from sqlalchemy.orm import Session
-from passlib.context import CryptContext
-# importaciones
-from Api.Response.response_base import ResponseBase
-from Core.Validations.custom_error import CustomError
-from Api.Service.user_service import UserService
-from Api.Models.user_model import User
-from Core.Validations.user_validation import UserValidation
-from Core.Emails.email import EmailManager
-from Core.Security.security_auth import JWT
-from Core.Security.security_encryption import SecurityEncryption
 
+from Core.Emails.email import EmailManager
+from fastapi import Depends, HTTPException
+from Api.Data.conection import ConexionBD
+from sqlalchemy.orm import Session
+from Api.Models.user_model import User
+from Api.Response.response_base import ResponseBase
+from Api.Service.user_service import UserService
+from Core.Validations.custom_error import CustomError
+from Core.Security.security_encryption import SecurityEncryption
+from Core.Security.security_auth import JWT
+from Core.Validations.user_validation import UserValidation
 class UserController:
     
-    async def create_user(user: User, db: Session):
-        try:
-
-            # validar datos
+    async def create_user(user: User, db: Session = Depends(ConexionBD().get_db)):
+        try: 
+            
             UserValidation.validate_create(user)
-            otp = JWT().create_otp({"sub": "123456"},token_type="activate", expires_minutes=1440)
+            otp = JWT().create_token({"sub": user.name},token_type="activate", expires_minutes=1440, role="user")
+            print(otp)
             link = f"http://localhost:5173/{otp}"
+            hashed_password = SecurityEncryption().hash_password(user.password)
+            print(hashed_password)
+            # Llama al método send_mail con la dirección de correo electrónico
+            await EmailManager().send_email(user.email, "Registro de Usuario", user.name, link)
+            result = UserService().create_user(db, user, hashed_password, otp)
+            # Retorna la respuesta al cliente
+            return ResponseBase(200, "Usuario registrado correctamente", result).to_dict()
             
-
-            # enviar correo
-            email_manager = EmailManager()
-            await email_manager.send_email(
-                user.email, "Registro de Usuario", user.first_name, link
-            )
-            
-            user.password = SecurityEncryption().hash_password(user.password)
-            user.otp = otp
-            # crear user
-            result = UserService.create_user(user, db)
-            # retornar respuesta
-            return ResponseBase(201, "User created", result).to_dict()
-        
-        except CustomError as e:
-            raise e
-        except Exception as e:
-            raise CustomError(500, f"Error creating user: {str(e)}")
-        
-    def get_user(id: int, db: Session):
-        try:
-            # validar datos
-            UserValidation.validate_id(id)
-            # buscar user
-            result = UserService.get_user(id, db)
-            # retornar respuesta
-            return ResponseBase(200, "User found", result).to_dict()
-        
-        except CustomError as e:
-            raise e
-        except Exception as e:
-            raise CustomError(500, f"Error getting user: {str(e)}")
-             
-    def get_all_users(db: Session):
-        try:
-            # buscar users
-            result = UserService.get_all_users(db)
-            # retornar respuesta
-            return ResponseBase(200, "Users found", result).to_dict()
-        
-        except CustomError as e:
-            raise e
-        except Exception as e:
-            raise CustomError(500, f"Error getting users: {str(e)}")
-        
-    def update_user(user: User, db: Session):
-        try:
-            
-            # validar datos
-            UserValidation.validate_update(user)
-            
-            # actualizar user
-            result = UserService.update_user(user, db)
-            # retornar respuesta
-            return ResponseBase(200, "User updated", result).to_dict()
-        
-        except CustomError as e:
-            raise e
-        except Exception as e:
-            raise CustomError(500, f"Error updating user: {str(e)}")
-           
-    def delete_user(id: int, db: Session):
-        try:
-            # validar datos
-            UserValidation.validate_id(id)
-            # eliminar user
-            UserService.delete_user(id, db)
-            # retornar respuesta
-            return ResponseBase(200, "User deleted").to_dict()
-        
-        except CustomError as e:
-            raise e
-        except Exception as e:
-            raise CustomError(500, f"Error deleting user: {str(e)}")
-
-    def login_user(user: User, db: Session):
-        try:
-            user_password = user.password
-            user_email = user.email
-            user2 = UserService.login_user(user_email, user_password, db)
-            
-            token = JWT().create_token({"sub": "123456"}, token_type="access", role=user2["role"], user_id=user2["id"])
-            result = {
-                "user": user2,
-                "access": token
-            }
-            
-            return ResponseBase(200, "Logueado correctamente", result).to_dict()
         except CustomError as e:
             raise e
         except Exception as e:
             raise CustomError(500, f"Error en el servidor, por favor vuelva a intentar mas tarde: {str(e)}")
         
+"""  def login(request: RequestUserLogin, db: Session = Depends(ConexionBD().get_db)):
+        try:
+            return UserService().login_user(db, request.parameter.email, request.parameter.password)
+        except CustomError as e:
+            raise e
+        except ValueError as e:
+            raise HTTPException(status_code=401, detail=str(e))
+        except Exception as e:
+            raise CustomError(500, f"Error en el servidor, por favor vuelva a intentar mas tarde: {str(e)}")
+        
+    def get_user_by_id(user_id: int, db: Session = Depends(ConexionBD().get_db)):
+        try:
+            users = UserService().get_user_by_id(db, user_id)
+            print(users)
+            return ResponseUserUpdate(code=200, status="success", message="Usuario obtenido correctamente", result=users).model_dump(exclude_none=True)
+        except CustomError as e:
+            raise e
+
+        except Exception as e:
+            return CustomError(500, f"Ocurrio un error inesperado, por favor vuelva a intentar mas tarde: {str(e)}")
+
+    @staticmethod
+    def get_user(db: Session = Depends(ConexionBD().get_db), skipt: int = 0, limit: int = 100):
+        try:
+            users = UserService().get_user(db, skipt, limit)
+            return ResponseGetUser(code=200, status="success", message="Usuarios obtenidos correctamente", users=users)
+        except CustomError as e:
+            raise e
+        except HTTPException as e:
+            if e.status_code == 403:
+                return CustomError(403, f"Error de permisos: {str(e)}")
+                #como hago para que esta respuesta me la envie al frontend 
+            elif e.status_code == 401:
+                return CustomError(401, f"Error al autenticarse: {str(e)}")
+        except Exception as e:
+            return CustomError(500, f"Error en el servidor, por favor vuelva a intentar mas tarde: {str(e)}")
+        
+    def update_user(user_id: int, request: RequestUserUpdate, db: Session = Depends(ConexionBD().get_db)):
+        try:
+            user = UserService().update_user(db, user_id, request.parameter)
+            return ResponseUserUpdate(code=200, status="success", message="Usuario actualizado correctamente", result=user).model_dump(exclude_none=True)
+        except CustomError as e:
+            raise e
+        except ValueError as e:
+            raise HTTPException(status_code=401, detail=str(e))
+        except Exception as e:
+            raise CustomError(500, f"Error en el servidor, por favor vuelva a intentar mas tarde: {str(e)}")
+
+
+ """
