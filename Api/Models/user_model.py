@@ -9,6 +9,7 @@ class User(BaseModel):
     email: str 
     password: Optional[str] = None 
     role: Optional[str] = "user"  
+    otp: Optional[str] = None
     
     class Config:
         from_attributes = True

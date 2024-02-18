@@ -14,7 +14,8 @@ class UserService:
                 last_name=user.last_name,
                 email=user.email,
                 password=user.password,
-                role=user.role
+                role=user.role,
+                otp = user.otp
             )
             
             try:

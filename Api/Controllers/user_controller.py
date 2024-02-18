@@ -8,6 +8,8 @@ from Api.Service.user_service import UserService
 from Api.Models.user_model import User
 from Core.Validations.user_validation import UserValidation
 from Core.Emails.email import EmailManager
+from Core.Security.security_auth import JWT
+from Core.Security.security_encryption import SecurityEncryption
 
 class UserController:
     
@@ -16,10 +18,9 @@ class UserController:
 
             # validar datos
             UserValidation.validate_create(user)
-            
-            # envio de correo
-            otp = "1da-sd22DA-SDAD-A3DASDA-4"
+            otp = JWT().create_otp(token_type="activate", expires_minutes=1440)
             link = f"http://localhost:5173/{otp}"
+            
 
             # enviar correo
             email_manager = EmailManager()
@@ -27,13 +28,8 @@ class UserController:
                 user.email, "Registro de Usuario", user.first_name, link
             )
             
-            # Configura el contexto de cifrado sin especificar el esquema
-            pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-
-            # hash de la contraseña
-            hashed_password = pwd_context.hash(user.password)
-            user.password = hashed_password
-            
+            user.password = SecurityEncryption().hash_password(user.password)
+            user.otp = otp
             # crear user
             result = UserService.create_user(user, db)
             # retornar respuesta
