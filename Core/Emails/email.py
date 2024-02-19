@@ -41,7 +41,7 @@ class EmailManager:
             )
 
             # Obtener la ruta del archivo 
-            logo_path = os.path.join(os.path.dirname(__file__), "../../Resources/Images/FastAPI.avif")
+            logo_path = os.path.join(os.path.dirname(__file__), "../../Resources/Images/fastapi-logo2.png")
 
             # Validar que el archivo exista
             if not os.path.exists(logo_path):
