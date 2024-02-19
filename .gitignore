@@ -3,8 +3,10 @@
 
 /vscode
 
+*.pyc
+*.pyo
 /__pycahe__
 __pycahe__/
-**/__pycahe__/
-**/**/__pycahe__/
-**/**/**/__pycahe__/
+*/__pycahe__/
+*/*/__pycahe__/
+*/*/*/__pycahe__/
