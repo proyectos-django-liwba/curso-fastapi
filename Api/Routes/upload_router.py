@@ -2,17 +2,17 @@
 import os
 from uuid import uuid4
 from typing import List
-from fastapi import APIRouter, File, UploadFile
-
+from fastapi import APIRouter, File, UploadFile, Body, Depends
+from sqlalchemy.orm import Session
 # Importaciones
 from Core.Validations.custom_error import CustomError
 from Api.Models.upload_model import Upload
-from Core.Files.file import FileManager
+from Api.Models.examples import upload_example_create, upload_example_update
+from Api.Controllers.upload_controller import UploadController
+from Api.Data.conection import ConexionBD
 
 # crear el router
 upload_router = APIRouter()
-
-#! el parametro ... indica que es requerido u obligatorio
 
 # definir rutas
 @upload_router.post("/file")
@@ -105,44 +105,23 @@ def upload_files3(files: List[UploadFile] = File(...)):
     except Exception as e:
         raise CustomError(500, f"Error al subir los archivos: {e}")
 
-
-@upload_router.post("/form-upload")
-def upload_files3( upload: Upload ):
-
-  try:
-    # validar que hay un objeto
-    if not upload:
-        raise CustomError(400, "No data provided")
+# crud de archivos con base de datos
+@upload_router.post("/image_base64")
+def upload_image( upload: Upload = Body(example=upload_example_create), db: Session = Depends(ConexionBD().get_db)):
+    return UploadController.create_upload(upload, db)
     
-    # validar que hay un archivo
-    if not upload.image:
-        raise CustomError(400, "No image provided")
+@upload_router.get("/{upload_id}")
+def get_upload(upload_id: int, db: Session = Depends(ConexionBD().get_db)):
+    return UploadController.get_upload(upload_id, db)
 
-    image = FileManager.convert_base64_to_image(upload.image)
-    type_image = FileManager.get_type_image(upload.image)
-    content_type = FileManager.get_content_type(upload.image)
-    size_image = len(image)
-    
-    # validar el formato del archivo
-    valid_formats = ["image/jpeg", "image/png", "image/jpg"]
-    if content_type not in valid_formats:
-        raise CustomError(400, "Invalid file format")
-      
-    # validar el tamaño del archivo
-    max_size = 1 * 1024 * 1024
-    if size_image > max_size:
-        raise CustomError(400, "File size exceeds the limit of 1MB")
+@upload_router.get("/by_user_id/{user_id}")
+def get_upload_by_user_id(user_id: int, db: Session = Depends(ConexionBD().get_db)):
+    return UploadController.get_upload_by_user_id(user_id, db)
 
-    # generar nombre unico para el archivo
-    file_name = f"{uuid4()}.{type_image}"
+@upload_router.put("/")
+def update_upload(upload: Upload = Body(example=upload_example_update), db: Session = Depends(ConexionBD().get_db)):
+    return UploadController.update_upload(upload, db)
 
-    # guardar el archivo
-    file_path = os.path.join("Uploads", file_name)    
-    FileManager.save_image(image, file_path)
-    upload.image = f"http://localhost:8000/Uploads/{file_name}"
-    return upload 
-
-  except CustomError as e:
-      raise e
-  except Exception as e:
-      raise CustomError(500, f"Error al subir los archivos: {e}")
+@upload_router.delete("/{upload_id}")
+def delete_upload(upload_id: int, db: Session = Depends(ConexionBD().get_db)):
+    return UploadController.delete_upload(upload_id, db)

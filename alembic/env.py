@@ -7,9 +7,11 @@ from sqlalchemy import engine_from_config
 from sqlalchemy import pool
 
 # schema models
-from Api.Data.user_schema import UserSchema
-from Api.Data.category_task_schema import CategoryTaskSchema
+from Api.Data.user_data import UserData
+from Api.Data.category_tasks_data import CategoryTasksData
 from Api.Data.task_data import TaskData
+from Api.Data.upload_data import UploadData
+from Api.Data.tag_data import TagData
 
 load_dotenv()
 
@@ -27,7 +29,13 @@ if config.config_file_name is not None:
 # for 'autogenerate' support
 # from myapp import mymodel
 # target_metadata = mymodel.Base.metadata
-target_metadata = {UserSchema.metadata, CategoryTaskSchema.metadata, TaskData.metadata}
+target_metadata = {
+    UserData.metadata, 
+    CategoryTasksData.metadata, 
+    TaskData.metadata,
+    TagData.metadata,
+    UploadData.metadata,
+    }
 
 # other values from the config, defined by the needs of env.py,
 # can be acquired:

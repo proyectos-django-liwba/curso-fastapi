@@ -1,80 +1,102 @@
-from sqlalchemy.orm import Session
-from Api.Models.user_model import User
-from Api.Data.user_data import User
-from Core.Validations.validator_models import ValidatorModels
+# Dependencias
+from sqlalchemy.orm import Session, load_only
+from sqlalchemy.exc import IntegrityError, TimeoutError
+# Importaciones
 from Core.Validations.custom_error import CustomError
-
+from Api.Models.user_model import User
+from Api.Data.user_data import UserData
+from Core.Validations.user_validation import UserValidation
 
 class UserService:
-    
-    # Obtener todos los usuarios
-    @staticmethod
-    def get_user(db: Session, skipt: int = 0, limit: int = 100):
-        return db.query(User).offset(skipt).limit(limit).all()
-
-    # Obtener un usuario por su id
-    @staticmethod
-    def get_user_by_id(db: Session, user_id: int):
-        user = db.query(User).filter(User.id == user_id).first()
-        if not user:
-            raise CustomError(404, "Usuario no encontrado.")
         
-        return user
-    
-    @staticmethod
-    def create_user( db: Session, user: User, hashed_password,token):
-        # Hashea la contraseña antes de almacenarla
-        
-        _user = User(
-            name=user.name,
+    def create_user(user: User, db: Session):
+        _user = UserData(
             first_name=user.first_name,
             last_name=user.last_name,
             email=user.email,
-            password=hashed_password,
-            phone=user.phone,
-            otp=token,
+            password=user.password,
+            role=user.role,
+            otp = user.otp
         )
         
-        db.add(_user)
-        db.commit()
-        db.refresh(_user)
-        return _user
+        try:
+            db.add(_user)
+            db.commit()
+            db.refresh(_user)
+            return _user
+        
+        except IntegrityError as e:
+            db.rollback()
+            raise CustomError(400,"Data base integrity error", e.orig.diag.message_detail)
+        except TimeoutError as e:
+            db.rollback()
+            raise CustomError(408,"Data base timeout error", e.orig.diag.message_detail)
     
-    @staticmethod
-    def remove_User(self,db: Session, user_id: int):
-        _user = self.get_user_by_id(db=db, user_id=user_id)
+    
+    def get_user(id: int, db: Session):
+        #result = db.query(UserData).get(id)
+        result = db.query(UserData).options(load_only(
+            UserData.id,
+            UserData.first_name,
+            UserData.last_name,
+            UserData.email,
+            UserData.role
+            )).get(id)
+    
+        if result is None:
+            raise CustomError(404, "User not found")
+        
+        return result
+    
+    def get_all_users(db: Session):
+        return db.query(UserData).all()
+    
+    def update_user(user: User, db: Session):
+    
+        _user = db.query(UserData).get(user.id)
+
+        if _user is None:
+            raise CustomError(404, "User not found")
+        
+        try: 
+            _user.first_name = user.first_name
+            _user.last_name = user.last_name
+            _user.email = user.email
+            _user.password = user.password
+            _user.role = user.role
+
+            db.commit()
+            db.refresh(_user)
+
+            return _user
+        except IntegrityError as e:
+            db.rollback()
+            raise CustomError(400,"Data base integrity error", e.orig.diag.message_detail)
+        except TimeoutError as e:
+            db.rollback()
+            raise CustomError(408,"Data base timeout error", e.orig.diag.message_detail)
+    
+    def delete_user(id: int, db: Session):
+        _user = db.query(UserData).get(id)
+        
+        if _user is None:
+            raise CustomError(404, "User not found")
+        
         db.delete(_user)
         db.commit()
 
-"""     # Actualizar un usuario
-    @staticmethod
-    def update_user(db: Session, user_id: int, user: UserUpdateModel):
-        _user = db.query(User).filter(User.id == user_id).first()
+    def login_user(email: str, password: str, db: Session):
+        user = db.query(UserData).filter(UserData.email == email).first()
+        UserValidation.validate_user_exists(user)
+        UserValidation.validate_user_verified(user.is_verified)
+        UserValidation.validate_user_active(user.is_active)
+        UserValidation.validate_credentials(password, user.password)
 
-        # Verifica si el usuario que realiza la actualización es el dueño de la cuenta
-        if _user.id != user_id:
-            raise CustomError(403, "No tienes permisos para actualizar este usuario.")
-
-        # Resto del código para la actualización del usuario
-        _user.name = user.name
-        _user.last_name = user.last_name
-        _user.email = user.email
-        _user.image = user.image
-        _user.birthdate = user.birthdate
-        _user.phone = user.phone
-        db.commit()
-        db.refresh(_user)
-        return _user
-    
-    # Método para el inicio de sesión
-    @staticmethod
-    def login_user( db: Session, email: str, password: str):
-        user = db.query(User).filter(User.email == email).first()
-        ValidatorModels.validate_user_exists(user)
-        ValidatorModels.validate_user_verified(user.is_verified)
-        ValidatorModels.validate_user_active(user.is_active)
-        ValidatorModels.validate_credentials(password, user.password)  
-        
-        # Si todas las validaciones pasan, crea un token de acceso
-        token = JWT().create_access_token({"sub": user.id},token_type="access", expires_minutes=60)
-        return {"user": user,"access": token, "token_type": "bearer"} """
+        user_data = {
+            "id": user.id,
+            "first_name": user.first_name,
+            "last_name": user.last_name,
+            "email": user.email,
+            "role": user.role
+        }
+        return user_data
