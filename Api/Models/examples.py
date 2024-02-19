@@ -58,8 +58,8 @@ user_example_update = {
 
 user_example_change_password = {
     "id": 1,
-    "password": "usuario1234",
-    "confirm_password": "Usuario1234"
+    "password": "Usuario1234",
+    "new_password": "Usuario2345"
 }
 user_example_login = {
     "email": "correo@correo.com",

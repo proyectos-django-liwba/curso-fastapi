@@ -100,3 +100,14 @@ class UserService:
             "role": user.role
         }
         return user_data
+    
+    def change_password(id, password, new_password, db: Session):
+        user = db.query(UserData).get(id)
+        UserValidation.validate_user_exists(user)
+        UserValidation.validate_user_verified(user.is_verified)
+        UserValidation.validate_user_active(user.is_active)
+        UserValidation.validate_credentials(password, user.password)
+        user.password = new_password
+        db.commit()
+        db.refresh(user)
+        return user

@@ -6,7 +6,7 @@ class User(BaseModel):
     id: Optional[int] = None
     first_name: Optional[str] = None
     last_name: Optional[str] = None
-    email: str 
+    email: Optional[str] = None
     password: Optional[str] = None 
     role: Optional[str] = "user"  
     otp: Optional[str] = None

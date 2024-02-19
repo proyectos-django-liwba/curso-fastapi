@@ -72,7 +72,32 @@ class UserValidation:
         ValidatorModels.min_length(user.password, "password", 8)
         ValidatorModels.max_length(user.password, "password", 16)
         
-    
+    def validate_password_equal(new_password: str, confirm_password: str):
+        if new_password != confirm_password:
+            raise CustomError(400, "Las contraseñas no coinciden") 
+        
+    def validate_change_password(id: int, password: str, new_password: str, confirm_password: str):
+        # validaciones de id
+        ValidatorModels.not_null(id, "id")
+        # validaciones de password
+        ValidatorModels.not_null(password, "password")
+        ValidatorModels.not_empty(password, "password")
+        ValidatorModels.is_password(password, "password")
+        ValidatorModels.min_length(password, "password", 8)
+        ValidatorModels.max_length(password, "password", 16)
+        # validaciones de confirm_password
+        ValidatorModels.not_null(new_password, "new_password")
+        ValidatorModels.not_empty(new_password, "new_password")
+        ValidatorModels.is_password(new_password, "new_password")
+        ValidatorModels.min_length(new_password, "new_password", 8)
+        ValidatorModels.max_length(new_password, "new_password", 16)
+        ValidatorModels.not_null(confirm_password, "confirm_password")
+        ValidatorModels.not_empty(confirm_password, "confirm_password")
+        ValidatorModels.is_password(confirm_password, "confirm_password")
+        ValidatorModels.min_length(confirm_password, "confirm_password", 8)
+        ValidatorModels.max_length(confirm_password, "confirm_password", 16)
+        #validar si las contraseñas son iguales
+        
     def validate_user_exists(user):
         if user is None:
             raise CustomError(404, "Usuario no encontrado")

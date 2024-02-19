@@ -113,3 +113,15 @@ class UserController:
         except Exception as e:
             raise CustomError(500, f"Error en el servidor, por favor vuelva a intentar mas tarde: {str(e)}")
         
+    def change_password(id, password,new_password, confirm_password, db: Session):
+        try:
+            
+            UserValidation.validate_change_password(id, password, new_password, confirm_password)
+            UserValidation.validate_password_equal(new_password, confirm_password)
+            new_password = SecurityEncryption().hash_password(new_password)
+            UserService.change_password(id, password, new_password, db)
+            return ResponseBase(200, "Contraseña cambiada correctamnte").to_dict()
+        except CustomError as e:
+            raise e
+        except Exception as e:
+            raise CustomError(500, f"Error changing password: {str(e)}")

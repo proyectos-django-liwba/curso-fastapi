@@ -7,7 +7,7 @@ from passlib.context import CryptContext
 from Api.Controllers.user_controller import UserController
 from Api.Data.conection import ConexionBD
 from Api.Models.user_model import User
-from Api.Models.examples import user_example_create, user_example_update, user_example_login
+from Api.Models.examples import user_example_create, user_example_update, user_example_login,user_example_change_password
 
 
 # Crear el router
@@ -38,6 +38,9 @@ async def delete_user(user_id: int, db: Session = Depends(ConexionBD().get_db)):
 async def login_user(user: User = Body(example=user_example_login), db: Session = Depends(ConexionBD().get_db)):
     return UserController.login_user(user, db)
 
+@user_router.put("/change_password")
+async def change_password(id, password, new_password, confirm_password, db: Session = Depends(ConexionBD().get_db)):
+    return UserController.change_password(id, password, new_password,confirm_password, db)
 # Consultas sin ORM
 """ 
 @user_router.get("/by_sql")
