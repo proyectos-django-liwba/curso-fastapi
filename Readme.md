@@ -485,6 +485,43 @@ En FastAPI, las dependencias son una herramienta poderosa que te permite desacop
 
 
 ## 10. Middleware
+* El middleware es un código que se ejecuta antes o después de procesar cada solicitud. 
+
+* Consiste en una función que se agrega a la instancia de FastAPI en el archivo principal
+
+* Se aplica a todos los endpoints, sus principales usos son: 
+    - Registro y monitoreo de solicitudes
+    - Autenticación y autorización
+    - Compresión de Respuestas
+    - Manejo de Errores
+    - Caché de Contenido
+
+```
+from fastapi import FastAPI, Request
+
+app = FastAPI()
+
+# Middleware
+async def simple_middleware(request: Request, call_next):
+    # Codigo ....
+    print("Codigo a ejecutar...")
+
+    # Llamar al siguiente middleware o controlador de ruta
+    response = await call_next(request)
+
+    return response
+
+# Agregar el middleware a la aplicación
+app.middleware("http")(simple_middleware)
+
+# Ruta de ejemplo
+@app.get("/")
+async def read_root():
+    return {"message": "Hello World"}
+
+```
+
+* [Documentación Middleware](https://fastapi.tiangolo.com/tutorial/middleware/)
 
 ## 11. Anotaciones
 

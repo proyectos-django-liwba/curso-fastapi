@@ -19,9 +19,13 @@ from Api.Routes.email_router import email_router
 from Api.Routes.category_tasks_router import category_tasks_router
 from Api.Routes.tag_router import tag_router
 from Api.Routes.depends_router import depends_router
+from Api.Routes.middleware_router import middleware_router
 
 # Base de datos
 from Api.Data.conection import ConexionBD
+
+# Middleware
+from Core.Middleware.middleware import manager_middleware
 
 # Cargar variables de entorno
 load_dotenv()
@@ -99,7 +103,9 @@ async def unicorn_exception_handler(request: Request, exc: CustomError):
         content={"error": error_dict},
     )
 
-
+# Middleware
+#app.middleware("http")(Middleware.add_process_time_header)
+app.middleware("http")(manager_middleware)
 
 # Configurar archivos estáticos
 resources_path = os.path.join(os.path.dirname(__file__), "Resources/")
@@ -122,5 +128,6 @@ app.include_router(email_router, prefix="/api/email", tags=["Email"])
 app.include_router(category_tasks_router, prefix="/api/category-tasks", tags=["Category Tasks"])
 app.include_router(tag_router, prefix="/api/tags", tags=["Tags"])
 app.include_router(depends_router, prefix="/api/depends", tags=["Depends"])
+app.include_router(middleware_router, prefix="/api/middleware", tags=["Middleware"])
 
 
