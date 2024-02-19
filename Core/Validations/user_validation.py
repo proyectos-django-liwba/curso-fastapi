@@ -33,7 +33,6 @@ class UserValidation:
         # validaciones de first_name
         ValidatorModels.not_null(user.first_name, "first_name")
         ValidatorModels.not_empty(user.first_name, "first_name")
-        print(user.first_name)
         ValidatorModels.min_length(user.first_name,"last_name", 3)
         ValidatorModels.max_length(user.first_name,"last_name", 50)
         # validaciones de last_name
@@ -61,6 +60,17 @@ class UserValidation:
         # validaciones de id
         ValidatorModels.not_null(id, "id")
         ValidatorModels.is_positive_integer(id, "id")
+        
+    def validate_login(user: User):
+        ValidatorModels.not_null(user.email, "email")
+        ValidatorModels.not_empty(user.email, "email")
+        ValidatorModels.is_email(user.email, "email")
+        # validaciones de password
+        ValidatorModels.not_null(user.password, "password")
+        ValidatorModels.not_empty(user.password, "password")
+        ValidatorModels.is_password(user.password, "password")
+        ValidatorModels.min_length(user.password, "password", 8)
+        ValidatorModels.max_length(user.password, "password", 16)
         
     
     def validate_user_exists(user):

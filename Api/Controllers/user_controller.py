@@ -10,7 +10,7 @@ from Core.Validations.user_validation import UserValidation
 from Core.Emails.email import EmailManager
 from Core.Security.security_auth import JWT
 from Core.Security.security_encryption import SecurityEncryption
-
+from Core.Validations.user_validation import UserValidation
 class UserController:
     
     async def create_user(user: User, db: Session):
@@ -98,9 +98,8 @@ class UserController:
 
     def login_user(user: User, db: Session):
         try:
-            user_password = user.password
-            user_email = user.email
-            user2 = UserService.login_user(user_email, user_password, db)
+            UserValidation.validate_login(user)
+            user2 = UserService.login_user(user.email, user.password, db)
             
             token = JWT().create_token({"sub": "123456"}, token_type="access", role=user2["role"], user_id=user2["id"])
             result = {

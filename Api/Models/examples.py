@@ -63,7 +63,7 @@ user_example_change_password = {
 }
 user_example_login = {
     "email": "correo@correo.com",
-    "password": "usuario1234"
+    "password": "Usuario1234"
 }
 
 # tag
