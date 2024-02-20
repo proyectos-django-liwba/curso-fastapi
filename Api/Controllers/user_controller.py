@@ -1,6 +1,6 @@
 # dependencias
+from fastapi import BackgroundTasks
 from sqlalchemy.orm import Session
-from passlib.context import CryptContext
 # importaciones
 from Api.Response.response_base import ResponseBase
 from Core.Validations.custom_error import CustomError
@@ -11,9 +11,11 @@ from Core.Emails.email import EmailManager
 from Core.Security.security_auth import JWT
 from Core.Security.security_encryption import SecurityEncryption
 from Core.Validations.user_validation import UserValidation
+
+
 class UserController:
     
-    async def create_user(user: User, db: Session):
+    async def create_user(user: User, db: Session, background_tasks: BackgroundTasks):
         try:
 
             # validar datos
@@ -23,9 +25,18 @@ class UserController:
             
 
             # enviar correo
-            email_manager = EmailManager()
+            """ email_manager = EmailManager()
             await email_manager.send_email(
                 user.email, "Registro de Usuario", user.first_name, link
+            ) """
+            #BackgroundTasks.add_task(EmailManager().send_email, user.email, "Registro de Usuario", user.first_name, link)
+            
+            background_tasks.add_task(
+                EmailManager().send_email,
+                user.email,
+                "Registro de Usuario",
+                user.first_name,
+                link
             )
             
             user.password = SecurityEncryption().hash_password(user.password)

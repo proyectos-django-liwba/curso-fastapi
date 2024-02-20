@@ -39,9 +39,7 @@ category_tasks_example_update = {
 }
 
 # user
-
 user_example_create = {
-    "username": "WilfredoBH",
     "first_name": "Wilfredo",
     "last_name": "Barquero Herrera",
     "email": "correo@correo.com",
@@ -50,7 +48,6 @@ user_example_create = {
 
 user_example_update = {
     "id": 1,
-    "username": "WilfredoBH",
     "first_name": "Wilfredo",
     "last_name": "Barquero Herrera",
     "email": "correo@correo.com"

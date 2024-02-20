@@ -158,7 +158,7 @@ app/
 * [9. Dependencias](#9-dependencias)
 * [10. Middleware](#10-middleware)
 * [11. Anotaciones](#11-anotaciones)
-* [12. Microservices](#12-microservicios)
+* [12. Tareas en segundo plano](#12-tareas-en-segundo-plano)
 * [13. Socket](#13-socket)
 * [14. Estáticos](#14-estaticos)
 * [15. Template](#15-template)
@@ -170,6 +170,7 @@ app/
 * [21. Descripción función de packages](#21-descripción-función-de-packages)
 * [22. Relaciones en ORM - Alchemist](#22-relaciones-en-orm---alchemist)
 * [23. Variables de entorno](#23-variables-de-entorno)
+* [24. Notación de ellipsis](#24-notación-de-ellipsis)
 * [Problemas con rutas](#problemas-con-rutas)
 * [Lista de errores HTTP](#lista-de-errores-http)
 * [Problemas con el Interprete](#problemas-con-el-interprete)
@@ -627,7 +628,57 @@ def delete_item(user: CurrentUser, item_id: int):
 
 [Documentación ](https://fastapi.tiangolo.com/release-notes/#0950)
 
-## 12. Microservicios
+## 12. Tareas en segundo plano
+Las tareas en segundo plano en FastAPI son una forma de ejecutar tareas que no necesitan interacción con el usuario. Se pueden usar para realizar tareas que requieren mucho tiempo o que no necesitan ser ejecutadas en tiempo real.
+
+Las tareas en segundo plano en FastAPI se ejecutan en un proceso independiente del proceso principal de la aplicación. Esto significa que no bloquean la interfaz de usuario y no afectan el rendimiento de la aplicación.
+
+Usos: 
+* Enviar correos electrónicos.
+* Procesar archivos.
+* Realizar cálculos complejos.
+* Actualizar la base de datos.
+* Monitorear la aplicación.
+
+* Ejemplos:
+
+```
+from fastapi import FastAPI, BackgroundTasks
+
+app = FastAPI()
+
+@app.post("/orders")
+async def create_order(order: Order, background_tasks: BackgroundTasks):
+    # Crear el pedido en la base de datos
+    # código ...
+
+    # Enviar un correo electrónico de confirmación en segundo plano
+    background_tasks.add_task(send_confirmation_email, order.email)
+
+def send_confirmation_email(email: str):
+    # Enviar el correo electrónico
+    # código ...
+
+```
+
+```
+from fastapi import FastAPI, BackgroundTasks
+
+app = FastAPI()
+
+@app.post("/files")
+async def upload_file(file: UploadFile, background_tasks: BackgroundTasks):
+    # Guardar el archivo en el disco
+    # código ...
+
+    # Procesar el archivo en segundo plano
+    background_tasks.add_task(process_file, file.filename)
+
+def process_file(filename: str):
+    # Procesar el archivo
+    # código ...
+
+```
 
 ## 13. Socket
 --Elmer

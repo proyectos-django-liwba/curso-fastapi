@@ -1,5 +1,5 @@
 # dependencias
-from fastapi import APIRouter, Depends, Body
+from fastapi import APIRouter, Depends, Body, BackgroundTasks
 from sqlalchemy.orm import Session
 from sqlalchemy import text
 from passlib.context import CryptContext
@@ -15,8 +15,8 @@ user_router = APIRouter()
 
 # Definir rutas
 @user_router.post("/")
-async def create_user(user: User = Body(example=user_example_create), db: Session = Depends(ConexionBD().get_db)):
-    return await UserController.create_user(user, db)
+async def create_user(background_tasks: BackgroundTasks, user: User = Body(example=user_example_create), db: Session = Depends(ConexionBD().get_db)):
+    return await UserController.create_user(user, db, background_tasks)
 
 @user_router.get("/{user_id}")
 async def get_user(user_id: int, db: Session = Depends(ConexionBD().get_db)):
