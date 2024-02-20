@@ -138,10 +138,10 @@ class UserController:
             raise CustomError(500, f"Error changing password: {str(e)}")
         
     
-    def activate_user(otp, db: Session):
+    def activate_user(user: User, db: Session):
         try:
-            UserValidation.validate_otp(otp)
-            UserService.activate_user(otp, db)
+
+            UserService.activate_user(user.otp, db)
             return ResponseBase(200, "Usuario activado correctamente").to_dict()
         except CustomError as e:
             raise e
@@ -166,3 +166,25 @@ class UserController:
             raise e
         except Exception as e:
             raise CustomError(500, f"Error getting not verify users: {str(e)}")
+        
+        
+    def forgot_password(email, db: Session, background_tasks: BackgroundTasks):
+        try:
+            otp = JWT().create_otp({"sub": "123456"},token_type="forgot-password", expires_minutes=1440)
+            user2 = UserService.forgot_password(email,otp, db)
+            
+            link = f"http://localhost:5173/forgot-password/{otp}"
+            background_tasks.add_task(
+                EmailManager().send_email,
+                user2.email,
+                "Recuperación de contraseña",
+                user2.first_name,
+                link,
+                2
+            )
+            
+            return ResponseBase(200, "Correo enviado correctamente").to_dict()
+        except CustomError as e:
+            raise e
+        except Exception as e:
+            raise CustomError(500, f"Error sending email: {str(e)}")

@@ -134,3 +134,12 @@ class UserService:
     def get_user_not_verified(db: Session):
         return db.query(UserData).filter(UserData.is_verified == False).all()
     
+    def forgot_password(email, otp, db: Session):
+        user = db.query(UserData).filter(UserData.email == email).first()
+        UserValidation.validate_user_exists(user)
+        UserValidation.validate_user_verified(user.is_verified)
+        UserValidation.validate_user_active(user.is_active)
+        user.otp = otp
+        db.commit()
+        db.refresh(user)
+        return user

@@ -42,8 +42,8 @@ async def change_password(id, password, new_password, confirm_password, db: Sess
     return UserController.change_password(id, password, new_password,confirm_password, db)
 
 @user_router.post("/activate_account")
-async def activate_account(otp, db: Session = Depends(ConexionBD().get_db)):
-    return UserController.activate_account(otp, db)
+async def activate_account(user: User = Body(example=user_active_example), db: Session = Depends(ConexionBD().get_db)):
+    return UserController.activate_account(user, db)
 
 @user_router.post("/verify_account")
 async def verify_account(user: User = Body(example=user_active_example), db: Session = Depends(ConexionBD().get_db)):
@@ -53,6 +53,10 @@ async def verify_account(user: User = Body(example=user_active_example), db: Ses
 @user_router.post("/get_user_not_verified")
 async def get_user_not_verified(db: Session = Depends(ConexionBD().get_db)):
     return UserController.get_user_not_verified(db)
+
+@user_router.post("/forgot_password")
+async def forgot_password(background_tasks: BackgroundTasks,email, db: Session = Depends(ConexionBD().get_db)):
+    return UserController.forgot_password(email, db, background_tasks)
 
 # Consultas sin ORM
 """ 
