@@ -12,6 +12,7 @@ from Api.Data.category_tasks_data import CategoryTasksData
 from Api.Data.task_data import TaskData
 from Api.Data.upload_data import UploadData
 from Api.Data.tag_data import TagData
+from Api.Data.binnacle_data import BinnacleData
 
 load_dotenv()
 
@@ -35,6 +36,7 @@ target_metadata = {
     TaskData.metadata,
     TagData.metadata,
     UploadData.metadata,
+    BinnacleData.metadata,
     }
 
 # other values from the config, defined by the needs of env.py,

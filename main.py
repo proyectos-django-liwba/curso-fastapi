@@ -27,12 +27,26 @@ from sqlalchemy.orm import Session
 from Api.Data.conection import ConexionBD
 # Middleware
 from Core.Middleware.middleware import manager_middleware
+# Bitácora
+from Api.Models.binnacle_model import Binnacle
+from Api.Service.binnacle_service import BinnacleService
 
 # Cargar variables de entorno
 load_dotenv()
 
 # Orígenes permitidos
 origins = os.getenv("ALLOWED_ORIGINS", "").split(",")
+
+
+# Base de datos
+#ConexionBD().verificar_conexion()
+ConexionBD().create_tables()
+#ConexionBD().drop_tables()
+
+# Obtener la sesión de la base de datos
+db: Session = next(ConexionBD().get_db())
+# Iniciar la tarea en segundo plano
+start_periodic_cleanup(db)
 
 # Configurar la aplicación
 app = FastAPI(
@@ -53,6 +67,19 @@ app.add_middleware(
 # Manejadores de errores HTTP
 @app.exception_handler(StarletteHTTPException)
 async def http_exception_handler(request, exc):
+    
+    # crear bitácora
+    binnacle = Binnacle(
+        action=str(request.url),
+        error=str(exc.detail),
+        status_code=exc.status_code,
+        user_id=1
+    )
+    
+    # guardar bitácora
+    result =  BinnacleService.create_binnacle(binnacle, db)
+    print(result)
+    
     return JSONResponse(
         status_code=exc.status_code,
         content={"error": {
@@ -91,6 +118,18 @@ async def validation_exception_handler(request, exc):
 @app.exception_handler(CustomError)
 async def unicorn_exception_handler(request: Request, exc: CustomError):
     
+    # crear bitácora
+    binnacle = Binnacle(
+        action=str(request.url.path),
+        error=str(exc.message),
+        status_code=int(exc.code)
+    )
+    print(binnacle)
+
+    # guardar bitácora
+    result =  BinnacleService.create_binnacle(binnacle, db)
+    print(result)
+    
     error_dict = {
         "code": exc.code,
         "message": exc.message
@@ -114,15 +153,6 @@ uploads_path = os.path.join(os.path.dirname(__file__), "Uploads/")
 app.mount("/Resources", StaticFiles(directory=resources_path), name="Resources")
 app.mount("/Uploads", StaticFiles(directory=uploads_path), name="Uploads")
 
-# Base de datos
-#ConexionBD().verificar_conexion()
-ConexionBD().create_tables()
-#ConexionBD().drop_tables()
-
-# Obtener la sesión de la base de datos
-db: Session = next(ConexionBD().get_db())
-# Iniciar la tarea en segundo plano
-start_periodic_cleanup(db)
 
 # Rutas de la aplicación
 app.include_router(home_router)
