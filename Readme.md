@@ -524,6 +524,108 @@ async def read_root():
 * [Documentación Middleware](https://fastapi.tiangolo.com/tutorial/middleware/)
 
 ## 11. Anotaciones
+Se utilizan para definir la funcionalidad de las rutas, los modelos de datos y los parámetros de las API.
+
+Las anotaciones son metadatos que se agregan a las funciones, clases y variables para proporcionar información adicional sobre su comportamiento. En FastAPI, las anotaciones se utilizan para definir:
+
+* Rutas: Decoradores como `@app.get` o `@app.post` se utilizan para definir las rutas de la API y el método HTTP asociado.
+```
+from fastapi import FastAPI
+
+app = FastAPI()
+
+@app.get("/")
+async def root():
+    return {"message": "Hola mundo!"}
+
+```
+
+* Modelos de datos: Se usan modelos Pydantic para definir la estructura de los datos que se envían y reciben en la API.
+```
+from pydantic import BaseModel
+
+class User(BaseModel):
+    username: str
+    email: str
+
+```
+* Parámetros: Las anotaciones se usan para definir el tipo de dato, la validación y la descripción de los parámetros de las funciones.
+```
+from fastapi import FastAPI
+
+app = FastAPI()
+
+@app.get("/users/{user_id}")
+async def get_user(user_id: int):
+    return {"user_id": user_id}
+
+```
+* Respuestas: Se utiliza para indicar un modelo de respuesta o tipo de respuesta
+```
+from fastapi.responses import JSONResponse
+
+@app.post("/items/", response_model=Item)
+async def create_item(item: Item):
+    return JSONResponse(content=item.dict(), status_code=201)
+
+
+def create_item(item: Item) -> Item:
+    return item
+
+def create_dict(item: Item) -> dict:
+    return {
+        "item": item
+    }
+
+def create_str(name: str) -> str:
+    return name
+
+```
+* Combinación con Depends: para inyectar dependencias en las funciones de la API
+```
+from fastapi import FastAPI, Depends
+
+app = FastAPI()
+
+async def get_user_from_db(user_id: int) -> User:
+    # Obtener el usuario de la base de datos
+    ...
+
+@app.get("/users/{user_id}")
+async def get_user(user_id: int, user: User = Depends(get_user_from_db)):
+    return {"user": user}
+
+```
+* Simplificar parámetros: permiten reducir el código repetido de parámetros que es compartido entre rutas
+
+```
+from typing_extensions import Annotated
+
+CurrentUser = Annotated[User, Depends(get_current_user)]
+
+
+@app.get("/items/")
+def read_items(user: CurrentUser):
+    #código ...
+
+
+@app.post("/items/")
+def create_item(user: CurrentUser, item: Item):
+    #código ...
+
+
+@app.get("/items/{item_id}")
+def read_item(user: CurrentUser, item_id: int):
+    #código ...
+
+
+@app.delete("/items/{item_id}")
+def delete_item(user: CurrentUser, item_id: int):
+    #código ...
+
+```
+
+[Documentación ](https://fastapi.tiangolo.com/release-notes/#0950)
 
 ## 12. Microservicios
 
@@ -866,7 +968,6 @@ Tiene función principal es contener toda la lógica que la API requiera:
 * Files: manejo de archivos
 
 
-
 ## 22. Relaciones en ORM - Alchemist
 #### 22.1 One to Many
 Relación de uno a muchos.
@@ -999,6 +1100,45 @@ load_dotenv()
 
 variable = os.getenv("VARIABLE_ENTORNO", "valor por defecto - opcional")
 ```
+
+
+## 24. Notación de ellipsis
+En Python es un objeto especial que se utiliza como marcador o como un indicador de "relleno" en ciertas estructuras de datos o funciones. Su función principal es indicar que algo está faltando o que se espera que se llene más tarde.
+
+En FastApi se utiliza en los parámetros de la ruta y en los modelos, en  para indicar un valor obligatorio, esto sustituye un posible valor por defecto.
+```
+# Ejemplo en rutas
+from fastapi import FastAPI, Path
+
+app = FastAPI()
+
+@app.get("/users/{user_id}/posts/{*post_ids}")
+async def get_posts(
+    user_id: int = Path(..., gt=0),
+    post_ids: List[int] = Path(..., min_items=1)
+):
+    # código ...
+
+    return {"user_id": user_id, "post_ids": post_ids}
+
+```
+```
+# Ejemplo en Modelos
+from pydantic import BaseModel, Field
+
+class Item(BaseModel):
+    name: str = Field(...)
+    description: str | None = Field(default=None)
+    tags: List[str] = Field(default=[])
+
+class User(BaseModel):
+    username: str = Field(...)
+    email: str = Field(...)
+    items: List[Item] = Field(default=[])
+
+```
+
+
 
 ### Lista de errores HTTP
 | Código | Estado | Descripción |
