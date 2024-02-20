@@ -1,6 +1,6 @@
 # Dependencias
 import os
-from fastapi import FastAPI, Request, Header, Depends
+from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
@@ -20,10 +20,11 @@ from Api.Routes.category_tasks_router import category_tasks_router
 from Api.Routes.tag_router import tag_router
 from Api.Routes.depends_router import depends_router
 from Api.Routes.middleware_router import middleware_router
-
+# Tareas en segundo plano
+from Core.BackgroundTask.background_task import start_periodic_cleanup
 # Base de datos
+from sqlalchemy.orm import Session
 from Api.Data.conection import ConexionBD
-
 # Middleware
 from Core.Middleware.middleware import manager_middleware
 
@@ -117,6 +118,11 @@ app.mount("/Uploads", StaticFiles(directory=uploads_path), name="Uploads")
 #ConexionBD().verificar_conexion()
 ConexionBD().create_tables()
 #ConexionBD().drop_tables()
+
+# Obtener la sesión de la base de datos
+db: Session = next(ConexionBD().get_db())
+# Iniciar la tarea en segundo plano
+start_periodic_cleanup(db)
 
 # Rutas de la aplicación
 app.include_router(home_router)
