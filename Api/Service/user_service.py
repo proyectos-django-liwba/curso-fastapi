@@ -143,3 +143,11 @@ class UserService:
         db.commit()
         db.refresh(user)
         return user
+    
+    def desactivate_account(id, db: Session):
+        user = db.query(UserData).get(id)
+        UserValidation.validate_user_exists(user)
+        user.is_active = False
+        db.commit()
+        db.refresh(user)
+        return user

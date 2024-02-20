@@ -58,6 +58,9 @@ async def get_user_not_verified(db: Session = Depends(ConexionBD().get_db)):
 async def forgot_password(background_tasks: BackgroundTasks,email, db: Session = Depends(ConexionBD().get_db)):
     return UserController.forgot_password(email, db, background_tasks)
 
+@user_router.post("/desactivate_account/{user_id}")
+async def desactivate_account(user_id: int, db: Session = Depends(ConexionBD().get_db)):
+    return UserController.desactivate_account(user_id, db)
 # Consultas sin ORM
 """ 
 @user_router.get("/by_sql")
