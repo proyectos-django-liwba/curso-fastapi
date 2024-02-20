@@ -190,9 +190,9 @@ class UserController:
             raise CustomError(500, f"Error sending email: {str(e)}")
         
         
-    def desactive_user(id, db: Session):
+    def desactivate_account(id, db: Session):
         try:
-            UserService.desactive_user(id, db)
+            UserService.desactivate_account(id, db)
             return ResponseBase(200, "Usuario desactivado correctamente").to_dict()
         except CustomError as e:
             raise e
