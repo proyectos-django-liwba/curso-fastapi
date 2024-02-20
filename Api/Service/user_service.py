@@ -151,3 +151,14 @@ class UserService:
         db.commit()
         db.refresh(user)
         return user
+    
+    def reset_password(otp, password, db: Session):
+        user = db.query(UserData).filter(UserData.otp == otp).first()
+        UserValidation.validate_user_exists(user)
+        UserValidation.validate_user_verified(user.is_verified)
+        UserValidation.validate_user_active(user.is_active)
+        user.password = password
+        user.otp = None
+        db.commit()
+        db.refresh(user)
+        return user

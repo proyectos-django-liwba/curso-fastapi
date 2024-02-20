@@ -114,4 +114,8 @@ class UserValidation:
     def validate_credentials(password, hashed_password):
         if not SecurityEncryption().verify_password(password, hashed_password):
             raise CustomError(401, "Credenciales incorrectas")
+        
+    def validate_password(password, confirm_password):
+        if password != confirm_password:
+            raise CustomError(400, "Las contraseñas no coinciden")
     

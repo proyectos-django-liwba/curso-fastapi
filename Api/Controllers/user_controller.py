@@ -198,3 +198,14 @@ class UserController:
             raise e
         except Exception as e:
             raise CustomError(500, f"Error desactivating user: {str(e)}")
+        
+    def reset_password(otp, password, confirm_password, db: Session):
+        try:
+            UserValidation.validate_password(password,confirm_password)
+            password = SecurityEncryption().hash_password(password)
+            UserService.reset_password(otp, password, db)
+            return ResponseBase(200, "Contraseña cambiada correctamente").to_dict()
+        except CustomError as e:
+            raise e
+        except Exception as e:
+            raise CustomError(500, f"Error reseting password: {str(e)}")

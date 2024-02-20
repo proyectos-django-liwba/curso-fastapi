@@ -37,7 +37,7 @@ async def delete_user(user_id: int, db: Session = Depends(ConexionBD().get_db)):
 async def login_user(user: User = Body(example=user_example_login), db: Session = Depends(ConexionBD().get_db)):
     return UserController.login_user(user, db)
 
-@user_router.put("/change_password")
+@user_router.patch("/change_password")
 async def change_password(id, password, new_password, confirm_password, db: Session = Depends(ConexionBD().get_db)):
     return UserController.change_password(id, password, new_password,confirm_password, db)
 
@@ -61,6 +61,11 @@ async def forgot_password(background_tasks: BackgroundTasks,email, db: Session =
 @user_router.post("/desactivate_account/{user_id}")
 async def desactivate_account(user_id: int, db: Session = Depends(ConexionBD().get_db)):
     return UserController.desactivate_account(user_id, db)
+
+@user_router.patch("/reset_password")
+async def reset_password(otp, password,conform_password, db: Session = Depends(ConexionBD().get_db)):
+    return UserController.reset_password(otp, password,conform_password, db)
+
 # Consultas sin ORM
 """ 
 @user_router.get("/by_sql")
