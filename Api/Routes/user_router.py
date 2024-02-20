@@ -16,8 +16,7 @@ user_router = APIRouter()
 # Definir rutas
 @user_router.post("/")
 async def create_user(background_tasks: BackgroundTasks, user: User = Body(example=user_example_create), db: Session = Depends(ConexionBD().get_db)):
-    return await UserController.cre
-
+    return await UserController.create_user(user, db, background_tasks)
 @user_router.get("/{user_id}")
 async def get_user(user_id: int, db: Session = Depends(ConexionBD().get_db)):
     return UserController.get_user(user_id, db)
