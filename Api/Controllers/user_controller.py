@@ -136,3 +136,33 @@ class UserController:
             raise e
         except Exception as e:
             raise CustomError(500, f"Error changing password: {str(e)}")
+        
+    
+    def activate_user(otp, db: Session):
+        try:
+            UserValidation.validate_otp(otp)
+            UserService.activate_user(otp, db)
+            return ResponseBase(200, "Usuario activado correctamente").to_dict()
+        except CustomError as e:
+            raise e
+        except Exception as e:
+            raise CustomError(500, f"Error activating user: {str(e)}")
+        
+    def verify_account(user: User, db: Session):
+        try:
+            user = UserService.verify_user(user.otp, db)
+            print(user)
+            return ResponseBase(200, "Usuario verificado correctamente").to_dict()
+        except CustomError as e:
+            raise e
+        except Exception as e:
+            raise CustomError(500, f"Error verifying user: {str(e)}")
+        
+    def get_user_not_verified(db: Session):
+        try:
+            result = UserService.get_user_not_verified(db)
+            return ResponseBase(200, "Usuarios no verificados", result).to_dict()
+        except CustomError as e:
+            raise e
+        except Exception as e:
+            raise CustomError(500, f"Error getting not verify users: {str(e)}")

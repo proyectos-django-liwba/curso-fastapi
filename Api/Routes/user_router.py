@@ -7,7 +7,7 @@ from passlib.context import CryptContext
 from Api.Controllers.user_controller import UserController
 from Api.Data.conection import ConexionBD
 from Api.Models.user_model import User
-from Api.Models.examples import user_example_create, user_example_update, user_example_login,user_example_change_password
+from Api.Models.examples import user_example_create, user_example_update, user_example_login,user_example_change_password,user_active_example
 
 
 # Crear el router
@@ -16,7 +16,7 @@ user_router = APIRouter()
 # Definir rutas
 @user_router.post("/")
 async def create_user(background_tasks: BackgroundTasks, user: User = Body(example=user_example_create), db: Session = Depends(ConexionBD().get_db)):
-    return await UserController.create_user(user, db, background_tasks)
+    return await UserController.cre
 
 @user_router.get("/{user_id}")
 async def get_user(user_id: int, db: Session = Depends(ConexionBD().get_db)):
@@ -41,6 +41,20 @@ async def login_user(user: User = Body(example=user_example_login), db: Session 
 @user_router.put("/change_password")
 async def change_password(id, password, new_password, confirm_password, db: Session = Depends(ConexionBD().get_db)):
     return UserController.change_password(id, password, new_password,confirm_password, db)
+
+@user_router.post("/activate_account")
+async def activate_account(otp, db: Session = Depends(ConexionBD().get_db)):
+    return UserController.activate_account(otp, db)
+
+@user_router.post("/verify_account")
+async def verify_account(user: User = Body(example=user_active_example), db: Session = Depends(ConexionBD().get_db)):
+    
+    return UserController.verify_account(user, db)
+
+@user_router.post("/get_user_not_verified")
+async def get_user_not_verified(db: Session = Depends(ConexionBD().get_db)):
+    return UserController.get_user_not_verified(db)
+
 # Consultas sin ORM
 """ 
 @user_router.get("/by_sql")

@@ -63,6 +63,10 @@ user_example_login = {
     "password": "Usuario1234"
 }
 
+user_active_example = {
+    "otp": "token",
+}
+
 # tag
 
 tag_example_create = {

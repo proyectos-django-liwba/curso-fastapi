@@ -111,3 +111,26 @@ class UserService:
         db.commit()
         db.refresh(user)
         return user
+    
+    def activate_user(otp, db: Session):
+        user = db.query(UserData).filter(UserData.otp == otp).first()
+        UserValidation.validate_user_exists(user)
+        user.is_active = True
+        user.otp = None
+        db.commit()
+        db.refresh(user)
+        return user
+    
+    def verify_user(otp, db: Session):
+        #obtener usuario por otp
+        user = db.query(UserData).filter(UserData.otp == otp).first()
+        UserValidation.validate_user_exists(user)
+        user.is_verified = True
+        user.otp = None
+        db.commit()
+        db.refresh(user)
+        return user
+    
+    def get_user_not_verified(db: Session):
+        return db.query(UserData).filter(UserData.is_verified == False).all()
+    
