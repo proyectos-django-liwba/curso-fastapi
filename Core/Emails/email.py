@@ -23,7 +23,7 @@ class EmailManager:
         VALIDATE_CERTS = True
     )
 
-    async def send_email(self, to: str, subject: str, user_name: str, link: str = "http://localhost:5173"):
+    async def send_email(self, to: str, subject: str, user_name: str, link: str = "http://localhost:5173", type: int = 1):
         try:
             # validar el correo
             valid_email = validate_email(to)
@@ -31,13 +31,17 @@ class EmailManager:
 
             # Renderizar el template HTML
             env = Environment(loader=FileSystemLoader("Resources/Template"))
-            template = env.get_template("email.html")
+            template = env.get_template("activate_account.html")
+            if type == 2:
+                 template = env.get_template("recovery_password.html")
+            
+
             html_content = template.render(
                 subject=subject, user_name=user_name, link=link
             )
 
             # Obtener la ruta del archivo 
-            logo_path = os.path.join(os.path.dirname(__file__), "../../Resources/Images/logo.png")
+            logo_path = os.path.join(os.path.dirname(__file__), "../../Resources/Images/fastapi-logo2.png")
 
             # Validar que el archivo exista
             if not os.path.exists(logo_path):

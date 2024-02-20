@@ -2,8 +2,7 @@
 from sqlalchemy import Column,ForeignKey, Integer, String, TIMESTAMP, text
 # Importaciones
 from Api.Data.conection import ConexionBD
-from Api.Models.upload_model import Upload
-from Api.Models.user_model import User
+
 
 class UploadData(ConexionBD.Base):
     __tablename__ = "uploads"

@@ -1,5 +1,6 @@
 # Dependencias
 from sqlalchemy.orm import Session
+from sqlalchemy.exc import IntegrityError, TimeoutError
 # Importaciones
 from Core.Validations.custom_error import CustomError
 from Api.Models.upload_model import Upload
@@ -10,10 +11,19 @@ class UploadService:
     def create_upload(upload: Upload, db: Session):
         _upload = UploadData(url=upload.url, user_id=upload.user_id)
         
-        db.add(_upload)
-        db.commit()
-        db.refresh(_upload)
-        return _upload
+        try: 
+            db.add(_upload)
+            db.commit()
+            db.refresh(_upload)
+            return _upload
+        
+        except IntegrityError as e:
+            db.rollback()
+            raise CustomError(400,"Data base integrity error", e.orig.diag.message_detail)
+        except TimeoutError as e:
+            db.rollback()
+            raise CustomError(408,"Data base timeout error", e.orig.diag.message_detail)
+    
     
     def get_upload(id: int, db: Session):
         result = db.query(UploadData).get(id)
@@ -32,17 +42,25 @@ class UploadService:
 
         if _upload is None:
             raise CustomError(404, "Upload not found")
-        old_url = _upload.url
-        _upload.url = upload.url
+        
+        try:
+            old_url = _upload.url
+            _upload.url = upload.url
 
-        db.commit()
-        db.refresh(_upload)
-        # retorna el objeto con todos los atributos
-        # puede ser necesario devolver solo algunos atributos
-        return {
-            "upload": _upload,
-            "old_url": old_url,
-        }
+            db.commit()
+            db.refresh(_upload)
+
+            return {
+                "upload": _upload,
+                "old_url": old_url,
+            }
+        except IntegrityError as e:
+            db.rollback()
+            raise CustomError(400,"Data base integrity error", e.orig.diag.message_detail)
+        except TimeoutError as e:
+            db.rollback()
+            raise CustomError(408,"Data base timeout error", e.orig.diag.message_detail)
+    
     
     def delete_upload(id: int, db: Session):
         _upload = db.query(UploadData).get(id)

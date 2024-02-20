@@ -6,7 +6,6 @@ from fastapi import APIRouter, File, UploadFile, Body, Depends
 from sqlalchemy.orm import Session
 # Importaciones
 from Core.Validations.custom_error import CustomError
-from Core.Files.file import FileManager
 from Api.Models.upload_model import Upload
 from Api.Models.examples import upload_example_create, upload_example_update
 from Api.Controllers.upload_controller import UploadController

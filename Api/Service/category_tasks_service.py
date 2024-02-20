@@ -1,7 +1,6 @@
 # Dependencias
-import re
 from sqlalchemy.orm import Session
-from sqlalchemy.exc import IntegrityError
+from sqlalchemy.exc import IntegrityError, TimeoutError
 # Importaciones
 from Core.Validations.custom_error import CustomError
 from Api.Models.category_tasks_model import CategoryTasks
@@ -17,13 +16,13 @@ class CategoryTasksService:
             db.commit()
             db.refresh(_category_task)
             return _category_task
+        
         except IntegrityError as e:
-            #print(e.orig.diag.message_detail)
-            #print(next(iter(e.params)))
-            #print(e.params.keys())
-
             db.rollback()
-            raise CustomError(400, "CategoryTask name is already registered", "Data base integrity error")  
+            raise CustomError(400,"Data base integrity error", e.orig.diag.message_detail)
+        except TimeoutError as e:
+            db.rollback()
+            raise CustomError(408,"Data base timeout error", e.orig.diag.message_detail)
     
     
     def get_category_task(id: int, db: Session):
@@ -54,7 +53,10 @@ class CategoryTasksService:
             return _category_task
         except IntegrityError as e:
             db.rollback()
-            raise CustomError(400, "CategoryTask name is already registered", "Data base integrity error")
+            raise CustomError(400,"Data base integrity error", e.orig.diag.message_detail)
+        except TimeoutError as e:
+            db.rollback()
+            raise CustomError(408,"Data base timeout error", e.orig.diag.message_detail)
     
     def delete_category_task(id: int, db: Session):
         _category_task = db.query(CategoryTasksData).get(id)

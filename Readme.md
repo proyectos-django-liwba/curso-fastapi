@@ -5,12 +5,14 @@
 ## Desarrolladores 
 ![coders](./Resources/Images/coders.png)
 * 🧑‍💻Wilfredo Barquero Herrera
-     [![Gmail](https://img.shields.io/badge/Gmail-D14836?style=for-the-badge&logo=gmail&logoColor=white)](liwbarqueroh@gmail.com )
-     [![GitHub](https://img.shields.io/badge/github-%23121011.svg?style=for-the-badge&logo=github&logoColor=white)](https://github.com/liwBh)
-* 👨‍💻Elmer Mejias Carranza
-     [![GitHub](https://img.shields.io/badge/github-%23121011.svg?style=for-the-badge&logo=github&logoColor=white)](https://github.com/ing-Elmer)
-     [![Gmail](https://img.shields.io/badge/Gmail-D14836?style=for-the-badge&logo=gmail&logoColor=white)](https://elmermejias47@gmail.com)
+    - [![Gmail](https://img.shields.io/badge/Gmail-D14836?style=for-the-badge&logo=gmail&logoColor=white)](liwbarqueroh@gmail.com )
 
+    - [![GitHub](https://img.shields.io/badge/github-%23121011.svg?style=for-the-badge&logo=github&logoColor=white)](https://github.com/liwBh)
+* 👨‍💻Elmer Mejias Carranza
+
+    - [![Gmail](https://img.shields.io/badge/Gmail-D14836?style=for-the-badge&logo=gmail&logoColor=white)](https://elmermejias47@gmail.com)
+
+    - [![GitHub](https://img.shields.io/badge/github-%23121011.svg?style=for-the-badge&logo=github&logoColor=white)](https://github.com/ing-Elmer)
 
 ## Arquitectura de proyecto
 
@@ -127,15 +129,15 @@ app/
 
 ## Contenido de la guía 📖
 * [Desarrolladores](#desarrolladores)
-* [Arquitectura de proyecto](#arquitectura-de-proyecto)
+* [0. Arquitectura de proyecto](#arquitectura-de-proyecto)
     - [1.Descripción de las capas](#1.-descripción-de-las-capas:)
     - [2. Estructura de carpetas](#2.-estructura-de-carpetas:)
-* [FastAPI](#1-fastapi)
-* [Iniciar proyecto](#2-iniciar-proyecto)
-    - [Iniciar proyecto](#21-crear-proyecto)
-    - [Iniciar proyecto](#22-crear-servidor)
-    - [Iniciar proyecto](#23-comandos-de-inicio-servidor)
-* [Instalación de dependencias](#3-instalación-de-dependencias)
+* [1. FastAPI](#1-fastapi)
+* [2. Iniciar proyecto](#2-iniciar-proyecto)
+    - [Crear proyecto](#21-crear-proyecto)
+    - [Crear servidor](#22-crear-servidor)
+    - [Comandos servidor](#23-comandos-de-inicio-servidor)
+* [3. Instalación de dependencias](#3-instalación-de-dependencias)
     - [Jinga2](#31-manejo-de-archivos-jinja2)
     - [SqlAlchemy](#32-orm---sql-sqlalchemy)
     - [Pydantic](#33-validación-pydantic)
@@ -144,26 +146,32 @@ app/
     - [Passlib](#36-hasheo-de-contraseña-passlib)
     - [Alembic](#37-migraciones-alembic)
     - [Email Validator](#38-validación-de-correo---email-validator)
-* [Base de datos](#4-base-de-datos)
+* [4. Base de datos](#4-base-de-datos)
     - [Conector Postgre](#411-conector-bd-postgre-sql)
     - [Conector Mysql](#412-conector-bd-mysql)
-* [Migraciones](#5-migraciones)
+* [5. Migraciones](#5-migraciones)
     - [Iniciar proyecto](#51-configuración-alembic)
     - [Iniciar proyecto](#52-comandos-alembic)
-* [Auth JWT](#6-auth-jwt)
-* [Permisos](#7-permisos)
-* [Bitácora](#8-bitacora)
-* [Dependencias](#9-dependencias)
-* [Middleware](#10-middleware)
-* [Anotaciones](#11-anotaciones)
-* [Microservices](#12-microservicios)
-* [Socket](#13-socket)
-* [Estáticos](#14-estaticos)
-* [Template](#15-template)
-* [Mail](#16-mail)
-* [Manejo de archivos](#17-manejo-de-archivos)
-* [Manejo de errores](#18-manejo-de-errores)
-* [Encriptado de datos](#19-encriptado-de-datos)
+* [6. Auth JWT](#6-auth-jwt)
+* [7. Permisos](#7-permisos)
+* [8. Bitácora](#8-bitacora)
+* [9. Dependencias](#9-dependencias)
+* [10. Middleware](#10-middleware)
+* [11. Anotaciones](#11-anotaciones)
+* [12. Tareas en segundo plano](#12-tareas-en-segundo-plano)
+* [13. Socket](#13-socket)
+* [14. Estáticos](#14-estaticos)
+* [15. Template](#15-template)
+* [16. Mail](#16-mail)
+* [17. Manejo de archivos](#17-manejo-de-archivos)
+* [18. Manejo de errores](#18-manejo-de-errores)
+* [19. Encriptado de datos](#19-encriptado-de-datos)
+* [20. Flujo de trabajo de módulos](#20-flujo-de-trabajo-de-módulos)
+* [21. Descripción función de packages](#21-descripción-función-de-packages)
+* [22. Relaciones en ORM - Alchemist](#22-relaciones-en-orm---alchemist)
+* [23. Variables de entorno](#23-variables-de-entorno)
+* [24. Notación de ellipsis](#24-notación-de-ellipsis)
+* [Problemas con rutas](#problemas-con-rutas)
 * [Lista de errores HTTP](#lista-de-errores-http)
 * [Problemas con el Interprete](#problemas-con-el-interprete)
 
@@ -413,17 +421,264 @@ DEFAULT_EXPIRE_MINUTES = 30
         encoded_jwt = jwt.encode(to_encode, self.SECRET_KEY, algorithm=self.ALGORITHM)
         return encoded_jwt
     ```
+
 ## 7. Permisos
 
 ## 8. Bitacora
 --Elmer
+
 ## 9. Dependencias
+En FastAPI, las dependencias son una herramienta poderosa que te permite desacoplar la lógica de tu aplicación en unidades más pequeñas y reutilizables. Se pueden usar para:
+* 1. Inyección de dependencias:
+    - Permiten inyectar objetos en tus funciones de ruta y otras funciones de tu aplicación. Esto te permite escribir código más modular y fácil de probar.
+    ```
+    # inyectar sesión de base de datos
+        from fastapi import Depends, FastAPI
+
+        app = FastAPI()
+
+        def get_db_connection():
+            # ... 
+
+        @app.get("/")
+        async def root(db: Session = Depends(get_db_connection)):
+            #  ... 
+
+    ```
+* 2. Validación de entrada:
+    - Se pueden usar para validar la entrada de las solicitudes a tu API. Puedes crear funciones que validen la entrada y luego usarlas como dependencias en tus funciones de ruta.
+
+    ```
+        from fastapi import Depends, FastAPI, HTTPException
+
+        app = FastAPI()
+
+        def validate_user_id(user_id: int):
+            if user_id < 1:
+                raise HTTPException(status_code=400, detail="El ID del usuario debe ser mayor a 0")
+
+        @app.get("/users/{user_id}")
+        async def get_user(user_id: int = Depends(validate_user_id)):
+            # ...
+
+    ```
+* 3. Autenticación y autorización:
+    - Se pueden usar para implementar la autenticación y autorización en tu API. Puedes crear funciones que verifiquen si un usuario está autenticado y autorizado para acceder a un recurso, y luego usarlas como dependencias en tus funciones de ruta.
+    ```
+        from fastapi import Depends, FastAPI, HTTPException
+
+        app = FastAPI()
+
+        def authenticate_user(username: str, password: str):
+            # ...
+
+        def authorize_user(user: User):
+            if not user.is_admin:
+                raise HTTPException(status_code=401, detail="El usuario no tiene permiso para acceder a este recurso")
+
+        @app.get("/admin")
+        async def admin_endpoint(user: User = Depends(authenticate_user, authorize_user)):
+            # ... 
+
+    ```
+
+* [Documentación Depends](https://fastapi.tiangolo.com/tutorial/dependencies/)
+
 
 ## 10. Middleware
+* El middleware es un código que se ejecuta antes o después de procesar cada solicitud. 
+
+* Consiste en una función que se agrega a la instancia de FastAPI en el archivo principal
+
+* Se aplica a todos los endpoints, sus principales usos son: 
+    - Registro y monitoreo de solicitudes
+    - Autenticación y autorización
+    - Compresión de Respuestas
+    - Manejo de Errores
+    - Caché de Contenido
+
+```
+from fastapi import FastAPI, Request
+
+app = FastAPI()
+
+# Middleware
+async def simple_middleware(request: Request, call_next):
+    # Codigo ....
+    print("Codigo a ejecutar...")
+
+    # Llamar al siguiente middleware o controlador de ruta
+    response = await call_next(request)
+
+    return response
+
+# Agregar el middleware a la aplicación
+app.middleware("http")(simple_middleware)
+
+# Ruta de ejemplo
+@app.get("/")
+async def read_root():
+    return {"message": "Hello World"}
+
+```
+
+* [Documentación Middleware](https://fastapi.tiangolo.com/tutorial/middleware/)
 
 ## 11. Anotaciones
+Se utilizan para definir la funcionalidad de las rutas, los modelos de datos y los parámetros de las API.
 
-## 12. Microservicios
+Las anotaciones son metadatos que se agregan a las funciones, clases y variables para proporcionar información adicional sobre su comportamiento. En FastAPI, las anotaciones se utilizan para definir:
+
+* Rutas: Decoradores como `@app.get` o `@app.post` se utilizan para definir las rutas de la API y el método HTTP asociado.
+```
+from fastapi import FastAPI
+
+app = FastAPI()
+
+@app.get("/")
+async def root():
+    return {"message": "Hola mundo!"}
+
+```
+
+* Modelos de datos: Se usan modelos Pydantic para definir la estructura de los datos que se envían y reciben en la API.
+```
+from pydantic import BaseModel
+
+class User(BaseModel):
+    username: str
+    email: str
+
+```
+* Parámetros: Las anotaciones se usan para definir el tipo de dato, la validación y la descripción de los parámetros de las funciones.
+```
+from fastapi import FastAPI
+
+app = FastAPI()
+
+@app.get("/users/{user_id}")
+async def get_user(user_id: int):
+    return {"user_id": user_id}
+
+```
+* Respuestas: Se utiliza para indicar un modelo de respuesta o tipo de respuesta
+```
+from fastapi.responses import JSONResponse
+
+@app.post("/items/", response_model=Item)
+async def create_item(item: Item):
+    return JSONResponse(content=item.dict(), status_code=201)
+
+
+def create_item(item: Item) -> Item:
+    return item
+
+def create_dict(item: Item) -> dict:
+    return {
+        "item": item
+    }
+
+def create_str(name: str) -> str:
+    return name
+
+```
+* Combinación con Depends: para inyectar dependencias en las funciones de la API
+```
+from fastapi import FastAPI, Depends
+
+app = FastAPI()
+
+async def get_user_from_db(user_id: int) -> User:
+    # Obtener el usuario de la base de datos
+    ...
+
+@app.get("/users/{user_id}")
+async def get_user(user_id: int, user: User = Depends(get_user_from_db)):
+    return {"user": user}
+
+```
+* Simplificar parámetros: permiten reducir el código repetido de parámetros que es compartido entre rutas
+
+```
+from typing_extensions import Annotated
+
+CurrentUser = Annotated[User, Depends(get_current_user)]
+
+
+@app.get("/items/")
+def read_items(user: CurrentUser):
+    #código ...
+
+
+@app.post("/items/")
+def create_item(user: CurrentUser, item: Item):
+    #código ...
+
+
+@app.get("/items/{item_id}")
+def read_item(user: CurrentUser, item_id: int):
+    #código ...
+
+
+@app.delete("/items/{item_id}")
+def delete_item(user: CurrentUser, item_id: int):
+    #código ...
+
+```
+
+[Documentación ](https://fastapi.tiangolo.com/release-notes/#0950)
+
+## 12. Tareas en segundo plano
+Las tareas en segundo plano en FastAPI son una forma de ejecutar tareas que no necesitan interacción con el usuario. Se pueden usar para realizar tareas que requieren mucho tiempo o que no necesitan ser ejecutadas en tiempo real.
+
+Las tareas en segundo plano en FastAPI se ejecutan en un proceso independiente del proceso principal de la aplicación. Esto significa que no bloquean la interfaz de usuario y no afectan el rendimiento de la aplicación.
+
+Usos: 
+* Enviar correos electrónicos.
+* Procesar archivos.
+* Realizar cálculos complejos.
+* Actualizar la base de datos.
+* Monitorear la aplicación.
+
+* Ejemplos:
+
+```
+from fastapi import FastAPI, BackgroundTasks
+
+app = FastAPI()
+
+@app.post("/orders")
+async def create_order(order: Order, background_tasks: BackgroundTasks):
+    # Crear el pedido en la base de datos
+    # código ...
+
+    # Enviar un correo electrónico de confirmación en segundo plano
+    background_tasks.add_task(send_confirmation_email, order.email)
+
+def send_confirmation_email(email: str):
+    # Enviar el correo electrónico
+    # código ...
+
+```
+
+```
+from fastapi import FastAPI, BackgroundTasks
+
+app = FastAPI()
+
+@app.post("/files")
+async def upload_file(file: UploadFile, background_tasks: BackgroundTasks):
+    # Guardar el archivo en el disco
+    # código ...
+
+    # Procesar el archivo en segundo plano
+    background_tasks.add_task(process_file, file.filename)
+
+def process_file(filename: str):
+    # Procesar el archivo
+    # código ...
+
+```
 
 ## 13. Socket
 --Elmer
@@ -550,6 +805,73 @@ from jinja2 import Environment, FileSystemLoader
 ```
 
 ## 17. Manejo de archivos
+Almacenamiento de archivos en una carpeta del servidor
+* 1: Declarar en el main la ruta de la carpeta Uploads, de manera que se pueda accede a los recursos de que contiene.
+```
+# importaciones
+import os
+from fastapi.staticfiles import StaticFiles
+
+# Configurar archivos estáticos
+uploads_path = os.path.join(os.path.dirname(__file__), "Uploads/")
+app.mount("/Uploads", StaticFiles(directory=uploads_path), name="Uploads")
+
+```
+* 2: Uso de la clase UploadFile para el manejo de archivos
+```
+# importaciones
+from fastapi import UploadFile
+
+# ruta
+@upload_router.post("/save-upload")
+def upload_file2(file: UploadFile):
+#...
+```
+
+* 3: validaciones del archivo
+```
+    # validar que hay un archivo
+    if not file.filename:
+        raise CustomError(400, "No file provided")
+
+    # validar el formato del archivo
+    valid_formats = ["image/jpeg", "image/png", "image/jpg"]
+    if file.content_type not in valid_formats:
+        raise CustomError(400, "Invalid file format")
+
+    # validar el tamaño del archivo
+    max_size = 1 * 1024 * 1024
+    if file.size > max_size:
+        raise CustomError(400, "File size exceeds the limit of 1MB")
+```
+* 4: Generar un nombre único 
+```
+    # dependencia
+    from uuid import uuid4
+
+    # generar nombre único para cada archivo
+    file_name = f"{uuid4()}-{file.filename}"
+```
+
+* 5: Guardar el archivo en la carpeta
+```
+    # guardar el archivo
+    file_path = os.path.join("Uploads", file_name)
+    with open(file_path, "wb") as f:
+        f.write(file.file.read())
+        f.close()
+```
+
+* 6: Generar url, para acceder a archivo, también esta se puede almacenar en base de datos
+```
+    # generar url para acceder al archivo
+    file_url = f"http://localhost:8000/Uploads/{file_name}"
+```
+* [Documentación UploadFile](https://fastapi.tiangolo.com/reference/uploadfile/)
+
+* [Documentación OS Files](https://docs.python.org/3/library/os.html#files-and-directories)
+
+* [Documentación uuid](https://docs.python.org/3/library/uuid.html)
 
 ## 18. Manejo de Errores
 * [Documentación errores](https://fastapi.tiangolo.com/tutorial/handling-errors/#requestvalidationerror-vs-validationerror)
@@ -697,12 +1019,118 @@ Tiene función principal es contener toda la lógica que la API requiera:
 * Files: manejo de archivos
 
 
-
 ## 22. Relaciones en ORM - Alchemist
 #### 22.1 One to Many
-#### 22.2 Many to Many
-#### 22.3 Invertida
-#### 22.4 
+Relación de uno a muchos.
+* Requiere importar 
+```
+from sqlalchemy import ForeignKey
+```
+* Definir una columna para el id, indicando el nombre de la tabla y el atributo id
+```
+user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+```
+* Aplicar un join para obtener los datos de la relación, crear un atributo con el nombre en singular de la tabla con la que tiene una relación, agrega como parámetro el nombre de la clase data o model schema
+```
+category_task= relationship("CategoryTask", lazy="joined")
+```
+#### 22.2 One to Many Inverse
+La relación inversa permite recuperar datos desde la clase que no tiene la foreignkey como un arreglo de todos los registros asociados.
+
+* Agregar en la relación de muchos, la propiedad: back_populates y ligarla a una variable para aplicar la relación inversa y recuperar los registros asociados
+```
+ # TaskData
+ category_task= relationship("CategoryTasksData", lazy="joined", back_populates="tasks")
+```
+
+* Agregar en la relación de uno, una variable tasks, para insertar los registros asociados
+```
+# CategoryTasksData
+ tasks = relationship("TaskData",lazy="joined", back_populates="category_task")
+```
+#### 22.3 Many to Many
+En este tipo de relación se requieren dos tablas y una tabla intermedia para establecer las relaciones de muchos a muchos. 
+* Crear en data un archivo pivot.data para tablas intermedias
+```
+# dependencias
+from sqlalchemy import Table, Column, ForeignKey, Integer
+# importaciones
+from Api.Data.conection import ConexionBD
+
+# tabla intermedia o pivote
+tasks_tags = Table(
+    "tasks_tags",
+    ConexionBD.Base.metadata,
+    Column("task_id", Integer, ForeignKey("tasks.id"), primary_key=True),
+    Column("tag_id", Integer, ForeignKey("tags.id"), primary_key=True)
+)
+```
+* Aplicar relación many to many, para ello se agrega una linea en el file_data.py
+
+```
+class TaskData(ConexionBD.Base):
+    __tablename__ = "tasks"
+    ...
+    # relacion many to many, con tabla intermedia o pivote 
+    tasks = relationship("TaskData", secondary=tasks_tags, back_populates="tags")
+    
+```
+* Para ejecutar la relación y obtener listado de registros relacionados
+```
+# obtener la tarea
+_task = db.query(TaskData).get(task_id)
+
+# obtener etiquetas asociadas a la tarea
+_task.tags
+```
+* Para ejecutar la relación y agregar registros relacionados
+```
+# obtener la tarea
+_task = db.query(TaskData).get(task_id)
+
+# obtener la etiqueta
+_tag = db.query(TagData).get(tag_id)
+
+# asociar ambas en la tabla intermedia
+_task.tags.append(_tag)
+
+# guardar cambios
+db.commit()
+```
+* Para ejecutar la relación y remover registros relacionados
+```
+# obtener la tarea
+_task = db.query(TaskData).get(task_id)
+
+# obtener la etiqueta
+_tag = db.query(TagData).get(tag_id)
+
+# remover la etiqueta de la tabla intermedia que asocia ambas tablas
+ _task.tags.remove(_tag)
+
+# guardar cambios
+db.commit()
+
+```
+* Se recomienda validar la existencia de task, tag y que ambas estén relacionadas
+```
+# validar que existe la tarea
+_task = db.query(TaskData).get(task_id)
+if _task is None:
+    raise CustomError(404, "Task not found")
+
+# validar que existe la tag
+_tag = db.query(TagData).get(tag_id)
+if _tag is None:
+    raise CustomError(404, "Tag not found")
+
+# validar que hay una asociación task - tag
+if _tag not in _task.tags:
+    raise CustomError(404, "Tag not found in task")
+
+```
+#### 22.4 Relaciones Documentación
+* [Documentación Relationship](https://docs.sqlalchemy.org/en/20/orm/relationships.html)
 
 ## 23. Variables de entorno
 Se requiere el uso de la dependencia [Python Dotenv](#33-variables-de-entorno---python-dotenv)
@@ -724,6 +1152,45 @@ load_dotenv()
 variable = os.getenv("VARIABLE_ENTORNO", "valor por defecto - opcional")
 ```
 
+
+## 24. Notación de ellipsis
+En Python es un objeto especial que se utiliza como marcador o como un indicador de "relleno" en ciertas estructuras de datos o funciones. Su función principal es indicar que algo está faltando o que se espera que se llene más tarde.
+
+En FastApi se utiliza en los parámetros de la ruta y en los modelos, en  para indicar un valor obligatorio, esto sustituye un posible valor por defecto.
+```
+# Ejemplo en rutas
+from fastapi import FastAPI, Path
+
+app = FastAPI()
+
+@app.get("/users/{user_id}/posts/{*post_ids}")
+async def get_posts(
+    user_id: int = Path(..., gt=0),
+    post_ids: List[int] = Path(..., min_items=1)
+):
+    # código ...
+
+    return {"user_id": user_id, "post_ids": post_ids}
+
+```
+```
+# Ejemplo en Modelos
+from pydantic import BaseModel, Field
+
+class Item(BaseModel):
+    name: str = Field(...)
+    description: str | None = Field(default=None)
+    tags: List[str] = Field(default=[])
+
+class User(BaseModel):
+    username: str = Field(...)
+    email: str = Field(...)
+    items: List[Item] = Field(default=[])
+
+```
+
+
+
 ### Lista de errores HTTP
 | Código | Estado | Descripción |
 |---|---|---|
@@ -738,11 +1205,20 @@ variable = os.getenv("VARIABLE_ENTORNO", "valor por defecto - opcional")
 | 401 | Unauthorized | El cliente no está autorizado para acceder al recurso solicitado. |
 | 403 | Forbidden | El cliente tiene prohibido acceder al recurso solicitado. |
 | 404 | Not Found | El recurso solicitado no se encuentra en el servidor. |
+| 408 | Request Timeout | El tiempo de espera se agotado |
 | 422 | Unprocessable Entity | La solicitud no se puede procesar debido a errores en la entidad. |
 |5XX| 🟥 |Error del servidor|
 | 500 | Internal Server Error | Se ha producido un error inesperado en el servidor. |
 | 503 | Service Unavailable | El servidor no está disponible temporalmente. |
 
+### Problemas con rutas
+Si tienes errores a la hora de realizar peticiones y te piden parámetros que la url no tiene pero otras si lo tienen pueden intentar una de las siguientes posibles soluciones: 
+
+* Ordenar las rutas desde la que no tienen parámetro en la url, luego las que tienen parámetros en la url de forma descendente 
+![alt text](./Resources/Images/solucion-rutas-1.jpg)
+
+* Agrear un / al final de cada ruta que tiene parámetros en la url
+![alt text](./Resources/Images/solucion-rutas-2.jpg)
 
 ### Problemas con el Interprete
 Si no reconoce el interprete debes elegirlo de forma manual.
