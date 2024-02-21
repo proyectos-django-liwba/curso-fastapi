@@ -1,6 +1,11 @@
 from  fastapi import Request, Header
+from typing import List
 import time
 import httpx
+
+
+blacklisted = []
+
 
 async def add_process_time_header(request: Request, call_next):
     #obtener el tiempo de inicio
@@ -44,6 +49,12 @@ async def manager_middleware(request: Request, call_next):
         return await add_process_time_header(request, call_next)
     elif request.url.path == "/api/middleware/get_data_origin":
         return await get_data_origin(request, call_next)
+    elif request.url.path == "/login":
+        
+        print("Acceso a la ruta de login")
+        return await call_next(request)
     
     return await call_next(request) 
     
+    
+    # 
