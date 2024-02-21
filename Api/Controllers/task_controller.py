@@ -23,7 +23,7 @@ class TaskController:
         except CustomError as e:
             raise e
         except Exception as e:
-            raise CustomError(500, f"Error al crear la tarea: {str(e)}")
+            raise CustomError(500, "Error al crear la tarea: ",{str(e)})
         
     def get_task(task_id: int, db: Session):
         try:
@@ -35,7 +35,7 @@ class TaskController:
         except CustomError as e:
             raise e
         except Exception as e:
-            raise CustomError(500, f"Error al obtener la tarea: {str(e)}")
+            raise CustomError(500, "Error al obtener la tarea: ",{str(e)})
     
     def get_all_tasks(db: Session):
         try:
@@ -44,7 +44,7 @@ class TaskController:
         except CustomError as e:
             raise e
         except Exception as e:
-            raise CustomError(500, f"Error al listar las tareas: {str(e)}")
+            raise CustomError(500, "Error al listar las tareas: ",{str(e)})
     
     def get_tasks_by_status(status:str, db: Session):
         try:
@@ -53,7 +53,7 @@ class TaskController:
         except CustomError as e:
             raise e
         except Exception as e:
-            raise CustomError(500, f"Error al listar las tareas: {str(e)}")
+            raise CustomError(500, "Error al listar las tareas: ",{str(e)})
     
     def update_task( task: Task, db: Session):
         try:
@@ -68,7 +68,7 @@ class TaskController:
         except CustomError as e:
             raise e
         except Exception as e:
-            raise CustomError(500, f"Error al actualizar la tarea: {str(e)}")
+            raise CustomError(500, "Error al actualizar la tarea: ",{str(e)})
     
     def delete_task(task_id: int, db: Session):
         try:
@@ -80,7 +80,7 @@ class TaskController:
         except CustomError as e:
             raise e
         except Exception as e:
-            raise CustomError(500, f"Error al eliminar la tarea: {str(e)}")
+            raise CustomError(500, "Error al eliminar la tarea: ", {str(e)})
         
     def paginate_tasks(page: int, size: int, db: Session):
         try:
@@ -91,7 +91,7 @@ class TaskController:
         except CustomError as e:
             raise e
         except Exception as e:
-            raise CustomError(500, f"Error al listar las tareas: {str(e)}")
+            raise CustomError(500, "Error al listar las tareas: ",{str(e)})
         
         
     # tablas intermedias
@@ -109,7 +109,7 @@ class TaskController:
         except CustomError as e:
             raise e
         except Exception as e:
-            raise CustomError(500, f"Error al agregar el tag: {str(e)}")
+            raise CustomError(500, "Error al agregar el tag: ",{str(e)})
         
         
     def remove_tag(task_id: int, tag_id: int, db: Session):
@@ -125,7 +125,7 @@ class TaskController:
         except CustomError as e:
             raise e
         except Exception as e:
-            raise CustomError(500, f"Error al eliminar el tag: {str(e)}")
+            raise CustomError(500, "Error al eliminar el tag: ",{str(e)})
         
     def get_task_with_tags(task_id: int, db: Session):
         try:
@@ -137,7 +137,7 @@ class TaskController:
         except CustomError as e:
             raise e
         except Exception as e:
-            raise CustomError(500, f"Error al obtener la tarea: {str(e)}")
+            raise CustomError(500, "Error al obtener la tarea: ",{str(e)})
         
         
     def get_all_tasks_with_tags(db: Session):
@@ -147,4 +147,4 @@ class TaskController:
         except CustomError as e:
             raise e
         except Exception as e:
-            raise CustomError(500, f"Error al listar las tareas: {str(e)}")
+            raise CustomError(500, "Error al listar las tareas: ",{str(e)})

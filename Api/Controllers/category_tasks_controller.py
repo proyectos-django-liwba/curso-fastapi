@@ -21,7 +21,7 @@ class CategoryTasksController:
         except CustomError as e:
             raise e
         except Exception as e:
-            raise CustomError(500, f"Error creating category_task: {str(e)}")
+            raise CustomError(500, "Error creating category_task: ",{str(e)})
         
     def get_category_task(id: int, db: Session):
         try:
@@ -35,7 +35,7 @@ class CategoryTasksController:
         except CustomError as e:
             raise e
         except Exception as e:
-            raise CustomError(500, f"Error getting category_task: {str(e)}")
+            raise CustomError(500, "Error getting category_task: ",{str(e)})
         
         
     def get_all_category_tasks(db: Session):
@@ -48,7 +48,7 @@ class CategoryTasksController:
         except CustomError as e:
             raise e
         except Exception as e:
-            raise CustomError(500, f"Error getting category_tasks: {str(e)}")
+            raise CustomError(500, "Error getting category_tasks: ",{str(e)})
         
     def update_category_task(category_task: CategoryTasks, db: Session):
         try:
@@ -62,7 +62,7 @@ class CategoryTasksController:
         except CustomError as e:
             raise e
         except Exception as e:
-            raise CustomError(500, f"Error updating category_task: {str(e)}")
+            raise CustomError(500, "Error updating category_task: ",{str(e)})
     
     def delete_category_task(id: int, db: Session):
         try:
@@ -76,5 +76,5 @@ class CategoryTasksController:
         except CustomError as e:
             raise e
         except Exception as e:
-            raise CustomError(500, f"Error deleting category_task: {str(e)}")
+            raise CustomError(500, "Error deleting category_task: ",{str(e)})
     
