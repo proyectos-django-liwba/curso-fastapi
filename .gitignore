@@ -1,14 +1,11 @@
-
 /env
 
 /vscode
 
 *.pyc
 *.pyo
-/__pycahe__
-__pycahe__/
-*/__pycahe__/
-*/*/__pycahe__/
-*/*/*/__pycahe__/
+__pycache__/
+**/__pycache__/**
+**/**/__pycache__/**
 
 /alembic/versions/

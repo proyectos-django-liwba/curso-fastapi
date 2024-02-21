@@ -12,8 +12,8 @@ class Permission:
         # verificar token
         jwt = JWT()
         data_token =  jwt.verify_token(token)
-        # verificar rol en bd
         
+        # verificar rol en bd
         user = UserService.get_user(data_token["user_id"], db)
         
         UserValidation.validate_user_exists(user)
@@ -23,8 +23,6 @@ class Permission:
         if len(role) == 0:
             raise CustomError(500, "No se ha especificado un rol para verificar permisos")
         
-        """ if user.role != role or data_token["role"] != role:
-            raise CustomError(403, "No tienes permisos para realizar esta acción") """
         available = False
         for rol in role:
             if user.role == rol and data_token["role"] == rol:
