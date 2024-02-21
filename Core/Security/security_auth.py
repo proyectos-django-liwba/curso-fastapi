@@ -40,7 +40,7 @@ class JWT:
         except CustomError as e:
             raise e
         except JWTError as e:
-            raise CustomError(401, "Token invalido", e)
+            raise CustomError(401, "Token invalido")
 
         
         

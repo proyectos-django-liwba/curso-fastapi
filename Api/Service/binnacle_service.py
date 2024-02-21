@@ -26,13 +26,13 @@ class BinnacleService:
             return _binnacle
         except IntegrityError as e:
             db.rollback()
-            raise CustomError(400, f"Error creating binnacle")
+            raise CustomError(400, "Error creating binnacle", e.orig.diag.message_detail)
         except TimeoutError as e:
             db.rollback()
-            raise CustomError(408, f"Error creating binnacle")
+            raise CustomError(408, "Error creating binnacle", e.orig.diag.message_detail)
         except Exception as e:
             db.rollback()
-            raise CustomError(500, f"Error creating binnacle: {str(e)}")
+            raise CustomError(500, "Error creating binnacle", str(e))
         
     def get_binnacle(id: int, db: Session):
         try:
@@ -43,21 +43,21 @@ class BinnacleService:
         except CustomError as e:
             raise e
         except Exception as e:
-            raise CustomError(500, f"Error getting binnacle: {str(e)}")
+            raise CustomError(500, f"Error getting binnacle", {str(e)})
         
     def get_binnacles(db: Session, skip: int = 0, limit: int = 10):
         try:
             result = db.query(BinnacleData).offset(skip).limit(limit).all()
             return result
         except Exception as e:
-            raise CustomError(500, f"Error getting binnacles: {str(e)}")
+            raise CustomError(500, f"Error getting binnacles", {str(e)})
         
     def get_binnacles_by_user_id(user_id: int, db: Session, skip: int = 0, limit: int = 10):
         try:
             result = db.query(BinnacleData).filter(BinnacleData.user_id == user_id).offset(skip).limit(limit).all()
             return result
         except Exception as e:
-            raise CustomError(500, f"Error getting binnacles by user id: {str(e)}")
+            raise CustomError(500, f"Error getting binnacles by user id", {str(e)})
         
     def update_binnacles(binnacle: BinnacleData, db: Session):
         try:
@@ -78,13 +78,13 @@ class BinnacleService:
             return _binnacle
         except IntegrityError as e:
             db.rollback()
-            raise CustomError(400, f"Error updating binnacle: {str(e)}")
+            raise CustomError(400, f"Error updating binnacle", e.orig.diag.message_detail)
         except TimeoutError as e:
             db.rollback()
-            raise CustomError(408, f"Error updating binnacle: {str(e)}")
+            raise CustomError(408, f"Error updating binnacle", e.orig.diag.message_detail)
         except Exception as e:
             db.rollback()
-            raise CustomError(500, f"Error updating binnacle: {str(e)}")
+            raise CustomError(500, f"Error updating binnacle", str(e))
         
         
     def delete_binnacle(id: int, db: Session):
@@ -99,11 +99,11 @@ class BinnacleService:
             
         except IntegrityError as e:
             db.rollback()
-            raise CustomError(400, f"Error deleting binnacle: {str(e)}")
+            raise CustomError(400, f"Error deleting binnacle", e.orig.diag.message_detail)
         except TimeoutError as e:
             db.rollback()
-            raise CustomError(408, f"Error deleting binnacle: {str(e)}")
+            raise CustomError(408, f"Error deleting binnacle", e.orig.diag.message_detail)
         except Exception as e:
             db.rollback()
-            raise CustomError(500, f"Error deleting binnacle: {str(e)}")
+            raise CustomError(500, f"Error deleting binnacle", str(e))
 
