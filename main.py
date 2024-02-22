@@ -37,7 +37,6 @@ load_dotenv()
 # Orígenes permitidos
 origins = os.getenv("ALLOWED_ORIGINS", "").split(",")
 
-
 # Base de datos
 #ConexionBD().verificar_conexion()
 ConexionBD().create_tables()
@@ -168,7 +167,6 @@ resources_path = os.path.join(os.path.dirname(__file__), "Resources/")
 uploads_path = os.path.join(os.path.dirname(__file__), "Uploads/")
 app.mount("/Resources", StaticFiles(directory=resources_path), name="Resources")
 app.mount("/Uploads", StaticFiles(directory=uploads_path), name="Uploads")
-
 
 # Rutas de la aplicación
 app.include_router(home_router)

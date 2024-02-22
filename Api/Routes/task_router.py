@@ -7,9 +7,37 @@ from Api.Controllers.task_controller import TaskController
 from Api.Models.task_model import Task
 from Api.Models.examples import task_example_create, task_example_update
 from Core.Enums.task_enum import StatusType
+# socket
+from fastapi import WebSocket, WebSocketDisconnect
+from Core.Socket.socket_manager import WebSocketManager
+
+# crear manager de websockets
+manager = WebSocketManager()
 
 # Crear el router
 task_router = APIRouter()
+
+@task_router.websocket("/ws")
+async def websocket_endpoint(websocket: WebSocket):
+    
+    # Conectar cliente
+    await manager.connect(websocket)
+    
+    await websocket.send_text(f"Welcome to the chat!")
+    try:
+        # Escuchar mensajes
+        while True:
+            
+            
+            # Recibir mensaje
+            data = await websocket.receive_text()
+            
+            # Notificar cambios a los clientes
+            
+    except WebSocketDisconnect:
+        # Desconectar cliente
+        manager.disconnect(websocket)
+        
 
 # Definir rutas
 @task_router.post("/")

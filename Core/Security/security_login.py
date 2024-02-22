@@ -56,7 +56,6 @@ def handle_login_attempt(request: Request):
     return login
     
 
-
 def remove_ip_from_blacklist(client_ip: str):
     global blacklisted
     blacklisted = [item for item in blacklisted if item['ip'] != client_ip]
