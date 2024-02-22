@@ -3,8 +3,6 @@ import time
 import httpx
 
 
-
-
 async def add_process_time_header(request: Request, call_next):
     #obtener el tiempo de inicio
     start_time = time.time()
@@ -35,7 +33,6 @@ async def get_data_origin(request: Request, call_next):
     
     response = await call_next(request)
     return response
-
 
 async def manager_middleware(request: Request, call_next):
     print(request.url.path)

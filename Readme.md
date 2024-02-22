@@ -532,6 +532,7 @@ DEFAULT_EXPIRE_MINUTES = 30
 
         return {"admin": user}
     ```
+
 ## 8. Bitacora
 --Elmer
 
@@ -789,7 +790,120 @@ def process_file(filename: str):
 ```
 
 ## 13. Socket
---Elmer
+WebSocket es un protocolo de comunicación bidireccional sobre un único socket TCP, diseñado para ser ligero y eficiente. Permite una comunicación en tiempo real entre un cliente y un servidor, lo que lo hace ideal para aplicaciones web interactivas, juegos en línea, aplicaciones de chat, actualizaciones en tiempo real, entre otros casos de uso.
+
+En FastAPI puedes implementar WebSocket fácilmente utilizando las herramientas proporcionadas por Starlette, el marco web subyacente en el que se basa FastAPI.
+
+En FastAPI, los websockets se definen utilizando la función app.websocket(), la cual requiere que se especifique una ruta como argumento. Esta ruta se utiliza para identificar el endpoint del websocket al que los clientes pueden conectarse.
+
+* Crear salas de socket por modulo: para ello deben terminar en `/ws`
+
+* Crear sub-salas de socket para elementos de un modulo, requieren parámetros para identificarlas `/ws/{id}`
+
+* Crear un archivo con la configuración del socket
+```
+import asyncio
+from fastapi import WebSocket
+from typing import List
+
+class WebSocketManager:
+    def __init__(self):
+        self.connections: List = []
+        print("WebSocketManager created")
+    
+    async def connect(self, websocket: WebSocket):
+        print("WebSocket connected")
+        await websocket.accept()
+        self.connections.append(websocket)
+
+    def disconnect(self, websocket: WebSocket):
+        print("WebSocket disconnected")
+        self.connections.remove(websocket)
+
+    async def broadcast(self, message: str):
+        await asyncio.gather(
+            *[connection.send_text(message) for connection in self.connections]
+        )
+```
+
+* Implementar el socket en el archivo de ruta del modulo
+```
+
+# socket
+from fastapi import WebSocket, WebSocketDisconnect,
+from Core.Socket.socket_manager import WebSocketManager
+
+# crear manager de websockets
+manager = WebSocketManager()
+
+# definir rutas de websockets
+# ws://127.0.0.1:8000/api/tags/ws
+@tag_router.websocket("/ws")
+async def websocket_endpoint(websocket: WebSocket):
+    
+    # Conectar cliente
+    await manager.connect(websocket)
+    
+    print(f"usuarios conectados: {len(manager.connections)}")
+    
+    try:
+        # Escuchar mensajes
+        while True:
+            
+            # Recibir mensaje
+            data = await websocket.receive_text()
+            print(data)
+            
+            # Notificar cambios a los clientes
+            if data is not None:
+                await manager.broadcast(data)
+            
+    except WebSocketDisconnect:
+        # Desconectar cliente
+        manager.disconnect(websocket)
+        print(f"usuarios conectados: {len(manager.connections)}")
+
+```
+
+* Agregar seguridad al ruta del socket con jwt y permisos
+```
+from fastapi import WebSocket, WebSocketDisconnect, Header, Depends
+from Core.Socket.socket_manager import WebSocketManager
+# clase para manejo de permisos
+from Core.Security.security_permissions import Permission
+
+# Autorización
+def validate_auth( bearer: str = Header(), db: Session = Depends(ConexionBD().get_db)):
+   return Permission.verify_role(bearer, ["admin", "user"], db)
+
+# definir rutas de websockets
+@tag_router.websocket("/ws", dependencies=[Depends(validate_auth)])
+async def websocket_endpoint(websocket: WebSocket, user_data: dict = Depends(validate_auth)):
+    #código .....
+
+```
+
+* Identificar cambios en datos en un modulo socket + tareas en segundo plano, agregamos una tarea de segundo plano a los endpoint: create, delete, update.
+```
+# Manejo de diccionarios en respuesta websocket
+import json
+
+# Rutas de tags
+@tag_router.post("/")
+def create_tag(background_task: BackgroundTasks,  tag: Tag = Body(example=tag_example_create), db: Session = Depends(ConexionBD().get_db)):
+    result = TagController.create_tag(tag, db)
+    
+    if result:
+        print("enviando mensaje a los clientes")
+        notification_data = {"action": "Create", "module": "tag"}
+        background_task.add_task(manager.broadcast, json.dumps(notification_data))
+        #background_task.add_task(manager.broadcast, "Se ha creado un nuevo tag")
+    
+    return result
+
+``` 
+* [Documentación WebSocket](https://fastapi.tiangolo.com/advanced/websockets/)
+* [Documentación Background Tasks](https://fastapi.tiangolo.com/reference/background/)
 
 ## 14. Estaticos
 * Requiere el uso de las dependencias 
