@@ -42,14 +42,6 @@ def get_users():
 def get_user(user_id: int = Depends(validate_user_id)):
     return {"user_id": user_id}
 
-@depends_router.get("/only_admin", dependencies=[Depends(validate_auth_admin)])
-def get_admin(user_data: dict = Depends(validate_auth_admin)):
-    
-    user = user_data["user"]
-    token = user_data["token"]
-    print(token)
-
-    return {"admin": user}
 
 @depends_router.get("/only_user", dependencies=[Depends(validate_auth_user)])
 def get_user_auth(user_data: dict = Depends(validate_auth_user)):

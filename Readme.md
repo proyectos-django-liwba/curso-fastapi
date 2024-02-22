@@ -141,11 +141,15 @@ app/
     - [Jinga2](#31-manejo-de-archivos-jinja2)
     - [SqlAlchemy](#32-orm---sql-sqlalchemy)
     - [Pydantic](#33-validación-pydantic)
-    - [Python Multipart](#34-manejo-de-archivos---python-multipart)
-    - [Fastapi Mail](#35-envio-de-correos---fastapi-mail)
-    - [Passlib](#36-hasheo-de-contraseña-passlib)
-    - [Alembic](#37-migraciones-alembic)
-    - [Email Validator](#38-validación-de-correo---email-validator)
+    - [Python Dotenv](#34-Variables-de-entorno---Python-Dotenv)
+    - [Python Multipart](#35-manejo-de-archivos---python-multipart)
+    - [Fastapi Mail](#36-envio-de-correos---fastapi-mail)
+    - [Passlib](#37-hasheo-de-contraseña-passlib)
+    - [Alembic](#38-migraciones-alembic)
+    - [Email Validator](#39-validación-de-correo---email-validator)
+    - [Json Web Token](#310-Autentificación-JWT)
+    - [WebSocket](#311-Websocket)
+    - [HTTPX](##312-HTTPX)
 * [4. Base de datos](#4-base-de-datos)
     - [Conector Postgre](#411-conector-bd-postgre-sql)
     - [Conector Mysql](#412-conector-bd-mysql)
@@ -290,7 +294,7 @@ pip install pydantic
 pip install pydantic[email]
 ```
 
-#### 3.3 Variables de entorno - Python Dotenv
+#### 3.4 Variables de entorno - Python Dotenv
 * Instalar dependencia: 
 ```
 pip install python-dotenv
@@ -299,7 +303,7 @@ pip install python-dotenv
 
 * [Documentación python-dotenv](https://pypi.org/project/python-dotenv/)
 
-#### 3.4 Manejo de archivos - Python Multipart
+#### 3.5 Manejo de archivos - Python Multipart
 * Instalar dependencia: 
 ```
 pip install python-multipart
@@ -309,7 +313,7 @@ pip install python-multipart
 * [Documentación python-multipart](https://pypi.org/project/python-multipart/)
 * [Documentación Uploadfile](https://fastapi.tiangolo.com/reference/uploadfile/)
 
-#### 3.5 Envio de correos - Fastapi Mail
+#### 3.6 Envio de correos - Fastapi Mail
 * Instalar dependencia: 
 ```
 pip install fastapi-mail
@@ -317,29 +321,43 @@ pip install fastapi-mail
 * Descripción: es una librería para el envió de correos
 * [Documentación fastapi-mail](https://sabuhish.github.io/fastapi-mail/example/)
 
-#### 3.6  Hasheo de contraseña Passlib
+#### 3.7  Hasheo de contraseña Passlib
 * Instalar dependencia: ```pip install passlib[bcrypt]```
 * [Docuementación passlib](https://passlib.readthedocs.io/en/stable/)
 * [Docuementación Guía](https://fastapi.tiangolo.com/tutorial/security/oauth2-jwt/#install-passlib)
 
-#### 3.7  Migraciones Alembic
+#### 3.8  Migraciones Alembic
 * Configurar las variables de entorno en un archivo .env
     ```* Instalar dependencia:```pip install alembic ```
 * [Documentación alembic](https://alembic.sqlalchemy.org/en/latest/)
 
-#### 3.8 Validación de correo - Email validator
+#### 3.9 Validación de correo - Email validator
 * Instalar dependencia 
 ```
 pip install email-validator
 ```
 * [Documentación Email Validator](https://pypi.org/project/email-validator/)
 
-#### 3.9 Autentificación JWT
+#### 3.10 Autentificación JWT
 * Instalar dependencia 
 ```
 pip install "python-jose[cryptography]"
 ```
 * [Documentación](https://fastapi.tiangolo.com/tutorial/security/oauth2-jwt/)
+
+#### 3.11 Websocket
+* Instalar dependencia: 
+```
+pip install websockets
+ ```
+ * [Documentación](https://fastapi.tiangolo.com/advanced/websockets/)
+
+#### 3.12 HTTPX
+* Instalar dependencia: 
+```
+pip install httpx
+ ```
+ * [Documentación](https://www.python-httpx.org/)
 
 ## 4. Base de datos
 * Cada base de datos requiere un conector que se debe instalar de forma independiente. Luego configurar la conexión con esa base de datos.
@@ -359,6 +377,7 @@ pip install mysql-conector-python
  ```
  * [Documentación Conector](https://dev.mysql.com/doc/connector-python/en/)
  * [Documentación Guía](https://dev.mysql.com/doc/connector-python/en/connector-python-tutorial-cursorbuffered.html)
+
 
 ## 5. Migraciones 
 
@@ -423,7 +442,96 @@ DEFAULT_EXPIRE_MINUTES = 30
     ```
 
 ## 7. Permisos
+* Guia de uso
+    - 1: Importación
+    ```
+    from Core.Security.security_auth import JWT
+    from Api.Service.user_service import UserService
+    from Core.Validations.custom_error import CustomError
+    from Core.Validations.user_validation import UserValidation
+    from Api.Data.conection import ConexionBD
+    from sqlalchemy.orm import Session
+    from typing import List
+    ```
+    - 2: Crear El metodo para verificar el rol
+    ```
+    def verify_role(token: str, role: List, db: Session) -> dict:
+        # verificar token
+        jwt = JWT()
+        data_token =  jwt.verify_token(token)
+        
+        # verificar rol en bd
+        user = UserService.get_user(data_token["user_id"], db)
 
+        # validaciones de usuario
+        
+        UserValidation.validate_user_exists(user)
+        UserValidation.validate_user_verified(user)
+        UserValidation.validate_user_active(user)
+        
+        if len(role) == 0:
+            raise CustomError(500, "No se ha especificado un rol para verificar permisos")
+        
+        available = False
+        for rol in role:
+            if user.role == rol and data_token["role"] == rol:
+                available = True
+                break
+            
+        if not available:
+            raise CustomError(403, "No tienes permisos para realizar esta acción")
+        
+        return {
+            "user": user,
+            "token": token,
+        }
+        
+    ```
+    - 3 En el archivo de depends_router.py
+    * Validar la autentificación del usuario metiante el token de JWT
+    ```
+    def validate_token(bearer: str = Header()):
+        if bearer != "jwt-token": 
+            raise CustomError(401, "Unauthorized")
+    ```
+    
+    * Validar permisos de Administrador
+    ```
+    def validate_admin_user(role: str = Header()):
+        if role != "admin":
+            raise CustomError(401, "Unauthorized")
+    ```
+    ```
+    def validate_auth_admin( bearer: str = Header(), db: Session = Depends(ConexionBD().get_db)):
+        return Permission.verify_role(bearer, ["admin"], db)
+    ```
+
+    * Validar permisos de usuario
+    ```
+    def validate_auth_user( bearer: str = Header(),db: Session = Depends(ConexionBD().get_db)):
+        return Permission.verify_role(bearer, ["user"], db)
+    ```
+
+    * Crear los Enpoinds de prueba 
+    ```
+    @depends_router.get("/only_user", dependencies=[Depends(validate_auth_user)])
+    def get_user_auth(user_data: dict = Depends(validate_auth_user)):
+        
+        user = user_data["user"]
+        token = user_data["token"]
+        print(token)
+
+        return {"user": user}
+
+    @depends_router.get("/only_admin", dependencies=[Depends(validate_auth_admin)])
+    def get_admin_auth(user_data: dict = Depends(validate_auth_admin)):
+        
+        user = user_data["user"]
+        token = user_data["token"]
+        print(token)
+
+        return {"admin": user}
+    ```
 ## 8. Bitacora
 --Elmer
 
