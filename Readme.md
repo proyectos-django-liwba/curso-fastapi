@@ -149,7 +149,7 @@ app/
     - [Email Validator](#39-validación-de-correo---email-validator)
     - [Json Web Token](#310-Autentificación-JWT)
     - [WebSocket](#311-Websocket)
-    - [HTTPX](##312-HTTPX)
+    - [HTTPX](#312-HTTPX)
 * [4. Base de datos](#4-base-de-datos)
     - [Conector Postgre](#411-conector-bd-postgre-sql)
     - [Conector Mysql](#412-conector-bd-mysql)
