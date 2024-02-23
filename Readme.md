@@ -1,6 +1,11 @@
-# Guía de FastAPI 2024 
+# Presentación: Guía Avanzada de FastAPI 2024
 [![FastAPI](./Resources/Images/fastapi.png)](https://fastapi.tiangolo.com/)
 
+
+## Introducción
+¡Bienvenidos a la presentación de nuestra guía avanzada de FastAPI! En este proyecto, Wilfredo Barquero Herrera y Elmer Mejias Carranza nos hemos unido para compartir con ustedes nuestra experiencia y aprendizajes en el fascinante mundo de FastAPI.
+
+Como desarrolladores relativamente nuevos en Python y con una experiencia de apenas 4 meses en este lenguaje y 2 meses específicamente en FastAPI, nos emociona enormemente compartir con ustedes nuestro entusiasmo por este framework. A lo largo de esta guía, exploraremos diversos temas que van desde la arquitectura de proyectos hasta detalles avanzados.
 
 ## Desarrolladores 
 ![coders](./Resources/Images/coders.png)
