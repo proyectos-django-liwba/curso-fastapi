@@ -183,9 +183,10 @@ app/
 * [22. Relaciones en ORM - Alchemist](#22-relaciones-en-orm---alchemist)
 * [23. Variables de entorno](#23-variables-de-entorno)
 * [24. Notación de ellipsis](#24-notación-de-ellipsis)
-* [Problemas con rutas](#problemas-con-rutas)
-* [Lista de errores HTTP](#lista-de-errores-http)
-* [Problemas con el Interprete](#problemas-con-el-interprete)
+* [25. Lista de errores HTTP](#25-lista-de-errores-http)
+* [26. Problemas con rutas](#26-problemas-con-rutas)
+* [27. Problemas con el Interprete](#27-problemas-con-el-interprete)
+* [28. Problemas con alembic](#28-problemas-con-alembic)
 
 ## 1. FastAPI 
 * [Documentación oficial](https://fastapi.tiangolo.com/)
@@ -542,7 +543,132 @@ DEFAULT_EXPIRE_MINUTES = 30
     ```
 
 ## 8. Bitacora
---Elmer
+Crear una bitácora en una aplicación, ya sea en FastAPI u otro framework, es una práctica importante por varias razones:
+
+* Depuración y diagnóstico de errores: puede ayudar a identificar problemas y errores en la aplicación al registrar eventos relevantes, como excepciones, errores de validación, tiempos de respuesta, etc. 
+
+* Seguridad: Los registros pueden ayudar a detectar intentos de intrusión o actividades sospechosas en la aplicación. Registrar eventos como intentos de inicio de sesión fallidos, solicitudes de recursos no autorizados, etc., puede ayudar a identificar y mitigar posibles amenazas de seguridad.
+
+* Auditoría y seguimiento: Mantener un registro de todas las actividades realizadas en la aplicación puede ser crucial para la auditoría y el seguimiento. Por ejemplo, en una aplicación financiera, registrar cada transacción realizada podría ser necesario para cumplir con los requisitos regulatorios.
+
+* Crear un modelo este paso es opcional con datos de interés para registrar
+```
+from pydantic import BaseModel
+from typing import Optional
+
+class Binnacle(BaseModel):
+    id: Optional[int] = None
+    endpoint: str
+    method: str
+    detail: str
+    status_code: int
+    user_id: Optional[int] = None
+    ip_client: str
+
+    class Config:
+        orm_mode = True
+        
+    def __str__(self):  
+        return f"Binnacle(id={self.id}, endpoint={self.endpoint}, method={self.method}, detail={self.detail}, status_code={self.status_code}, user_id={self.user_id}, ip_client={self.ip_client})"
+```
+* Crear un modelo schema o data para la tabla
+```
+from sqlalchemy import Column,ForeignKey, BigInteger,Integer, String, TIMESTAMP, text
+# Importaciones
+from Api.Data.conection import ConexionBD
+
+
+class BinnacleData(ConexionBD.Base): 
+    __tablename__ = "binnacles"
+    
+    id = Column(BigInteger, primary_key=True, index=True)
+    endpoint = Column(String(100))
+    method = Column(String(100))
+    detail = Column(String(300))
+    status_code = Column(Integer)
+    user_id = Column(Integer, ForeignKey("users.id"))
+    ip_client = Column(String(100))
+    created_at = Column(TIMESTAMP, server_default=text("now()"))
+    
+    def __str__(self):
+        return f"BinnacleData(id={self.id}, endpoint={self.endpoint}, method={self.method}, detail={self.detail}, status_code={self.status_code}, user_id={self.user_id}, ip_client={self.ip_client}, created_at={self.created_at})"
+    
+```
+* Crear un service para el manejo de las operaciones en base de datos 
+```
+# Dependencias
+from sqlalchemy.orm import Session
+from sqlalchemy.exc import IntegrityError, TimeoutError
+# Importaciones
+from Core.Validations.custom_error import CustomError
+from Api.Data.binnacle_data import BinnacleData
+from Api.Models.binnacle_model import Binnacle
+
+
+class BinnacleService:
+    
+    def create_binnacle(binnacle: Binnacle, db: Session):
+        try:
+            _binnacle = BinnacleData(
+                endpoint=binnacle.endpoint,
+                method=binnacle.method,
+                detail=binnacle.detail,
+                status_code=binnacle.status_code,
+                user_id=binnacle.user_id,
+                ip_client=binnacle.ip_client
+            )
+            
+            db.add(_binnacle)
+            db.commit()
+            db.refresh(_binnacle)
+            return _binnacle
+        except IntegrityError as e:
+            db.rollback()
+            raise CustomError(400, "Error creating binnacle", e.orig.diag.message_detail)
+        except TimeoutError as e:
+            db.rollback()
+            raise CustomError(408, "Error creating binnacle", e.orig.diag.message_detail)
+        except Exception as e:
+            db.rollback()
+            raise CustomError(500, "Error creating binnacle", str(e))
+```
+* Implementar la creación de registros cuando ocurren excepciones
+```
+# Bitácora
+from Api.Models.binnacle_model import Binnacle
+from Api.Service.binnacle_service import BinnacleService
+
+# Manejador de errores personalizado
+@app.exception_handler(CustomError)
+async def unicorn_exception_handler(request: Request, exc: CustomError):
+    
+    # crear bitácora
+    binnacle = Binnacle(
+        endpoint=request.url.path,
+        method=request.method,
+        detail=exc.message,
+        status_code=exc.code,
+        user_id=1,
+        ip_client=request.client.host
+    )
+
+    # guardar bitácora
+    BinnacleService.create_binnacle(binnacle, db)
+    
+    error_dict = {
+        "code": exc.code,
+        "message": exc.message
+    }
+    
+    if exc.details is not None:
+      error_dict["details"] = exc.details
+    
+    return JSONResponse(
+        status_code=exc.code,
+        content={"error": error_dict},
+    )
+```
+* También se puede dar seguimiento de todas las operaciones de escritura en la base de datos, para ello se puede implementar una tarea en segundo plano en la controller o router de cada modulo. 
 
 ## 9. Dependencias
 En FastAPI, las dependencias son una herramienta poderosa que te permite desacoplar la lógica de tu aplicación en unidades más pequeñas y reutilizables. Se pueden usar para:
@@ -1421,7 +1547,7 @@ class User(BaseModel):
 
 
 
-### Lista de errores HTTP
+## 25. Lista de errores HTTP
 | Código | Estado | Descripción |
 |---|---|---|
 |2XX| ✅ | Exitosa |
@@ -1441,7 +1567,7 @@ class User(BaseModel):
 | 500 | Internal Server Error | Se ha producido un error inesperado en el servidor. |
 | 503 | Service Unavailable | El servidor no está disponible temporalmente. |
 
-### Problemas con rutas
+## 26. Problemas con rutas
 Si tienes errores a la hora de realizar peticiones y te piden parámetros que la url no tiene pero otras si lo tienen pueden intentar una de las siguientes posibles soluciones: 
 
 * Ordenar las rutas desde la que no tienen parámetro en la url, luego las que tienen parámetros en la url de forma descendente 
@@ -1450,9 +1576,16 @@ Si tienes errores a la hora de realizar peticiones y te piden parámetros que la
 * Agrear un / al final de cada ruta que tiene parámetros en la url
 ![alt text](./Resources/Images/solucion-rutas-2.jpg)
 
-### Problemas con el Interprete
+## 27. Problemas con el Interprete
 Si no reconoce el interprete debes elegirlo de forma manual.
 
 ![alt text](./Resources/Images/bug-interprete-1.png)
 
 ![alt text](./Resources/Images/bug-interprete-2.png)
+
+## 28. Problemas con alembic
+Puede suceder que al trabajar en cooperativo o al perder un archivo de migración o al borrar una migración suelen presentarse errores que indica en terminal donde se ejecuta el servidor que no encuentra el head con un id, para solucionar este problema se debe eliminar los archivos de las migraciones, tambien eliminar el registro de la tabla.
+
+![alt text](./Resources/Images/error-alembic-migration.png)
+
+![alt text](./Resources/Images/error-alembic-bd.png)
