@@ -138,8 +138,8 @@ app/
 ## Contenido de la guía 📖
 * [Desarrolladores](#desarrolladores)
 * [0. Arquitectura de proyecto](#arquitectura-de-proyecto)
-    - [1.Descripción de las capas](#1.-descripción-de-las-capas:)
-    - [2. Estructura de carpetas](#2.-estructura-de-carpetas:)
+    - [1.Descripción de las capas](#1-descripción-de-las-capas)
+    - [2. Estructura de carpetas](#2-estructura-de-carpetas)
 * [1. FastAPI](#1-fastapi)
 * [2. Iniciar proyecto](#2-iniciar-proyecto)
     - [Crear proyecto](#21-crear-proyecto)
