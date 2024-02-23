@@ -1,5 +1,6 @@
 from datetime import datetime, timedelta, timezone
 from jose import JWTError, jwt
+from Core.Validations.custom_error import CustomError
 import os
 class JWT:
     def __init__(self):
@@ -30,8 +31,16 @@ class JWT:
     def verify_token(self, token: str):
         try:
             payload = jwt.decode(token, self.SECRET_KEY, algorithms=[self.ALGORITHM])
+            # Verificar la expiración del token
+            
+            if "exp" in payload and datetime.utcfromtimestamp(payload["exp"]) < datetime.utcnow():
+                raise CustomError(401, "Token expirado")
+            
             return payload
-        except JWTError:
-            return None
+        except CustomError as e:
+            raise e
+        except JWTError as e:
+            raise CustomError(401, "Token invalido")
+
         
         

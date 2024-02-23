@@ -1,18 +1,27 @@
-# Guía de FastAPI 2024 
+# Presentación: Guía Avanzada de FastAPI 2024
 [![FastAPI](./Resources/Images/fastapi.png)](https://fastapi.tiangolo.com/)
 
 
+## Introducción
+¡Bienvenidos a la presentación de nuestra guía avanzada de FastAPI! En este proyecto, Wilfredo Barquero Herrera y Elmer Mejias Carranza nos hemos unido para compartir con ustedes nuestra experiencia y aprendizajes en el fascinante mundo de FastAPI.
+
+Como desarrolladores relativamente nuevos en Python y con una experiencia de apenas 4 meses en este lenguaje y 2 meses específicamente en FastAPI, nos emociona enormemente compartir con ustedes nuestro entusiasmo por este framework. A lo largo de esta guía, exploraremos diversos temas que van desde la arquitectura de proyectos hasta detalles avanzados.
+
 ## Desarrolladores 
 ![coders](./Resources/Images/coders.png)
+
 * 🧑‍💻Wilfredo Barquero Herrera
-    - [![Gmail](https://img.shields.io/badge/Gmail-D14836?style=for-the-badge&logo=gmail&logoColor=white)](liwbarqueroh@gmail.com )
 
     - [![GitHub](https://img.shields.io/badge/github-%23121011.svg?style=for-the-badge&logo=github&logoColor=white)](https://github.com/liwBh)
+
+    - [![LinkedIn](https://img.shields.io/badge/linkedin-%230077B5.svg?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/wilfredo-barquero-herrera-17bb29258)
+
+
 * 👨‍💻Elmer Mejias Carranza
 
-    - [![Gmail](https://img.shields.io/badge/Gmail-D14836?style=for-the-badge&logo=gmail&logoColor=white)](https://elmermejias47@gmail.com)
-
     - [![GitHub](https://img.shields.io/badge/github-%23121011.svg?style=for-the-badge&logo=github&logoColor=white)](https://github.com/ing-Elmer)
+
+    - [![LinkedIn](https://img.shields.io/badge/linkedin-%230077B5.svg?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/ermer-mejias-carranza-a36b39232)
 
 ## Arquitectura de proyecto
 
@@ -130,8 +139,8 @@ app/
 ## Contenido de la guía 📖
 * [Desarrolladores](#desarrolladores)
 * [0. Arquitectura de proyecto](#arquitectura-de-proyecto)
-    - [1.Descripción de las capas](#1.-descripción-de-las-capas:)
-    - [2. Estructura de carpetas](#2.-estructura-de-carpetas:)
+    - [1.Descripción de las capas](#1-descripción-de-las-capas)
+    - [2. Estructura de carpetas](#2-estructura-de-carpetas)
 * [1. FastAPI](#1-fastapi)
 * [2. Iniciar proyecto](#2-iniciar-proyecto)
     - [Crear proyecto](#21-crear-proyecto)
@@ -141,11 +150,15 @@ app/
     - [Jinga2](#31-manejo-de-archivos-jinja2)
     - [SqlAlchemy](#32-orm---sql-sqlalchemy)
     - [Pydantic](#33-validación-pydantic)
-    - [Python Multipart](#34-manejo-de-archivos---python-multipart)
-    - [Fastapi Mail](#35-envio-de-correos---fastapi-mail)
-    - [Passlib](#36-hasheo-de-contraseña-passlib)
-    - [Alembic](#37-migraciones-alembic)
-    - [Email Validator](#38-validación-de-correo---email-validator)
+    - [Python Dotenv](#34-Variables-de-entorno---Python-Dotenv)
+    - [Python Multipart](#35-manejo-de-archivos---python-multipart)
+    - [Fastapi Mail](#36-envio-de-correos---fastapi-mail)
+    - [Passlib](#37-hasheo-de-contraseña-passlib)
+    - [Alembic](#38-migraciones-alembic)
+    - [Email Validator](#39-validación-de-correo---email-validator)
+    - [Json Web Token](#310-Autentificación-JWT)
+    - [WebSocket](#311-Websocket)
+    - [HTTPX](#312-HTTPX)
 * [4. Base de datos](#4-base-de-datos)
     - [Conector Postgre](#411-conector-bd-postgre-sql)
     - [Conector Mysql](#412-conector-bd-mysql)
@@ -171,9 +184,10 @@ app/
 * [22. Relaciones en ORM - Alchemist](#22-relaciones-en-orm---alchemist)
 * [23. Variables de entorno](#23-variables-de-entorno)
 * [24. Notación de ellipsis](#24-notación-de-ellipsis)
-* [Problemas con rutas](#problemas-con-rutas)
-* [Lista de errores HTTP](#lista-de-errores-http)
-* [Problemas con el Interprete](#problemas-con-el-interprete)
+* [25. Lista de errores HTTP](#25-lista-de-errores-http)
+* [26. Problemas con rutas](#26-problemas-con-rutas)
+* [27. Problemas con el Interprete](#27-problemas-con-el-interprete)
+* [28. Problemas con alembic](#28-problemas-con-alembic)
 
 ## 1. FastAPI 
 * [Documentación oficial](https://fastapi.tiangolo.com/)
@@ -290,7 +304,7 @@ pip install pydantic
 pip install pydantic[email]
 ```
 
-#### 3.3 Variables de entorno - Python Dotenv
+#### 3.4 Variables de entorno - Python Dotenv
 * Instalar dependencia: 
 ```
 pip install python-dotenv
@@ -299,7 +313,7 @@ pip install python-dotenv
 
 * [Documentación python-dotenv](https://pypi.org/project/python-dotenv/)
 
-#### 3.4 Manejo de archivos - Python Multipart
+#### 3.5 Manejo de archivos - Python Multipart
 * Instalar dependencia: 
 ```
 pip install python-multipart
@@ -309,7 +323,7 @@ pip install python-multipart
 * [Documentación python-multipart](https://pypi.org/project/python-multipart/)
 * [Documentación Uploadfile](https://fastapi.tiangolo.com/reference/uploadfile/)
 
-#### 3.5 Envio de correos - Fastapi Mail
+#### 3.6 Envio de correos - Fastapi Mail
 * Instalar dependencia: 
 ```
 pip install fastapi-mail
@@ -317,29 +331,43 @@ pip install fastapi-mail
 * Descripción: es una librería para el envió de correos
 * [Documentación fastapi-mail](https://sabuhish.github.io/fastapi-mail/example/)
 
-#### 3.6  Hasheo de contraseña Passlib
+#### 3.7  Hasheo de contraseña Passlib
 * Instalar dependencia: ```pip install passlib[bcrypt]```
 * [Docuementación passlib](https://passlib.readthedocs.io/en/stable/)
 * [Docuementación Guía](https://fastapi.tiangolo.com/tutorial/security/oauth2-jwt/#install-passlib)
 
-#### 3.7  Migraciones Alembic
+#### 3.8  Migraciones Alembic
 * Configurar las variables de entorno en un archivo .env
     ```* Instalar dependencia:```pip install alembic ```
 * [Documentación alembic](https://alembic.sqlalchemy.org/en/latest/)
 
-#### 3.8 Validación de correo - Email validator
+#### 3.9 Validación de correo - Email validator
 * Instalar dependencia 
 ```
 pip install email-validator
 ```
 * [Documentación Email Validator](https://pypi.org/project/email-validator/)
 
-#### 3.9 Autentificación JWT
+#### 3.10 Autentificación JWT
 * Instalar dependencia 
 ```
 pip install "python-jose[cryptography]"
 ```
 * [Documentación](https://fastapi.tiangolo.com/tutorial/security/oauth2-jwt/)
+
+#### 3.11 Websocket
+* Instalar dependencia: 
+```
+pip install websockets
+ ```
+ * [Documentación](https://fastapi.tiangolo.com/advanced/websockets/)
+
+#### 3.12 HTTPX
+* Instalar dependencia: 
+```
+pip install httpx
+ ```
+ * [Documentación](https://www.python-httpx.org/)
 
 ## 4. Base de datos
 * Cada base de datos requiere un conector que se debe instalar de forma independiente. Luego configurar la conexión con esa base de datos.
@@ -359,6 +387,7 @@ pip install mysql-conector-python
  ```
  * [Documentación Conector](https://dev.mysql.com/doc/connector-python/en/)
  * [Documentación Guía](https://dev.mysql.com/doc/connector-python/en/connector-python-tutorial-cursorbuffered.html)
+
 
 ## 5. Migraciones 
 
@@ -423,10 +452,228 @@ DEFAULT_EXPIRE_MINUTES = 30
     ```
 
 ## 7. Permisos
+* Guia de uso
+    - 1: Importación
+    ```
+    from Core.Security.security_auth import JWT
+    from Api.Service.user_service import UserService
+    from Core.Validations.custom_error import CustomError
+    from Core.Validations.user_validation import UserValidation
+    from Api.Data.conection import ConexionBD
+    from sqlalchemy.orm import Session
+    from typing import List
+    ```
+    - 2: Crear El metodo para verificar el rol
+    ```
+    def verify_role(token: str, role: List, db: Session) -> dict:
+        # verificar token
+        jwt = JWT()
+        data_token =  jwt.verify_token(token)
+        
+        # verificar rol en bd
+        user = UserService.get_user(data_token["user_id"], db)
+
+        # validaciones de usuario
+        
+        UserValidation.validate_user_exists(user)
+        UserValidation.validate_user_verified(user)
+        UserValidation.validate_user_active(user)
+        
+        if len(role) == 0:
+            raise CustomError(500, "No se ha especificado un rol para verificar permisos")
+        
+        available = False
+        for rol in role:
+            if user.role == rol and data_token["role"] == rol:
+                available = True
+                break
+            
+        if not available:
+            raise CustomError(403, "No tienes permisos para realizar esta acción")
+        
+        return {
+            "user": user,
+            "token": token,
+        }
+        
+    ```
+    - 3 En el archivo de depends_router.py
+    * Validar la autentificación del usuario metiante el token de JWT
+    ```
+    def validate_token(bearer: str = Header()):
+        if bearer != "jwt-token": 
+            raise CustomError(401, "Unauthorized")
+    ```
+    
+    * Validar permisos de Administrador
+    ```
+    def validate_admin_user(role: str = Header()):
+        if role != "admin":
+            raise CustomError(401, "Unauthorized")
+    ```
+    ```
+    def validate_auth_admin( bearer: str = Header(), db: Session = Depends(ConexionBD().get_db)):
+        return Permission.verify_role(bearer, ["admin"], db)
+    ```
+
+    * Validar permisos de usuario
+    ```
+    def validate_auth_user( bearer: str = Header(),db: Session = Depends(ConexionBD().get_db)):
+        return Permission.verify_role(bearer, ["user"], db)
+    ```
+
+    * Crear los Enpoinds de prueba 
+    ```
+    @depends_router.get("/only_user", dependencies=[Depends(validate_auth_user)])
+    def get_user_auth(user_data: dict = Depends(validate_auth_user)):
+        
+        user = user_data["user"]
+        token = user_data["token"]
+        print(token)
+
+        return {"user": user}
+
+    @depends_router.get("/only_admin", dependencies=[Depends(validate_auth_admin)])
+    def get_admin_auth(user_data: dict = Depends(validate_auth_admin)):
+        
+        user = user_data["user"]
+        token = user_data["token"]
+        print(token)
+
+        return {"admin": user}
+    ```
 
 ## 8. Bitacora
---Elmer
+Crear una bitácora en una aplicación, ya sea en FastAPI u otro framework, es una práctica importante por varias razones:
 
+* Depuración y diagnóstico de errores: puede ayudar a identificar problemas y errores en la aplicación al registrar eventos relevantes, como excepciones, errores de validación, tiempos de respuesta, etc. 
+
+* Seguridad: Los registros pueden ayudar a detectar intentos de intrusión o actividades sospechosas en la aplicación. Registrar eventos como intentos de inicio de sesión fallidos, solicitudes de recursos no autorizados, etc., puede ayudar a identificar y mitigar posibles amenazas de seguridad.
+
+* Auditoría y seguimiento: Mantener un registro de todas las actividades realizadas en la aplicación puede ser crucial para la auditoría y el seguimiento. Por ejemplo, en una aplicación financiera, registrar cada transacción realizada podría ser necesario para cumplir con los requisitos regulatorios.
+
+* Crear un modelo este paso es opcional con datos de interés para registrar
+```
+from pydantic import BaseModel
+from typing import Optional
+
+class Binnacle(BaseModel):
+    id: Optional[int] = None
+    endpoint: str
+    method: str
+    detail: str
+    status_code: int
+    user_id: Optional[int] = None
+    ip_client: str
+
+    class Config:
+        orm_mode = True
+        
+    def __str__(self):  
+        return f"Binnacle(id={self.id}, endpoint={self.endpoint}, method={self.method}, detail={self.detail}, status_code={self.status_code}, user_id={self.user_id}, ip_client={self.ip_client})"
+```
+* Crear un modelo schema o data para la tabla
+```
+from sqlalchemy import Column,ForeignKey, BigInteger,Integer, String, TIMESTAMP, text
+# Importaciones
+from Api.Data.conection import ConexionBD
+
+
+class BinnacleData(ConexionBD.Base): 
+    __tablename__ = "binnacles"
+    
+    id = Column(BigInteger, primary_key=True, index=True)
+    endpoint = Column(String(100))
+    method = Column(String(100))
+    detail = Column(String(300))
+    status_code = Column(Integer)
+    user_id = Column(Integer, ForeignKey("users.id"))
+    ip_client = Column(String(100))
+    created_at = Column(TIMESTAMP, server_default=text("now()"))
+    
+    def __str__(self):
+        return f"BinnacleData(id={self.id}, endpoint={self.endpoint}, method={self.method}, detail={self.detail}, status_code={self.status_code}, user_id={self.user_id}, ip_client={self.ip_client}, created_at={self.created_at})"
+    
+```
+* Crear un service para el manejo de las operaciones en base de datos 
+```
+# Dependencias
+from sqlalchemy.orm import Session
+from sqlalchemy.exc import IntegrityError, TimeoutError
+# Importaciones
+from Core.Validations.custom_error import CustomError
+from Api.Data.binnacle_data import BinnacleData
+from Api.Models.binnacle_model import Binnacle
+
+
+class BinnacleService:
+    
+    def create_binnacle(binnacle: Binnacle, db: Session):
+        try:
+            _binnacle = BinnacleData(
+                endpoint=binnacle.endpoint,
+                method=binnacle.method,
+                detail=binnacle.detail,
+                status_code=binnacle.status_code,
+                user_id=binnacle.user_id,
+                ip_client=binnacle.ip_client
+            )
+            
+            db.add(_binnacle)
+            db.commit()
+            db.refresh(_binnacle)
+            return _binnacle
+        except IntegrityError as e:
+            db.rollback()
+            raise CustomError(400, "Error creating binnacle", e.orig.diag.message_detail)
+        except TimeoutError as e:
+            db.rollback()
+            raise CustomError(408, "Error creating binnacle", e.orig.diag.message_detail)
+        except Exception as e:
+            db.rollback()
+            raise CustomError(500, "Error creating binnacle", str(e))
+```
+* Implementar la creación de registros cuando ocurren excepciones
+```
+# Bitácora
+from Api.Models.binnacle_model import Binnacle
+from Api.Service.binnacle_service import BinnacleService
+
+# Manejador de errores personalizado
+@app.exception_handler(CustomError)
+async def unicorn_exception_handler(request: Request, exc: CustomError):
+    
+    # crear bitácora
+    binnacle = Binnacle(
+        endpoint=request.url.path,
+        method=request.method,
+        detail=exc.message,
+        status_code=exc.code,
+        user_id=1,
+        ip_client=request.client.host
+    )
+
+    # guardar bitácora
+    BinnacleService.create_binnacle(binnacle, db)
+    
+    error_dict = {
+        "code": exc.code,
+        "message": exc.message
+    }
+    
+    if exc.details is not None:
+      error_dict["details"] = exc.details
+    
+    return JSONResponse(
+        status_code=exc.code,
+        content={"error": error_dict},
+    )
+```
+* También se puede dar seguimiento de todas las operaciones de escritura en la base de datos, para ello se puede implementar una tarea en segundo plano en la controller o router de cada modulo. 
+
+* Ejemplo 
+
+![alt text](./Resources/Images/Bitacora.png)
 ## 9. Dependencias
 En FastAPI, las dependencias son una herramienta poderosa que te permite desacoplar la lógica de tu aplicación en unidades más pequeñas y reutilizables. Se pueden usar para:
 * 1. Inyección de dependencias:
@@ -681,8 +928,129 @@ def process_file(filename: str):
 ```
 
 ## 13. Socket
---Elmer
+WebSocket es un protocolo de comunicación bidireccional sobre un único socket TCP, diseñado para ser ligero y eficiente. Permite una comunicación en tiempo real entre un cliente y un servidor, lo que lo hace ideal para aplicaciones web interactivas, juegos en línea, aplicaciones de chat, actualizaciones en tiempo real, entre otros casos de uso.
 
+En FastAPI puedes implementar WebSocket fácilmente utilizando las herramientas proporcionadas por Starlette, el marco web subyacente en el que se basa FastAPI.
+
+En FastAPI, los websockets se definen utilizando la función app.websocket(), la cual requiere que se especifique una ruta como argumento. Esta ruta se utiliza para identificar el endpoint del websocket al que los clientes pueden conectarse.
+
+* Crear salas de socket por modulo: para ello deben terminar en `/ws`
+
+* Crear sub-salas de socket para elementos de un modulo, requieren parámetros para identificarlas `/ws/{id}`
+
+* Crear un archivo con la configuración del socket
+```
+import asyncio
+from fastapi import WebSocket
+from typing import List
+
+class WebSocketManager:
+    def __init__(self):
+        self.connections: List = []
+        print("WebSocketManager created")
+    
+    async def connect(self, websocket: WebSocket):
+        print("WebSocket connected")
+        await websocket.accept()
+        self.connections.append(websocket)
+
+    def disconnect(self, websocket: WebSocket):
+        print("WebSocket disconnected")
+        self.connections.remove(websocket)
+
+    async def broadcast(self, message: str):
+        await asyncio.gather(
+            *[connection.send_text(message) for connection in self.connections]
+        )
+```
+
+* Implementar el socket en el archivo de ruta del modulo
+```
+
+# socket
+from fastapi import WebSocket, WebSocketDisconnect,
+from Core.Socket.socket_manager import WebSocketManager
+
+# crear manager de websockets
+manager = WebSocketManager()
+
+# definir rutas de websockets
+# ws://127.0.0.1:8000/api/tags/ws
+@tag_router.websocket("/ws")
+async def websocket_endpoint(websocket: WebSocket):
+    
+    # Conectar cliente
+    await manager.connect(websocket)
+    
+    print(f"usuarios conectados: {len(manager.connections)}")
+    
+    try:
+        # Escuchar mensajes
+        while True:
+            
+            # Recibir mensaje
+            data = await websocket.receive_text()
+            print(data)
+            
+            # Notificar cambios a los clientes
+            if data is not None:
+                await manager.broadcast(data)
+            
+    except WebSocketDisconnect:
+        # Desconectar cliente
+        manager.disconnect(websocket)
+        print(f"usuarios conectados: {len(manager.connections)}")
+
+```
+
+* Agregar seguridad al ruta del socket con jwt y permisos
+```
+from fastapi import WebSocket, WebSocketDisconnect, Header, Depends
+from Core.Socket.socket_manager import WebSocketManager
+# clase para manejo de permisos
+from Core.Security.security_permissions import Permission
+
+# Autorización
+def validate_auth( bearer: str = Header(), db: Session = Depends(ConexionBD().get_db)):
+   return Permission.verify_role(bearer, ["admin", "user"], db)
+
+# definir rutas de websockets
+@tag_router.websocket("/ws", dependencies=[Depends(validate_auth)])
+async def websocket_endpoint(websocket: WebSocket, user_data: dict = Depends(validate_auth)):
+    #código .....
+
+```
+
+* Identificar cambios en datos en un modulo socket + tareas en segundo plano, agregamos una tarea de segundo plano a los endpoint: create, delete, update.
+```
+# Manejo de diccionarios en respuesta websocket
+import json
+
+# Rutas de tags
+@tag_router.post("/")
+def create_tag(background_task: BackgroundTasks,  tag: Tag = Body(example=tag_example_create), db: Session = Depends(ConexionBD().get_db)):
+    result = TagController.create_tag(tag, db)
+    
+    if result:
+        print("enviando mensaje a los clientes")
+        notification_data = {"action": "Create", "module": "tag"}
+        background_task.add_task(manager.broadcast, json.dumps(notification_data))
+        #background_task.add_task(manager.broadcast, "Se ha creado un nuevo tag")
+    
+    return result
+
+``` 
+* [Documentación WebSocket](https://fastapi.tiangolo.com/advanced/websockets/)
+* [Documentación Background Tasks](https://fastapi.tiangolo.com/reference/background/)
+
+
+* Ejemplos 
+
+![alt text](./Resources/Images/websocket-1.jpeg)
+
+![alt text](./Resources/Images/websocket-2.jpeg)
+
+![alt text](./Resources/Images/websocket-3.jpeg)
 ## 14. Estaticos
 * Requiere el uso de las dependencias 
 ```
@@ -803,6 +1171,13 @@ from jinja2 import Environment, FileSystemLoader
         except EmailNotValidError as e:
             raise Exception(f"Error al enviar el correo: {str(e)}")
 ```
+* Ejemplo Correo activar cuenta
+
+![alt text](./Resources/Images/Correo-activate.png)
+
+* Ejemplo Correo de recuperación de contraseña
+
+![alt text](./Resources/Images/correo-forgot.png)
 
 ## 17. Manejo de archivos
 Almacenamiento de archivos en una carpeta del servidor
@@ -1191,7 +1566,7 @@ class User(BaseModel):
 
 
 
-### Lista de errores HTTP
+## 25. Lista de errores HTTP
 | Código | Estado | Descripción |
 |---|---|---|
 |2XX| ✅ | Exitosa |
@@ -1211,7 +1586,7 @@ class User(BaseModel):
 | 500 | Internal Server Error | Se ha producido un error inesperado en el servidor. |
 | 503 | Service Unavailable | El servidor no está disponible temporalmente. |
 
-### Problemas con rutas
+## 26. Problemas con rutas
 Si tienes errores a la hora de realizar peticiones y te piden parámetros que la url no tiene pero otras si lo tienen pueden intentar una de las siguientes posibles soluciones: 
 
 * Ordenar las rutas desde la que no tienen parámetro en la url, luego las que tienen parámetros en la url de forma descendente 
@@ -1220,9 +1595,16 @@ Si tienes errores a la hora de realizar peticiones y te piden parámetros que la
 * Agrear un / al final de cada ruta que tiene parámetros en la url
 ![alt text](./Resources/Images/solucion-rutas-2.jpg)
 
-### Problemas con el Interprete
+## 27. Problemas con el Interprete
 Si no reconoce el interprete debes elegirlo de forma manual.
 
 ![alt text](./Resources/Images/bug-interprete-1.png)
 
 ![alt text](./Resources/Images/bug-interprete-2.png)
+
+## 28. Problemas con alembic
+Puede suceder que al trabajar en cooperativo o al perder un archivo de migración o al borrar una migración suelen presentarse errores que indica en terminal donde se ejecuta el servidor que no encuentra el head con un id, para solucionar este problema se debe eliminar los archivos de las migraciones, tambien eliminar el registro de la tabla.
+
+![alt text](./Resources/Images/error-alembic-migration.png)
+
+![alt text](./Resources/Images/error-alembic-bd.png)

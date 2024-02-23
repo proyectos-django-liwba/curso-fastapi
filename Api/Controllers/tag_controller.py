@@ -21,7 +21,7 @@ class TagController:
         except CustomError as e:
             raise e
         except Exception as e:
-            raise CustomError(500, f"Error creating tag: {str(e)}")
+            raise CustomError(500, "Error creating tag: ",{str(e)})
         
     def get_tag(id: int, db: Session):
         try:
@@ -35,7 +35,7 @@ class TagController:
         except CustomError as e:
             raise e
         except Exception as e:
-            raise CustomError(500, f"Error getting tag: {str(e)}")
+            raise CustomError(500, "Error getting tag: ",{str(e)})
         
     
     def get_all_tags(db: Session):
@@ -48,7 +48,7 @@ class TagController:
         except CustomError as e:
             raise e
         except Exception as e:
-            raise CustomError(500, f"Error getting tags: {str(e)}")
+            raise CustomError(500, "Error getting tags: ",{str(e)})
         
     def update_tag(tag: Tag, db: Session):
         try:
@@ -62,7 +62,7 @@ class TagController:
         except CustomError as e:
             raise e
         except Exception as e:
-            raise CustomError(500, f"Error updating tag: {str(e)}")
+            raise CustomError(500, "Error updating tag: ",{str(e)})
         
     
     def delete_tag(id: int, db: Session):
@@ -77,4 +77,4 @@ class TagController:
         except CustomError as e:
             raise e
         except Exception as e:
-            raise CustomError(500, f"Error deleting tag: {str(e)}")
+            raise CustomError(500, "Error deleting tag: ",{str(e)})

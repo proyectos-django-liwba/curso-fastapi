@@ -56,7 +56,7 @@ class UploadController:
         except CustomError as e:
             raise e
         except Exception as e:
-            raise CustomError(500, f"Error al obtener el archivo: {str(e)}")
+            raise CustomError(500, "Error al obtener el archivo: ",{str(e)})
     
     def get_upload_by_user_id(user_id: int, db: Session):
         try:
@@ -68,7 +68,7 @@ class UploadController:
         except CustomError as e:
             raise e
         except Exception as e:
-            raise CustomError(500, f"Error al obtener el archivo: {str(e)}")
+            raise CustomError(500, "Error al obtener el archivo: ",{str(e)})
 
     def update_upload( upload: Upload, db: Session):
         try:
@@ -103,7 +103,7 @@ class UploadController:
         except CustomError as e:
             raise e
         except Exception as e:
-            raise CustomError(500, f"Error al actualizar el archivo: {str(e)}")
+            raise CustomError(500, "Error al actualizar el archivo: ",{str(e)})
     
     def delete_upload(upload_id: int, db: Session):
         try:
@@ -120,6 +120,6 @@ class UploadController:
         except CustomError as e:
             raise e
         except Exception as e:
-            raise CustomError(500, f"Error al eliminar el archivo: {str(e)}")
+            raise CustomError(500, "Error al eliminar el archivo: ",{str(e)})
     
     

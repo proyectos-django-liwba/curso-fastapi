@@ -8,7 +8,7 @@ from Api.Controllers.user_controller import UserController
 from Api.Data.conection import ConexionBD
 from Api.Models.user_model import User
 from Api.Models.examples import user_example_create, user_example_update, user_example_login,user_example_change_password,user_active_example
-
+from Core.Security.security_login import handle_login_attempt, remove_ip_from_blacklist
 
 # Crear el router
 user_router = APIRouter()
@@ -33,9 +33,16 @@ async def update_user(user: User = Body(example=user_example_update), db: Sessio
 async def delete_user(user_id: int, db: Session = Depends(ConexionBD().get_db)):
     return UserController.delete_user(user_id, db)
 
-@user_router.post("/login")
-async def login_user(user: User = Body(example=user_example_login), db: Session = Depends(ConexionBD().get_db)):
-    return UserController.login_user(user, db)
+@user_router.post("/login", dependencies=[Depends(handle_login_attempt)])
+async def login_user(login: dict = Depends(handle_login_attempt)   ,user: User = Body(example=user_example_login), db: Session = Depends(ConexionBD().get_db)):
+    # logeado con exito, remover de la lista de bloqueados
+    #remove_ip_from_blacklist(login["ip"])
+    response = UserController.login_user(user, db)
+
+    if response:
+        remove_ip_from_blacklist(login["ip"])
+    
+    return response
 
 @user_router.patch("/change_password")
 async def change_password(id, password, new_password, confirm_password, db: Session = Depends(ConexionBD().get_db)):

@@ -30,7 +30,6 @@ class UserController:
                 user.email, "Registro de Usuario", user.first_name, link
             ) """
             #BackgroundTasks.add_task(EmailManager().send_email, user.email, "Registro de Usuario", user.first_name, link)
-            
             background_tasks.add_task(
                 EmailManager().send_email,
                 user.email,

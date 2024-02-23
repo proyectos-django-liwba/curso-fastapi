@@ -37,7 +37,6 @@ load_dotenv()
 # Orígenes permitidos
 origins = os.getenv("ALLOWED_ORIGINS", "").split(",")
 
-
 # Base de datos
 #ConexionBD().verificar_conexion()
 ConexionBD().create_tables()
@@ -70,16 +69,17 @@ async def http_exception_handler(request, exc):
     
     # crear bitácora
     binnacle = Binnacle(
-        action=str(request.url),
-        error=str(exc.detail),
+        endpoint=request.url,
+        method=request.method,
+        detail=exc.detail,
         status_code=exc.status_code,
-        user_id=1
+        user_id=1,
+        ip_client=request.client.host
     )
     
     # guardar bitácora
-    result =  BinnacleService.create_binnacle(binnacle, db)
-    print(result)
-    
+    BinnacleService.create_binnacle(binnacle, db)
+
     return JSONResponse(
         status_code=exc.status_code,
         content={"error": {
@@ -94,15 +94,29 @@ async def http_exception_handler(request, exc):
 @app.exception_handler(RequestValidationError)
 async def validation_exception_handler(request, exc):
     errors = []
-    
-    print(exc.errors())
+    errors_data = ""
+    #print(exc.errors())
     
     for error in exc.errors():
-         errors.append({
+        errors.append({
             "msg": error["msg"],
             "body": error["loc"][1],
             "input": error["input"]
         })
+        errors_data += f"{error['msg']}\n"
+        
+    # crear bitácora
+    binnacle = Binnacle(
+        endpoint=request.url,
+        method=request.method,
+        detail=errors_data,
+        status_code=422,
+        user_id=1,
+        ip_client=request.client.host
+    )
+    
+    # guardar bitácora
+    BinnacleService.create_binnacle(binnacle, db)
     
     return JSONResponse(
         status_code=422,
@@ -120,15 +134,16 @@ async def unicorn_exception_handler(request: Request, exc: CustomError):
     
     # crear bitácora
     binnacle = Binnacle(
-        action=str(request.url.path),
-        error=str(exc.message),
-        status_code=int(exc.code)
+        endpoint=request.url.path,
+        method=request.method,
+        detail=exc.message,
+        status_code=exc.code,
+        user_id=1,
+        ip_client=request.client.host
     )
-    print(binnacle)
 
     # guardar bitácora
-    result =  BinnacleService.create_binnacle(binnacle, db)
-    print(result)
+    BinnacleService.create_binnacle(binnacle, db)
     
     error_dict = {
         "code": exc.code,
@@ -152,7 +167,6 @@ resources_path = os.path.join(os.path.dirname(__file__), "Resources/")
 uploads_path = os.path.join(os.path.dirname(__file__), "Uploads/")
 app.mount("/Resources", StaticFiles(directory=resources_path), name="Resources")
 app.mount("/Uploads", StaticFiles(directory=uploads_path), name="Uploads")
-
 
 # Rutas de la aplicación
 app.include_router(home_router)
