@@ -666,6 +666,9 @@ async def unicorn_exception_handler(request: Request, exc: CustomError):
 ```
 * También se puede dar seguimiento de todas las operaciones de escritura en la base de datos, para ello se puede implementar una tarea en segundo plano en la controller o router de cada modulo. 
 
+* Ejemplo 
+
+![alt text](./Resources/Images/Bitacora.png)
 ## 9. Dependencias
 En FastAPI, las dependencias son una herramienta poderosa que te permite desacoplar la lógica de tu aplicación en unidades más pequeñas y reutilizables. Se pueden usar para:
 * 1. Inyección de dependencias:
@@ -1035,6 +1038,14 @@ def create_tag(background_task: BackgroundTasks,  tag: Tag = Body(example=tag_ex
 * [Documentación WebSocket](https://fastapi.tiangolo.com/advanced/websockets/)
 * [Documentación Background Tasks](https://fastapi.tiangolo.com/reference/background/)
 
+
+* Ejemplos 
+
+![alt text](./Resources/Images/websocket-1.jpeg)
+
+![alt text](./Resources/Images/websocket-2.jpeg)
+
+![alt text](./Resources/Images/websocket-3.jpeg)
 ## 14. Estaticos
 * Requiere el uso de las dependencias 
 ```
@@ -1155,6 +1166,13 @@ from jinja2 import Environment, FileSystemLoader
         except EmailNotValidError as e:
             raise Exception(f"Error al enviar el correo: {str(e)}")
 ```
+* Ejemplo Correo activar cuenta
+
+![alt text](./Resources/Images/Correo-activate.png)
+
+* Ejemplo Correo de recuperación de contraseña
+
+![alt text](./Resources/Images/correo-forgot.png)
 
 ## 17. Manejo de archivos
 Almacenamiento de archivos en una carpeta del servidor
