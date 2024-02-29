@@ -2,7 +2,6 @@
 
 
 ## Desarrolladores 
-![coders](./Resources/Images/coders.png)
 
 * 🧑‍💻Wilfredo Barquero Herrera
 
