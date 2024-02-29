@@ -12,14 +12,7 @@ from starlette.exceptions import HTTPException as StarletteHTTPException
 # Rutas
 from Api.Routes.home_router import home_router
 from Api.Routes.user_router import user_router
-from Api.Routes.task_router import task_router
-from Api.Routes.contact_router import contact_router
-from Api.Routes.upload_router import upload_router
-from Api.Routes.email_router import email_router
-from Api.Routes.category_tasks_router import category_tasks_router
-from Api.Routes.tag_router import tag_router
-from Api.Routes.depends_router import depends_router
-from Api.Routes.middleware_router import middleware_router
+
 # Tareas en segundo plano
 from Core.BackgroundTask.background_task import start_periodic_cleanup
 # Base de datos
@@ -171,13 +164,5 @@ app.mount("/Uploads", StaticFiles(directory=uploads_path), name="Uploads")
 # Rutas de la aplicación
 app.include_router(home_router)
 app.include_router(user_router, prefix="/api/users", tags=["Users"])
-app.include_router(task_router, prefix="/api/tasks", tags=["Tasks"])
-app.include_router(contact_router, prefix="/api/contacts", tags=["Contacts"])
-app.include_router(upload_router, prefix="/api/upload", tags=["Upload"])
-app.include_router(email_router, prefix="/api/email", tags=["Email"])
-app.include_router(category_tasks_router, prefix="/api/category-tasks", tags=["Category Tasks"])
-app.include_router(tag_router, prefix="/api/tags", tags=["Tags"])
-app.include_router(depends_router, prefix="/api/depends", tags=["Depends"])
-app.include_router(middleware_router, prefix="/api/middleware", tags=["Middleware"])
 
 
