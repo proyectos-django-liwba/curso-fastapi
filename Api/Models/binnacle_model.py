@@ -11,7 +11,7 @@ class Binnacle(BaseModel):
     ip_client: str
 
     class Config:
-        orm_mode = True
+        from_attributes = True
         
     def __str__(self):  
         return f"Binnacle(id={self.id}, endpoint={self.endpoint}, method={self.method}, detail={self.detail}, status_code={self.status_code}, user_id={self.user_id}, ip_client={self.ip_client})"
