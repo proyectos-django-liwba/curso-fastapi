@@ -62,7 +62,7 @@ pip install -r requirements.txt
             config = context.config
             config.set_main_option('sqlalchemy.url',"driver://user:pass@localhost/dbname")
         ```
-    - 3: Agregar los shemas de los modelos a alembic
+    - 3: Agregar los schemas de los modelos a alembic
         ```
             target_metadata = {schemaModel1.metadata, schemaModel2.metadata}
         ```
